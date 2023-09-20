@@ -148,12 +148,11 @@ if st.button("Refresh Session"):
     # Clear session state variables to start a new session
     st.session_state.chat_history = []
 
-# Load previous chat sessions
 if st.session_state.new_session:
     st.session_state.sessions = load_previous_sessions()
 else:
-    st.session_state.user_name_input = st.session_state.user_name
-
+    if st.session_state.user_name is not None:
+        st.session_state.user_name_input = st.session_state.user_name
 if st.session_state.new_session:
     user_name = st.session_state.user_name_input
     if user_name:
