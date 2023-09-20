@@ -123,13 +123,8 @@ def load_previous_sessions():
     
     return previous_sessions
 
-
+# Refresh Session Button
 if st.button("Refresh Session"):
-    if st.session_state.user_name is not None:
-        st.session_state.refreshing_session = True
-    else:
-        st.session_state.refreshing_session = False
-
     # Save the current session and start a new one
     current_session = {
         'user_name': st.session_state.user_name,
@@ -143,26 +138,21 @@ if st.button("Refresh Session"):
 
     # Clear session state variables to start a new session
     st.session_state.chat_history = []
-    st.session_state.refreshing_session = False 
+    st.session_state.user_name = None
+    st.session_state.user_name_input = None
+    st.session_state.new_session = True
+    st.session_state.refreshing_session = False  # Reset refreshing_session to False
 
 # Check if user name is already provided or retrieve it from input
 if st.session_state.user_name is None:
     st.session_state.user_name = st.text_input("Your name:")
 
+# Load previous sessions if it's a new session
 if st.session_state.new_session:
     st.session_state.sessions = load_previous_sessions()
-else:
-    if st.session_state.user_name is not None:
-        st.session_state.user_name_input = st.session_state.user_name
+    st.session_state.new_session = False
 
-if st.session_state.new_session:
-    user_name = st.session_state.user_name_input
-    if user_name:
-        st.session_state.new_session = False
-
-else:
-    user_name = st.session_state.user_name
-## Display a list of past sessions in the sidebar along with a delete button
+# Display a list of past sessions in the sidebar along with a delete button
 st.sidebar.header("Chat Sessions")
 
 for i, session_data in enumerate(st.session_state.past):
@@ -179,6 +169,8 @@ for i, session_data in enumerate(st.session_state.past):
     
     if st.sidebar.button(formatted_session_name, key=button_key):
         st.session_state.chat_history = chat_history
+
+
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
