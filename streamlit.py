@@ -171,7 +171,6 @@ for i, session_data in enumerate(st.session_state.past):
     
     if st.sidebar.button(formatted_session_name, key=button_key):
         st.session_state.chat_history = chat_history
-
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
