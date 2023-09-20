@@ -69,22 +69,12 @@ current_day = days[day_of_week]
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 
-# Add refreshing_session to the session state and set its initial value to False
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
+
 if 'refreshing_session' not in st.session_state:
     st.session_state.refreshing_session = False
 
-if 'user_name_input' not in st.session_state:
-    st.session_state.user_name_input = None
-
-if 'new_session' not in st.session_state:
-    st.session_state.new_session = True
-
-if 'sessions' not in st.session_state:
-    st.session_state.sessions = {}
-
-# Initialize st.session_state.past as an empty list if it doesn't exist
-if 'past' not in st.session_state:
-    st.session_state.past = []
 # Function to save chat session data
 def save_chat_session(session_data, session_id):
     session_directory = "chat_sessions"
@@ -122,6 +112,18 @@ def load_previous_sessions():
             previous_sessions[session_id] = session_data
     
     return previous_sessions
+
+# Initialize st.session_state.past as an empty list if it doesn't exist
+if 'past' not in st.session_state:
+    st.session_state.past = []
+
+# Initialize st.session_state.new_session as True
+if 'new_session' not in st.session_state:
+    st.session_state.new_session = True
+
+# Initialize user name input
+if 'user_name_input' not in st.session_state:
+    st.session_state.user_name_input = None
 
 # Refresh Session Button
 if st.button("Refresh Session"):
@@ -169,7 +171,6 @@ for i, session_data in enumerate(st.session_state.past):
     
     if st.sidebar.button(formatted_session_name, key=button_key):
         st.session_state.chat_history = chat_history
-
 
 file_1 = r'dealer_1_inventry.csv'
 
