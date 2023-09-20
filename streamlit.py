@@ -221,6 +221,26 @@ else:
             formatted_session_name = f"{st.session_state.user_name} - {session_id}"
             button_key = f"session_button_{session_id}"
             st.sidebar.button(formatted_session_name, key=button_key)
+
+# Function to save chat session data
+def save_chat_session(session_data, session_id):
+    session_directory = "chat_sessions"
+    session_filename = f"{session_directory}/chat_session_{session_id}.json"
+
+    if not os.path.exists(session_directory):
+        os.makedirs(session_directory)
+
+    session_dict = {
+        'user_name': session_data['user_name'],
+        'user_role': session_data['user_role'],  # Include user role
+        'chat_history': session_data['chat_history']
+    }
+
+    try:
+        with open(session_filename, "w") as session_file:
+            json.dump(session_dict, session_file)
+    except Exception as e:
+        st.error(f"An error occurred while saving the chat session: {e}")
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
