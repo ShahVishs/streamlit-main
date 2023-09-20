@@ -138,6 +138,7 @@ if st.button("Refresh Session"):
     # Save the current session and start a new one
     current_session = {
         'user_name': st.session_state.user_name,
+        'user_role': st.session_state.user_role,  # Include user role
         'chat_history': st.session_state.chat_history
     }
 
