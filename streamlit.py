@@ -71,11 +71,8 @@ if 'user_name' not in st.session_state:
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
-if 'is_admin' not in st.session_state:
-    st.session_state.is_admin = False
-
-if 'refreshing_session' not in st.session_state:
-    st.session_state.refreshing_session = False
+# Set the admin role statically to True
+st.session_state.is_admin = True
 
 # Define roles (e.g., 'admin' and 'user')
 ROLES = ['admin', 'user']
@@ -179,68 +176,9 @@ for session_id, session_data in st.session_state.sessions.items():
             # Update the user name to match the session's user name
             st.session_state.user_name = user_name
 
-# Admin Login Section
-if st.button("Admin Login"):
-    admin_username = st.text_input("Admin Username:")
-    admin_password = st.text_input("Admin Password:", type="password")
-
-    if admin_username == "your_admin_username" and admin_password == "your_admin_password":
-        st.session_state.is_admin = True
-    else:
-        st.session_state.is_admin = False
-
 # Initialize user name input
 if 'user_name_input' not in st.session_state:
     st.session_state.user_name_input = None
-
-# Initialize user name input
-if 'user_name_input' not in st.session_state:
-    st.session_state.user_name_input = None
-
-# Define a function to show all sessions if the user is an admin
-def show_all_sessions():
-    st.sidebar.header("All Chat Sessions")
-
-    for session_id, session_data in st.session_state.sessions.items():
-        user_name = session_data['user_name']
-        chat_history = session_data['chat_history']
-
-        formatted_session_name = f"{user_name} - {session_id}"
-
-        button_key = f"session_button_{session_id}"
-
-        st.sidebar.button(formatted_session_name, key=button_key)
-
-# Display all sessions if the user is an admin
-if st.session_state.is_admin:
-    show_all_sessions()
-else:
-    # Display only the user's sessions
-    for session_id, session_data in st.session_state.sessions.items():
-        if session_data['user_name'] == st.session_state.user_name:
-            formatted_session_name = f"{st.session_state.user_name} - {session_id}"
-            button_key = f"session_button_{session_id}"
-            st.sidebar.button(formatted_session_name, key=button_key)
-
-# Function to save chat session data
-def save_chat_session(session_data, session_id):
-    session_directory = "chat_sessions"
-    session_filename = f"{session_directory}/chat_session_{session_id}.json"
-
-    if not os.path.exists(session_directory):
-        os.makedirs(session_directory)
-
-    session_dict = {
-        'user_name': session_data['user_name'],
-        'user_role': session_data['user_role'],  # Include user role
-        'chat_history': session_data['chat_history']
-    }
-
-    try:
-        with open(session_filename, "w") as session_file:
-            json.dump(session_dict, session_file)
-    except Exception as e:
-        st.error(f"An error occurred while saving the chat session: {e}")
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
