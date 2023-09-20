@@ -97,7 +97,6 @@ def save_chat_session(session_data, session_id):
     except Exception as e:
         st.error(f"An error occurred while saving the chat session: {e}")
 
-
 # Function to load previous chat sessions from files
 def load_previous_sessions():
     previous_sessions = {}
@@ -147,11 +146,7 @@ if st.button("Refresh Session"):
     st.session_state.user_name = None
     st.session_state.user_name_input = None
     st.session_state.new_session = True
-    st.session_state.refreshing_session = False  # Reset refreshing_session to Falsee
-
-# Check if user name is already provided or retrieve it from input
-if st.session_state.user_name is None:
-    st.session_state.user_name = st.text_input("Your name:")
+    st.session_state.refreshing_session = False  # Reset refreshing_session to False
 
 # Load previous sessions if it's a new session
 if st.session_state.new_session:
