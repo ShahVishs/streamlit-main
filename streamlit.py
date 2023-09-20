@@ -65,7 +65,6 @@ day_of_week = datetime.today().weekday()
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 current_day = days[day_of_week]
 
-
 # Initialize session state
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
@@ -159,24 +158,25 @@ if st.session_state.new_session:
     st.session_state.sessions = load_previous_sessions()
     st.session_state.new_session = False
 
-# Display a list of past sessions in the sidebar along with a delete button
+# Display a list of past sessions in the sidebar based on user role
 st.sidebar.header("Chat Sessions")
 
 for session_id, session_data in st.session_state.sessions.items():
     user_name = session_data['user_name']
-    chat_history = session_data['chat_history']
-    
-    formatted_session_name = f"{user_name} - {session_id}"
-    
-    button_key = f"session_button_{session_id}"
+    user_role = session_data['user_role']  # Get user role from session data
     
     # Check if the current user is an admin or a regular user
     if st.session_state.user_role == 'admin' or st.session_state.user_name == user_name:
+        formatted_session_name = f"{user_name} - {session_id}"
+        button_key = f"session_button_{session_id}"
+        
         if st.sidebar.button(formatted_session_name, key=button_key):
             # Set the current chat history to the selected session's chat history
-            st.session_state.chat_history = chat_history
-            # Update the user name to match the session's user name
+            st.session_state.chat_history = session_data['chat_history']
+            # Update the user name and user role to match the session's data
             st.session_state.user_name = user_name
+            st.session_state.user_role = user_role
+
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
@@ -305,10 +305,15 @@ def conversational_chat(user_input):
     st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
 
+# Check if user name is already provided or retrieve it from input
 if st.session_state.user_name is None:
-    user_name = st.text_input("Your name:")
-    if user_name:
-        st.session_state.user_name = user_name
+    st.session_state.user_name = st.text_input("Your name:")
+    if st.session_state.user_name:
+        # Set the user's role based on your authentication logic (e.g., hardcoded for demonstration)
+        if st.session_state.user_name == "admin":
+            st.session_state.user_role = 'admin'
+        else:
+            st.session_state.user_role = 'user'
 
 user_input = ""
 output = ""
