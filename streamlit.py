@@ -64,7 +64,6 @@ current_date = datetime.today().strftime("%m/%d/%y")
 day_of_week = datetime.today().weekday()
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 current_day = days[day_of_week]
-
 # Initialize session state
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
@@ -72,15 +71,18 @@ if 'user_name' not in st.session_state:
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
-if 'user_role' not in st.session_state:
-    st.session_state.user_role = None
+if 'is_admin' not in st.session_state:
+    st.session_state.is_admin = False
+
+if 'refreshing_session' not in st.session_state:
+    st.session_state.refreshing_session = False
 
 # Define roles (e.g., 'admin' and 'user')
 ROLES = ['admin', 'user']
 
-# Initialize user name input
-if 'user_name_input' not in st.session_state:
-    st.session_state.user_name_input = None
+# Initialize user role in session state
+if 'user_role' not in st.session_state:
+    st.session_state.user_role = None
 
 # Function to save chat session data
 def save_chat_session(session_data, session_id):
@@ -92,7 +94,7 @@ def save_chat_session(session_data, session_id):
     
     session_dict = {
         'user_name': session_data['user_name'],
-        'user_role': session_data['user_role'],
+        'user_role': session_data['user_role'],  # Include user role
         'chat_history': session_data['chat_history']
     }
     
@@ -138,7 +140,6 @@ if st.button("Refresh Session"):
     # Save the current session and start a new one
     current_session = {
         'user_name': st.session_state.user_name,
-        'user_role': st.session_state.user_role,  # Include user role
         'chat_history': st.session_state.chat_history
     }
 
@@ -175,9 +176,51 @@ for session_id, session_data in st.session_state.sessions.items():
         if st.sidebar.button(formatted_session_name, key=button_key):
             # Set the current chat history to the selected session's chat history
             st.session_state.chat_history = chat_history
-            # Update the user name and user role to match the session's user name and role
+            # Update the user name to match the session's user name
             st.session_state.user_name = user_name
-            st.session_state.user_role = session_data.get('user_role', None)
+
+# Admin Login Section
+if st.button("Admin Login"):
+    admin_username = st.text_input("Admin Username:")
+    admin_password = st.text_input("Admin Password:", type="password")
+
+    if admin_username == "your_admin_username" and admin_password == "your_admin_password":
+        st.session_state.is_admin = True
+    else:
+        st.session_state.is_admin = False
+
+# Initialize user name input
+if 'user_name_input' not in st.session_state:
+    st.session_state.user_name_input = None
+
+# Initialize user name input
+if 'user_name_input' not in st.session_state:
+    st.session_state.user_name_input = None
+
+# Define a function to show all sessions if the user is an admin
+def show_all_sessions():
+    st.sidebar.header("All Chat Sessions")
+
+    for session_id, session_data in st.session_state.sessions.items():
+        user_name = session_data['user_name']
+        chat_history = session_data['chat_history']
+
+        formatted_session_name = f"{user_name} - {session_id}"
+
+        button_key = f"session_button_{session_id}"
+
+        st.sidebar.button(formatted_session_name, key=button_key)
+
+# Display all sessions if the user is an admin
+if st.session_state.is_admin:
+    show_all_sessions()
+else:
+    # Display only the user's sessions
+    for session_id, session_data in st.session_state.sessions.items():
+        if session_data['user_name'] == st.session_state.user_name:
+            formatted_session_name = f"{st.session_state.user_name} - {session_id}"
+            button_key = f"session_button_{session_id}"
+            st.sidebar.button(formatted_session_name, key=button_key)
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
