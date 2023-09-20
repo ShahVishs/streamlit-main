@@ -66,16 +66,6 @@ days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sun
 current_day = days[day_of_week]
 
 
-It looks like you want to implement role-based access control (RBAC) in your Streamlit app for a chat interface, where administrators can see all chat sessions, and regular users can only see their own chat sessions. To achieve this, you need to make sure that sessions are saved and retrieved correctly based on user roles. Here's the complete code with the RBAC implementation:
-
-python
-Copy code
-import os
-import streamlit as st
-import json
-from datetime import datetime
-from streamlit_chat import message
-
 # Initialize session state
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
