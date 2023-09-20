@@ -75,6 +75,13 @@ if 'chat_history' not in st.session_state:
 if 'refreshing_session' not in st.session_state:
     st.session_state.refreshing_session = False
 
+# Define roles (e.g., 'admin' and 'user')
+ROLES = ['admin', 'user']
+
+# Initialize user role in session state
+if 'user_role' not in st.session_state:
+    st.session_state.user_role = None
+
 # Function to save chat session data
 def save_chat_session(session_data, session_id):
     session_directory = "chat_sessions"
@@ -85,15 +92,13 @@ def save_chat_session(session_data, session_id):
     
     session_dict = {
         'user_name': session_data['user_name'],
+        'user_role': session_data['user_role'],  # Include user role
         'chat_history': session_data['chat_history']
     }
     
     try:
         with open(session_filename, "w") as session_file:
             json.dump(session_dict, session_file)
-        
-        # Update the sessions dictionary with the new session data
-        st.session_state.sessions[session_id] = session_data
     except Exception as e:
         st.error(f"An error occurred while saving the chat session: {e}")
 
@@ -164,11 +169,13 @@ for session_id, session_data in st.session_state.sessions.items():
     
     button_key = f"session_button_{session_id}"
     
-    if st.sidebar.button(formatted_session_name, key=button_key):
-        # Set the current chat history to the selected session's chat history
-        st.session_state.chat_history = chat_history
-        # Update the user name to match the session's user name
-        st.session_state.user_name = user_name
+    # Check if the current user is an admin or a regular user
+    if st.session_state.user_role == 'admin' or st.session_state.user_name == user_name:
+        if st.sidebar.button(formatted_session_name, key=button_key):
+            # Set the current chat history to the selected session's chat history
+            st.session_state.chat_history = chat_history
+            # Update the user name to match the session's user name
+            st.session_state.user_name = user_name
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
