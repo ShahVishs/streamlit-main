@@ -91,8 +91,12 @@ def save_chat_session(session_data, session_id):
     try:
         with open(session_filename, "w") as session_file:
             json.dump(session_dict, session_file)
+        
+        # Update the sessions dictionary with the new session data
+        st.session_state.sessions[session_id] = session_data
     except Exception as e:
         st.error(f"An error occurred while saving the chat session: {e}")
+
 
 # Function to load previous chat sessions from files
 def load_previous_sessions():
@@ -143,7 +147,7 @@ if st.button("Refresh Session"):
     st.session_state.user_name = None
     st.session_state.user_name_input = None
     st.session_state.new_session = True
-    st.session_state.refreshing_session = False  # Reset refreshing_session to False
+    st.session_state.refreshing_session = False  # Reset refreshing_session to Falsee
 
 # Check if user name is already provided or retrieve it from input
 if st.session_state.user_name is None:
@@ -166,6 +170,7 @@ for session_id, session_data in st.session_state.sessions.items():
     button_key = f"session_button_{session_id}"
     
     if st.sidebar.button(formatted_session_name, key=button_key):
+        # Set the current chat history to the selected session's chat history
         st.session_state.chat_history = chat_history
 file_1 = r'dealer_1_inventry.csv'
 
