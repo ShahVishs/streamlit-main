@@ -148,7 +148,7 @@ if st.button("Refresh Session"):
     st.session_state.new_session = True
     st.session_state.refreshing_session = False  # Reset refreshing_session to False
 
-# Load previous sessions if it's a new session
+# Load previous sessions if it's a new session or a revisit
 if st.session_state.new_session:
     st.session_state.sessions = load_previous_sessions()
     st.session_state.new_session = False
@@ -167,6 +167,8 @@ for session_id, session_data in st.session_state.sessions.items():
     if st.sidebar.button(formatted_session_name, key=button_key):
         # Set the current chat history to the selected session's chat history
         st.session_state.chat_history = chat_history
+        # Update the user name to match the session's user name
+        st.session_state.user_name = user_name
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
