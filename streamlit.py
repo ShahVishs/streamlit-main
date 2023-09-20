@@ -123,6 +123,7 @@ def load_previous_sessions():
     
     return previous_sessions
 
+
 if st.button("Refresh Session"):
     if st.session_state.user_name is not None:
         st.session_state.refreshing_session = True
@@ -143,11 +144,16 @@ if st.button("Refresh Session"):
     # Clear session state variables to start a new session
     st.session_state.chat_history = []
 
+# Check if user name is already provided or retrieve it from input
+if st.session_state.user_name is None:
+    st.session_state.user_name = st.text_input("Your name:")
+
 if st.session_state.new_session:
     st.session_state.sessions = load_previous_sessions()
 else:
     if st.session_state.user_name is not None:
         st.session_state.user_name_input = st.session_state.user_name
+
 if st.session_state.new_session:
     user_name = st.session_state.user_name_input
     if user_name:
@@ -155,7 +161,6 @@ if st.session_state.new_session:
 
 else:
     user_name = st.session_state.user_name
-
 ## Display a list of past sessions in the sidebar along with a delete button
 st.sidebar.header("Chat Sessions")
 
