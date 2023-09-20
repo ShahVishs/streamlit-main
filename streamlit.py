@@ -71,9 +71,6 @@ if 'user_name' not in st.session_state:
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
-# Set the admin role statically to True
-st.session_state.is_admin = True
-
 # Define roles (e.g., 'admin' and 'user')
 ROLES = ['admin', 'user']
 
@@ -137,7 +134,8 @@ if st.button("Refresh Session"):
     # Save the current session and start a new one
     current_session = {
         'user_name': st.session_state.user_name,
-        'chat_history': st.session_state.chat_history
+        'chat_history': st.session_state.chat_history,
+        'user_role': st.session_state.user_role
     }
 
     # Generate a unique session_id based on the timestamp
@@ -163,22 +161,20 @@ st.sidebar.header("Chat Sessions")
 for session_id, session_data in st.session_state.sessions.items():
     user_name = session_data['user_name']
     chat_history = session_data['chat_history']
+    user_role = session_data['user_role']
     
     formatted_session_name = f"{user_name} - {session_id}"
     
-    button_key = f"session_button_{session_id}"
-    
-    # Check if the current user is an admin or a regular user
-    if st.session_state.user_role == 'admin' or st.session_state.user_name == user_name:
+    # Check if the current user is an admin (user_role is 'admin') or a regular user (user_role is 'user')
+    if st.session_state.user_name == "vishakha" or st.session_state.user_name == user_name:
+        button_key = f"session_button_{session_id}"
         if st.sidebar.button(formatted_session_name, key=button_key):
             # Set the current chat history to the selected session's chat history
             st.session_state.chat_history = chat_history
             # Update the user name to match the session's user name
             st.session_state.user_name = user_name
-
-# Initialize user name input
-if 'user_name_input' not in st.session_state:
-    st.session_state.user_name_input = None
+            # Update the user role to match the session's user role
+            st.session_state.user_role = user_role
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
@@ -307,16 +303,10 @@ def conversational_chat(user_input):
     st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
 
-# Check if user name is already provided or retrieve it from input
 if st.session_state.user_name is None:
-    st.session_state.user_name = st.text_input("Your name:")
-    if st.session_state.user_name:
-        # Set the user's role based on your authentication logic (e.g., hardcoded for demonstration)
-        if st.session_state.user_name == "admin":
-            st.session_state.user_role = 'admin'
-        else:
-            st.session_state.user_role = 'user'
-
+    user_name = st.text_input("Your name:")
+    if user_name:
+        st.session_state.user_name = user_name
 user_input = ""
 output = ""
 
