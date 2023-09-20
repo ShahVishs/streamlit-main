@@ -90,11 +90,15 @@ def save_chat_session(session_data, session_id):
     if not os.path.exists(session_directory):
         os.makedirs(session_directory)
     
+    # Initialize the session_dict with user_name and chat_history
     session_dict = {
         'user_name': session_data['user_name'],
-        'user_role': session_data['user_role'],  # Include user role
         'chat_history': session_data['chat_history']
     }
+    
+    # Check if 'user_role' key exists in session_data before including it
+    if 'user_role' in session_data:
+        session_dict['user_role'] = session_data['user_role']
     
     try:
         with open(session_filename, "w") as session_file:
