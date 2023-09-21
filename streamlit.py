@@ -197,6 +197,7 @@ if st.session_state.new_session:
     # Load previous sessions only for non-admin users or if it's a new session
     user_sessions = load_previous_sessions()
 
+
 # Display a list of past sessions in the sidebar along with a delete button
 st.sidebar.header("Chat Sessions")
 
