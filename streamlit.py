@@ -96,6 +96,7 @@ def save_chat_session(session_data, session_id):
         st.error(f"An error occurred while saving the chat session: {e}")
 
 # Function to load previous chat sessions from files
+@st.cache(allow_output_mutation=True)
 def load_previous_sessions():
     previous_sessions = {}
     
@@ -296,7 +297,7 @@ else:
             st.error(f"An error occurred while saving data to Airtable: {e}")
 
     # Function for conversational chat
-    # Function for conversational chat
+    @st.cache
     def conversational_chat(user_input):
         result = agent_executor({"input": user_input})
         st.session_state.chat_history.append((user_input, result["output"]))
