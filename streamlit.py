@@ -71,20 +71,9 @@ if 'user_name' not in st.session_state:
 # Define roles (e.g., 'admin' and 'user')
 ROLES = ['admin', 'user']
 
-# Initialize user name in session state
-if 'user_name' not in st.session_state:
-    st.session_state.user_name = None
-
 # Initialize user role in session state
 if 'user_role' not in st.session_state:
     st.session_state.user_role = None
-
-# Determine if the user is an admin (vishakha)
-is_admin = st.session_state.user_name == "vishakha"
-
-# Initialize st.session_state.new_session as True for new users (excluding vishakha)
-if 'new_session' not in st.session_state and st.session_state.user_name != "vishakha":
-    st.session_state.new_session = True
 
 # Function to save chat session data
 def save_chat_session(session_data, session_id):
@@ -169,59 +158,26 @@ st.sidebar.header("Chat Sessions")
 # Check if the user is the admin (vishakha) or not
 is_admin = st.session_state.user_name == "vishakha"
 
-# Create a dictionary to store sessions for each user
-user_sessions = {}
+# Create a dictionary to store all loaded sessions
+loaded_sessions = load_previous_sessions()
 
-for session_id, session_data in st.session_state.sessions.items():
+for session_id, session_data in loaded_sessions.items():
     user_name = session_data['user_name']
     chat_history = session_data['chat_history']
     user_role = session_data['user_role']
     
     # Check if the current user is an admin (user_role is 'admin') or a regular user (user_role is 'user')
-    if user_name not in user_sessions:
-        user_sessions[user_name] = []
-
-    user_sessions[user_name].append({
-        'session_id': session_id,
-        'chat_history': chat_history,
-        'user_role': user_role
-    })
-
-# Determine if the user is an admin (vishakha)
-is_admin = st.session_state.user_name == "vishakha"
-
-# Initialize user_sessions outside the if block
-user_sessions = {}
-
-if st.session_state.new_session:
-    # Load previous sessions only for non-admin users or if it's a new session
-    user_sessions = load_previous_sessions()
-
-
-# Display a list of past sessions in the sidebar along with a delete button
-st.sidebar.header("Chat Sessions")
-
-if is_admin:
-    # If the user is an admin (vishakha), show all sessions for all users
-    for user_name, sessions in user_sessions.items():
-        for session in sessions:
-            formatted_session_name = f"{user_name} - {session['session_id']}"
-
-            button_key = f"session_button_{session['session_id']}"
-            if st.sidebar.button(formatted_session_name, key=button_key):
-                st.session_state.chat_history = session['chat_history'].copy()
-                st.session_state.user_name = user_name
-                st.session_state.user_role = session['user_role']
-else:
-    # If the user is not an admin, show only their own session
-    current_username = st.session_state.user_name
-    if current_username is not None:
-        for session in user_sessions.get(current_username, []):
-            formatted_session_name = f"{current_username} - {session['session_id']}"
-
-            if st.sidebar.button(formatted_session_name):
-                st.session_state.chat_history = session['chat_history'].copy()
-                st.session_state.user_role = session['user_role']
+    if is_admin or st.session_state.user_name == user_name:
+        formatted_session_name = f"{user_name} - {session_id}"
+        
+        button_key = f"session_button_{session_id}"
+        if st.sidebar.button(formatted_session_name, key=button_key):
+            # Set the current chat history to the selected session's chat history
+            st.session_state.chat_history = chat_history.copy()  # Make a copy to avoid modifying the original
+            # Update the user name to match the session's user name
+            st.session_state.user_name = user_name
+            # Update the user role to match the session's user role
+            st.session_state.user_role = user_role
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
@@ -352,7 +308,7 @@ else:
             st.error(f"An error occurred while saving data to Airtable: {e}")
 
     # Function for conversational chat
-    @st.cache
+  
     def conversational_chat(user_input):
         result = agent_executor({"input": user_input})
         st.session_state.chat_history.append((user_input, result["output"]))
@@ -388,12 +344,10 @@ else:
         st.session_state.past.append(current_session_data)
 
     with response_container:
-        # Display chat history
-        if st.session_state.user_name:
-            for i, (query, answer) in enumerate(st.session_state.chat_history):
-                user_name = st.session_state.user_name
-                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-                message(answer, key=f"{i}_answer", avatar_style="thumbs")
+        for i, (query, answer) in enumerate(st.session_state.chat_history):
+            user_name = st.session_state.user_name
+            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+            message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
