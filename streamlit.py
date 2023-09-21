@@ -95,7 +95,7 @@ def save_chat_session(session_data, session_id):
     except Exception as e:
         st.error(f"An error occurred while saving the chat session: {e}")
 
-
+# Function to load previous sessions
 def load_previous_sessions():
     previous_sessions = {}
     
@@ -155,7 +155,7 @@ if st.session_state.new_session:
 # Display a list of past sessions in the sidebar along with a delete button
 st.sidebar.header("Chat Sessions")
 
-# Check if the user is the admin (Vishakha) or not
+# Check if the user is the admin (vishakha) or not
 is_admin = st.session_state.user_name == "vishakha"
 
 for session_id, session_data in st.session_state.sessions.items():
