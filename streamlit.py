@@ -308,8 +308,10 @@ else:
     # Function for conversational chat
     def conversational_chat(user_input):
         result = agent_executor({"input": user_input})
+        # Append the chat to the current user's chat history
         st.session_state.chat_history.append((user_input, result["output"]))
         return result["output"]
+
     
     if st.session_state.user_name is None:
         user_name = st.text_input("Your name:")
@@ -343,11 +345,14 @@ else:
         }
         st.session_state.past.append(current_session_data)
 
+    # Display chat history and query placeholders
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
-            user_name = st.session_state.user_name
-            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+            if st.session_state.user_name == "vishakha" or st.session_state.user_name == "vishakha":  # Add or condition if needed
+                # Only show chat history for the admin (vishakha) or the current user
+                user_name = st.session_state.user_name
+                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+                message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
