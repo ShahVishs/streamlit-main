@@ -124,7 +124,8 @@ if 'new_session' not in st.session_state:
 
 # Initialize user name input
 if 'user_name_input' not in st.session_state:
-    st.session_state.user_name_input = None
+    if st.session_state.user_name is None:
+        st.session_state.user_name_input = None
 
 # Refresh Session Button
 if st.button("Refresh Session"):
@@ -147,10 +148,18 @@ if st.button("Refresh Session"):
     st.session_state.new_session = True
     st.session_state.refreshing_session = False  # Reset refreshing_session to False
 
-# Load previous sessions if it's a new session or a revisit
-if st.session_state.new_session:
-    st.session_state.sessions = load_previous_sessions()
-    st.session_state.new_session = False
+    # Initialize user role in session state
+    if 'user_role' not in st.session_state:
+        st.session_state.user_role = None
+
+    # If the user is "vishakha", show a button to manually select a user
+    if st.session_state.user_name == "vishakha":
+        selected_user_name = st.selectbox("Select User:", list(user_sessions.keys()))
+        if selected_user_name:
+            # Set the user_name to the selected user
+            st.session_state.user_name = selected_user_name
+            # Set the user role to match the selected user's role
+            st.session_state.user_role = user_sessions[selected_user_name][0]['user_role']
 
 # Display a list of past sessions in the sidebar along with a delete button
 st.sidebar.header("Chat Sessions")
