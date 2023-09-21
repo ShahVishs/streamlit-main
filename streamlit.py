@@ -191,6 +191,7 @@ if is_admin:
                 st.session_state.user_name = user_name
                 # Update the user role to match the session's user role
                 st.session_state.user_role = session['user_role']
+
 else:
     # If the user is not an admin, show only their own session
     current_username = st.session_state.user_name
@@ -372,24 +373,10 @@ else:
         st.session_state.past.append(current_session_data)
 
     with response_container:
-        # Display chat history for the selected user's sessions
-        if is_admin:
-            # If the user is an admin (vishakha), show all sessions for all users
-            for user_name, sessions in user_sessions.items():
-                for session in sessions:
-                    formatted_session_name = f"{user_name} - {session['session_id']}"
-                    button_key = f"session_button_{session['session_id']}"
-                    if st.sidebar.button(formatted_session_name, key=button_key):
-                        st.session_state.selected_session_id = session['session_id']
-                        st.session_state.selected_user_name = user_name
-                        st.session_state.selected_chat_history = session['chat_history'].copy()
-                        st.session_state.user_role = session['user_role']
-        
-        # Display chat history for the selected session
-        if hasattr(st.session_state, 'selected_session_id'):
-            st.subheader(f"Chat History for Session: {st.session_state.selected_session_id}")
-            for i, (query, answer) in enumerate(st.session_state.selected_chat_history):
-                message(f"User: {st.session_state.selected_user_name}", key=f"{i}_user_name", avatar_style="smile")
+        # Display chat history
+        if st.session_state.user_name:
+            for i, (query, answer) in enumerate(st.session_state.chat_history):
+                user_name = st.session_state.user_name
                 message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
                 message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
