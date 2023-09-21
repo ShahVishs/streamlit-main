@@ -166,7 +166,6 @@ for session_id, session_data in st.session_state.sessions.items():
     chat_history = session_data['chat_history']
     user_role = session_data['user_role']
     
-    # Check if the current user is an admin (user_role is 'admin') or a regular user (user_role is 'user')
     if user_name not in user_sessions:
         user_sessions[user_name] = []
 
@@ -178,7 +177,7 @@ for session_id, session_data in st.session_state.sessions.items():
 if is_admin:
     # If the user is an admin (vishakha), show all sessions for all users
     for user_name, sessions in user_sessions.items():
-        # st.sidebar.subheader(f"User: {user_name}")
+        st.sidebar.subheader(f"User: {user_name}")
 
         for session in sessions:
             formatted_session_name = f"{user_name} - {session['session_id']}"
