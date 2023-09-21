@@ -221,9 +221,7 @@ if st.session_state.user_name is None:
     user_name = st.text_input("Your name:")
     if user_name:
         st.session_state.user_name = user_name
-    # Reset chat history for the new user
-    st.session_state.chat_history = []  # Add this line to clear chat history
-
+        st.session_state.chat_history = []  # Clear chat history for new user
     if user_name == "vishakha":
         # Load chat history for "vishakha" without asking for a query
         is_admin = True
