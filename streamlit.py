@@ -158,7 +158,10 @@ st.sidebar.header("Chat Sessions")
 # Check if the user is the admin (vishakha) or not
 is_admin = st.session_state.user_name == "vishakha"
 
-for session_id, session_data in st.session_state.sessions.items():
+# Create a dictionary to store all loaded sessions
+loaded_sessions = load_previous_sessions()
+
+for session_id, session_data in loaded_sessions.items():
     user_name = session_data['user_name']
     chat_history = session_data['chat_history']
     user_role = session_data['user_role']
@@ -175,7 +178,6 @@ for session_id, session_data in st.session_state.sessions.items():
             st.session_state.user_name = user_name
             # Update the user role to match the session's user role
             st.session_state.user_role = user_role
-            st.session_state.refreshing_session = True  # Set refreshing_session to True for this session
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
