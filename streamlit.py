@@ -191,7 +191,6 @@ if is_admin:
                 st.session_state.user_name = user_name
                 # Update the user role to match the session's user role
                 st.session_state.user_role = session['user_role']
-
 else:
     # If the user is not an admin, show only their own session
     current_username = st.session_state.user_name
@@ -373,12 +372,23 @@ else:
         st.session_state.past.append(current_session_data)
 
     with response_container:
-        # Display chat history
-        if st.session_state.user_name:
-            for i, (query, answer) in enumerate(st.session_state.chat_history):
-                user_name = st.session_state.user_name
-                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-                message(answer, key=f"{i}_answer", avatar_style="thumbs")
+       # Display chat history for all users
+        if is_admin:
+            all_chat_history = {}  # Dictionary to aggregate chat history for all users
+        
+            # Aggregate chat history for all users
+            for user_name, sessions in user_sessions.items():
+                user_chat_history = []  # Initialize chat history list for the current user
+                for session in sessions:
+                    user_chat_history.extend(session['chat_history'])
+                all_chat_history[user_name] = user_chat_history
+        
+            # Display chat history for all users
+            for user_name, chat_history in all_chat_history.items():
+                for i, (query, answer) in enumerate(chat_history):
+                    message(f"User: {user_name}", key=f"{i}_user_name", avatar_style="smile")
+                    message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+                    message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
