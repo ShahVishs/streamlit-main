@@ -217,13 +217,20 @@ if 'past' not in st.session_state:
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 
-# Check if the user's name is "vishakha"
-if st.session_state.user_name == "vishakha":
-    is_admin = True
-    st.session_state.user_role = "admin"
-    st.session_state.user_name = "vishakha"
-    st.session_state.new_session = False  # Prevent clearing chat history
-    st.session_state.sessions = load_previous_sessions()
+if st.session_state.user_name is None:
+    user_name = st.text_input("Your name:")
+    if user_name:
+        st.session_state.user_name = user_name
+    # Reset chat history for the new user
+    st.session_state.chat_history = []  # Add this line to clear chat history
+
+    if user_name == "vishakha":
+        # Load chat history for "vishakha" without asking for a query
+        is_admin = True
+        st.session_state.user_role = "admin"
+        st.session_state.user_name = user_name
+        st.session_state.new_session = False  # Prevent clearing chat history
+        st.session_state.sessions = load_previous_sessions()
 else:
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature = 0)
     langchain.debug=True
