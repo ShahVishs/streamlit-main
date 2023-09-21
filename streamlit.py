@@ -328,6 +328,8 @@ else:
     output = ""
     with st.form(key='my_form', clear_on_submit=True):
         if st.session_state.user_name != "vishakha":
+            # Show the query input only for users other than "vishakha"
+            st.session_state.user_input = user_input  # Store user input in session state
             user_input = st.text_input("Query:", value=user_input, placeholder="Type your question here :)", key='input')
         submit_button = st.form_submit_button(label='Send')
     
@@ -343,9 +345,11 @@ else:
 
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
-            user_name = st.session_state.user_name
-            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+            if st.session_state.user_name == "vishakha" or i >= len(st.session_state.chat_history) - 1:
+                # "vishakha" sees the complete chat history, other users only see their own history
+                user_name = st.session_state.user_name
+                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+                message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
