@@ -68,9 +68,6 @@ current_day = days[day_of_week]
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 
-if 'chat_history' not in st.session_state:
-    st.session_state.chat_history = []
-
 # Define roles (e.g., 'admin' and 'user')
 ROLES = ['admin', 'user']
 
@@ -150,9 +147,6 @@ if st.button("Refresh Session"):
     st.session_state.new_session = True
     st.session_state.refreshing_session = False  # Reset refreshing_session to False
 
-# Add this check to determine if the user is the admin (Vishakha)
-is_admin = st.session_state.user_name == "vishakha"
-
 # Load previous sessions if it's a new session or a revisit
 if st.session_state.new_session:
     st.session_state.sessions = load_previous_sessions()
@@ -161,15 +155,18 @@ if st.session_state.new_session:
 # Display a list of past sessions in the sidebar along with a delete button
 st.sidebar.header("Chat Sessions")
 
+# Check if the user is the admin (Vishakha) or not
+is_admin = st.session_state.user_name == "vishakha"
+
 for session_id, session_data in st.session_state.sessions.items():
     user_name = session_data['user_name']
     chat_history = session_data['chat_history']
     user_role = session_data['user_role']
-
-    # Check if the user is the admin (Vishakha) or not
+    
+    # Check if the current user is an admin (user_role is 'admin') or a regular user (user_role is 'user')
     if is_admin or st.session_state.user_name == user_name:
         formatted_session_name = f"{user_name} - {session_id}"
-
+        
         button_key = f"session_button_{session_id}"
         if st.sidebar.button(formatted_session_name, key=button_key):
             # Set the current chat history to the selected session's chat history
@@ -221,111 +218,78 @@ if 'past' not in st.session_state:
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 
-llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature = 0)
-langchain.debug=True
-memory_key = "history"
-memory = AgentTokenBufferMemory(memory_key=memory_key, llm=llm)
-template=(
-"""You're the Business Development Manager at our car dealership./
-When responding to inquiries, please adhere to the following guidelines:
-Car Inventory Questions: If the customer's inquiry lacks specific details such as their preferred/
-make, model, new or used car, and trade-in, kindly engage by asking for these specifics./
-Specific Car Details: When addressing questions about a particular car, limit the information provided/
-to make, year, model, and trim. For example, if asked about 
-'Do you have Jeep Cherokee Limited 4x4'
-Best answer should be 'Yes we have,
-Jeep Cherokee Limited 4x4:
-Year: 2022
-Model :
-Make :
-Trim:
-scheduling Appointments: If the customer's inquiry lacks specific details such as their preferred/
-day, date or time kindly engage by asking for these specifics. {details} Use these details that is todays date and day /
-to find the appointment date from the users input and check for appointment availabity for that specific date and time. 
-If the appointment schedule is not available provide this 
-link: www.dummy_calenderlink.com to schedule appointment by the user himself. 
-If appointment schedules are not available, you should send this link: www.dummy_calendarlink.com to the 
-costumer to schedule an appointment on your own.
-
-Encourage Dealership Visit: Our goal is to encourage customers to visit the dealership for test drives or/
-receive product briefings from our team. After providing essential information on the car's make, model,/
-color, and basic features, kindly invite the customer to schedule an appointment for a test drive or visit us/
-for a comprehensive product overview by our experts.
-
-Please maintain a courteous and respectful tone in your American English responses./
-If you're unsure of an answer, respond with 'I am sorry.'/
-Make every effort to assist the customer promptly while keeping responses concise, not exceeding two sentences."
-Feel free to use any tools available to look up for relevant information.
-Answer the question not more than two sentence.""")
-
-details = "Today's current date is " + todays_date + " and today's week day is " + day_of_the_week + "."
-
-input_template = template.format(details=details)
-
-system_message = SystemMessage(
-    content=input_template)
-
-prompt = OpenAIFunctionsAgent.create_prompt(
-    system_message=system_message,
-    extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
-)
-agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
-
-if 'agent_executor' not in st.session_state:
-    agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
-    st.session_state.agent_executor = agent_executor
+# Check if the user's name is "vishakha"
+if st.session_state.user_name == "vishakha":
+    st.session_state.chat_history = []  # Clear chat history for Vishakha
 else:
-    agent_executor = st.session_state.agent_executor
+    llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature = 0)
+    langchain.debug=True
+    memory_key = "history"
+    memory = AgentTokenBufferMemory(memory_key=memory_key, llm=llm)
+    template=(
+    """You're the Business Development Manager at our car dealership./
+    When responding to inquiries, please adhere to the following guidelines:
+    Car Inventory Questions: If the customer's inquiry lacks specific details such as their preferred/
+    make, model, new or used car, and trade-in, kindly engage by asking for these specifics./
+    Specific Car Details: When addressing questions about a particular car, limit the information provided/
+    to make, year, model, and trim. For example, if asked about 
+    'Do you have Jeep Cherokee Limited 4x4'
+    Best answer should be 'Yes we have,
+    Jeep Cherokee Limited 4x4:
+    Year: 2022
+    Model :
+    Make :
+    Trim:
+    scheduling Appointments: If the customer's inquiry lacks specific details such as their preferred/
+    day, date or time kindly engage by asking for these specifics. {details} Use these details that is todays date and day /
+    to find the appointment date from the users input and check for appointment availabity for that specific date and time. 
+    If the appointment schedule is not available provide this 
+    link: www.dummy_calenderlink.com to schedule appointment by the user himself. 
+    If appointment schedules are not available, you should send this link: www.dummy_calendarlink.com to the 
+    costumer to schedule an appointment on your own.
 
-response_container = st.container()
-container = st.container()
+    Encourage Dealership Visit: Our goal is to encourage customers to visit the dealership for test drives or/
+    receive product briefings from our team. After providing essential information on the car's make, model,/
+    color, and basic features, kindly invite the customer to schedule an appointment for a test drive or visit us/
+    for a comprehensive product overview by our experts.
 
-response_container = st.container()
-container = st.container()
+    Please maintain a courteous and respectful tone in your American English responses./
+    If you're unsure of an answer, respond with 'I am sorry.'/
+    Make every effort to assist the customer promptly while keeping responses concise, not exceeding two sentences."
+    Feel free to use any tools available to look up for relevant information.
+    Answer the question not more than two sentence.""")
 
-airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
+    details = "Today's current date is " + todays_date + " and today's week day is " + day_of_the_week + "."
 
-# Function to save chat data to Airtable
-def save_chat_to_airtable(user_name, user_input, output):
-    try:
-        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-        airtable.insert(
-            {
-                "username": user_name,
-                "question": user_input,
-                "answer": output,
-                "timestamp": timestamp,
-            }
-        )
-    except Exception as e:
-        st.error(f"An error occurred while saving data to Airtable: {e}")
+    input_template = template.format(details=details)
 
-# Function for conversational chat
-def conversational_chat(user_input):
-    result = agent_executor({"input": user_input})
-    st.session_state.chat_history.append((user_input, result["output"]))
-    return result["output"]
+    system_message = SystemMessage(
+        content=input_template)
 
-if st.session_state.user_name is None:
-    user_name = st.text_input("Your name:")
-    if user_name:
-        st.session_state.user_name = user_name
-user_input = ""
-output = ""
+    prompt = OpenAIFunctionsAgent.create_prompt(
+        system_message=system_message,
+        extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
+    )
+    agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
 
-with st.form(key='my_form', clear_on_submit=True):
-    user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
-    submit_button = st.form_submit_button(label='Send')
+    if 'agent_executor' not in st.session_state:
+        agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
+        st.session_state.agent_executor = agent_executor
+    else:
+        agent_executor = st.session_state.agent_executor
 
-if submit_button and user_input:
-    output = conversational_chat(user_input)
+    with st.form(key='my_form', clear_on_submit=True):
+        user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
+        submit_button = st.form_submit_button(label='Send')
+    if submit_button and user_input:
+        output = conversational_chat(user_input)
 
-if st.session_state.user_name and st.session_state.chat_history:
-    current_session_data = {
-        'user_name': st.session_state.user_name,
-        'chat_history': st.session_state.chat_history
-    }
-    st.session_state.past.append(current_session_data)
+    if st.session_state.user_name and st.session_state.chat_history:
+        current_session_data = {
+            'user_name': st.session_state.user_name,
+            'chat_history': st.session_state.chat_history
+        }
+        st.session_state.past.append(current_session_data)
 
 with response_container:
     for i, (query, answer) in enumerate(st.session_state.chat_history):
