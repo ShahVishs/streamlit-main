@@ -191,6 +191,7 @@ if is_admin:
                 st.session_state.user_name = user_name
                 # Update the user role to match the session's user role
                 st.session_state.user_role = session['user_role']
+
 else:
     # If the user is not an admin, show only their own session
     current_username = st.session_state.user_name
@@ -374,12 +375,10 @@ else:
     with response_container:
         # Display chat history
         if st.session_state.user_name:
-            selected_user_sessions = user_sessions.get(st.session_state.user_name, [])
-            for session in selected_user_sessions:
-                for i, (query, answer) in enumerate(session['chat_history']):
-                    user_name = st.session_state.user_name
-                    message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-                    message(answer, key=f"{i}_answer", avatar_style="thumbs")
+            for i, (query, answer) in enumerate(st.session_state.chat_history):
+            user_name = st.session_state.user_name
+            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+            message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
