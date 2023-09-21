@@ -71,9 +71,20 @@ if 'user_name' not in st.session_state:
 # Define roles (e.g., 'admin' and 'user')
 ROLES = ['admin', 'user']
 
+# Initialize user name in session state
+if 'user_name' not in st.session_state:
+    st.session_state.user_name = None
+
 # Initialize user role in session state
 if 'user_role' not in st.session_state:
     st.session_state.user_role = None
+
+# Determine if the user is an admin (vishakha)
+is_admin = st.session_state.user_name == "vishakha"
+
+# Initialize st.session_state.new_session as True for new users (excluding vishakha)
+if 'new_session' not in st.session_state and st.session_state.user_name != "vishakha":
+    st.session_state.new_session = True
 
 # Function to save chat session data
 def save_chat_session(session_data, session_id):
