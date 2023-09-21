@@ -324,11 +324,12 @@ else:
             st.session_state.new_session = False  # Prevent clearing chat history
             st.session_state.sessions = load_previous_sessions()
   
-    user_input = ""
+    user_input = st.session_state.user_input if st.session_state.user_name != "vishakha" else ""
     output = ""
     with st.form(key='my_form', clear_on_submit=True):
         if st.session_state.user_name != "vishakha":
-            user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
+            st.session_state.user_input = user_input  # Store user input in session state
+            user_input = st.text_input("Query:", value=user_input, placeholder="Type your question here :)", key='input')
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
