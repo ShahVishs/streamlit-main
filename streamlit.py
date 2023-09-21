@@ -151,6 +151,7 @@ if st.button("Refresh Session"):
     st.session_state.refreshing_session = False  # Reset refreshing_session to False
 
 
+
 # Display a list of past sessions in the sidebar along with a delete button
 st.sidebar.header("Chat Sessions")
 
@@ -217,7 +218,6 @@ if is_admin:
                             st.session_state.user_name = user_name
                             # Update the user role to match the session's user role
                             st.session_state.user_role = session['user_role']
-
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
