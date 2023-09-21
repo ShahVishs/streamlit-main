@@ -182,7 +182,6 @@ for session_id, session_data in loaded_sessions.items():
         'user_role': user_role
     })
 
-# Display sessions based on user role
 if is_admin:
     # If the user is an admin (vishakha), show all sessions
     for user_name, sessions in user_sessions.items():
@@ -205,7 +204,7 @@ else:
         st.sidebar.subheader(f"Your Session")
 
         # Display the user's session
-        formatted_session_name = f"{current_username} - {current_timestamp}"
+        formatted_session_name = f"{current_username} - {current_date}"
 
         if st.sidebar.button(formatted_session_name):
             # Set the current chat history to the user's session history
