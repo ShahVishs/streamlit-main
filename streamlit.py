@@ -124,11 +124,8 @@ if 'new_session' not in st.session_state:
 
 # Initialize user name input
 if 'user_name_input' not in st.session_state:
-    if st.session_state.user_name is None:
-        st.session_state.user_name_input = None
-# Initialize user sessions in session state
-if 'sessions' not in st.session_state:
-    st.session_state.sessions = load_previous_sessions()
+    st.session_state.user_name_input = None
+
 # Refresh Session Button
 if st.button("Refresh Session"):
     # Save the current session and start a new one
@@ -150,7 +147,10 @@ if st.button("Refresh Session"):
     st.session_state.new_session = True
     st.session_state.refreshing_session = False  # Reset refreshing_session to False
 
-
+# Load previous sessions if it's a new session or a revisit
+if st.session_state.new_session:
+    st.session_state.sessions = load_previous_sessions()
+    st.session_state.new_session = False
 
 # Display a list of past sessions in the sidebar along with a delete button
 st.sidebar.header("Chat Sessions")
@@ -166,6 +166,7 @@ for session_id, session_data in st.session_state.sessions.items():
     chat_history = session_data['chat_history']
     user_role = session_data['user_role']
     
+    # Check if the current user is an admin (user_role is 'admin') or a regular user (user_role is 'user')
     if user_name not in user_sessions:
         user_sessions[user_name] = []
 
@@ -174,50 +175,38 @@ for session_id, session_data in st.session_state.sessions.items():
         'chat_history': chat_history,
         'user_role': user_role
     })
-
-# If the user is an admin (vishakha), show all sessions for all users
 if is_admin:
-    selected_user_name = st.sidebar.selectbox("Select User:", ["All Users"] + list(user_sessions.keys()))
-    
-    if selected_user_name == "All Users":
-        # Show all sessions for all users
-        for user_name, sessions in user_sessions.items():
-            st.sidebar.subheader(f"User: {user_name}")
-            
-            for session in sessions:
-                formatted_session_name = f"{user_name} - {session['session_id']}"
+    # If the user is an admin (vishakha), show all sessions for all users
+    for user_name, sessions in user_sessions.items():
+        # st.sidebar.subheader(f"User: {user_name}")
 
-                button_key = f"session_button_{session['session_id']}"
-                if st.sidebar.button(formatted_session_name, key=button_key):
-                    # Add a button to explicitly load the user's chat history
-                    load_button_key = f"load_session_button_{session['session_id']}"
-                    if st.sidebar.button("Load Chat History", key=load_button_key):
-                        # Set the current chat history to the selected session's chat history
-                        st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
-                        # Update the user name to match the session's user name
-                        st.session_state.user_name = user_name
-                        # Update the user role to match the session's user role
-                        st.session_state.user_role = session['user_role']
-    else:
-        # Show sessions for the selected user
-        for user_name, sessions in user_sessions.items():
-            if selected_user_name == user_name:
-                st.sidebar.subheader(f"User: {user_name}")
-                
-                for session in sessions:
-                    formatted_session_name = f"{user_name} - {session['session_id']}"
+        for session in sessions:
+            formatted_session_name = f"{user_name} - {session['session_id']}"
 
-                    button_key = f"session_button_{session['session_id']}"
-                    if st.sidebar.button(formatted_session_name, key=button_key):
-                        # Add a button to explicitly load the user's chat history
-                        load_button_key = f"load_session_button_{session['session_id']}"
-                        if st.sidebar.button("Load Chat History", key=load_button_key):
-                            # Set the current chat history to the selected session's chat history
-                            st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
-                            # Update the user name to match the session's user name
-                            st.session_state.user_name = user_name
-                            # Update the user role to match the session's user role
-                            st.session_state.user_role = session['user_role']
+            button_key = f"session_button_{session['session_id']}"
+            if st.sidebar.button(formatted_session_name, key=button_key):
+                # Set the current chat history to the selected session's chat history
+                st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
+                # Update the user name to match the session's user name
+                st.session_state.user_name = user_name
+                # Update the user role to match the session's user role
+                st.session_state.user_role = session['user_role']
+
+else:
+    # If the user is not an admin, show only their own session
+    current_username = st.session_state.user_name
+    if current_username is not None:
+        # st.sidebar.subheader(f"Your Sessions")
+
+        # Display the user's sessions
+        for session in user_sessions.get(current_username, []):
+            formatted_session_name = f"{current_username} - {session['session_id']}"
+
+            if st.sidebar.button(formatted_session_name):
+                # Set the current chat history to the selected session's chat history
+                st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
+                # Update the user role to match the session's user role
+                st.session_state.user_role = session['user_role']
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
@@ -262,11 +251,10 @@ if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 
 # Check if the user's name is "vishakha"
-# Check if the user's name is "vishakha"
 if st.session_state.user_name == "vishakha":
     is_admin = True
     st.session_state.user_role = "admin"
-    st.session_state.user_name = user_name
+    st.session_state.user_name = "vishakha"  # Set user_name to "vishakha" for admin
     st.session_state.new_session = False  # Prevent clearing chat history
     st.session_state.sessions = load_previous_sessions()
 else:
@@ -366,33 +354,32 @@ else:
             st.session_state.new_session = False  # Prevent clearing chat history
             st.session_state.sessions = load_previous_sessions()
    
+    # Define the user input and output variables
     user_input = ""
     output = ""
-    with st.form(key='my_form', clear_on_submit=True):
-        if st.session_state.user_name != "vishakha":
-            user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
-        submit_button = st.form_submit_button(label='Send')
     
-    if submit_button and user_input:
-        output = conversational_chat(user_input)
-
-    if st.session_state.user_name and st.session_state.chat_history:
-        current_session_data = {
-            'user_name': st.session_state.user_name,
-            'chat_history': st.session_state.chat_history
-        }
-        st.session_state.past.append(current_session_data)
-
+    # Check if the user is not an admin and user_name is not "vishakha"
+    if not is_admin and st.session_state.user_name != "vishakha":
+        # Display user input and form for regular users
+        with st.form(key='my_form', clear_on_submit=True):
+            user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
+            submit_button = st.form_submit_button(label='Send')
+        
+        # Process user input and get the response for regular users
+        if submit_button and user_input:
+            output = conversational_chat(user_input)
+    
+    # Display chat history for all users (including admin)
     with response_container:
-        # Display chat history
         if st.session_state.user_name:
             for i, (query, answer) in enumerate(st.session_state.chat_history):
                 user_name = st.session_state.user_name
                 message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
                 message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
-        if st.session_state.user_name:
-            try:
-                save_chat_to_airtable(st.session_state.user_name, user_input, output)
-            except Exception as e:
-                st.error(f"An error occurred: {e}")
+    # Save chat data to Airtable for all users (including admin)
+    if st.session_state.user_name and st.session_state.user_name != "vishakha":
+        try:
+            save_chat_to_airtable(st.session_state.user_name, user_input, output)
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
