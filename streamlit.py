@@ -170,12 +170,12 @@ for session_id, session_data in st.session_state.sessions.items():
         button_key = f"session_button_{session_id}"
         if st.sidebar.button(formatted_session_name, key=button_key):
             # Set the current chat history to the selected session's chat history
-            st.session_state.chat_history = chat_history
+            st.session_state.chat_history = chat_history.copy()  # Make a copy to avoid modifying the original
             # Update the user name to match the session's user name
             st.session_state.user_name = user_name
             # Update the user role to match the session's user role
-            st.session_state.user_role = user_role# Display a list of past sessions in the sidebar along with a delete button
-
+            st.session_state.user_role = user_role
+            st.session_state.refreshing_session = True  # Set refreshing_session to True for this session
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
