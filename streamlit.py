@@ -114,17 +114,17 @@ def load_previous_sessions():
     
     return previous_sessions
 
-# Initialize st.session_state.past as an empty list if it doesn't exist
+# Initialize session state
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
+if 'generated' not in st.session_state:
+    st.session_state.generated = []
 if 'past' not in st.session_state:
     st.session_state.past = []
-
-# Initialize st.session_state.new_session as True
-if 'new_session' not in st.session_state:
-    st.session_state.new_session = True
-
-# Initialize user name input
-if 'user_name_input' not in st.session_state:
-    st.session_state.user_name_input = None
+if 'user_name' not in st.session_state:
+    st.session_state.user_name = None
+if 'user_input' not in st.session_state:
+    st.session_state.user_input = ""
 
 # Refresh Session Button
 if st.button("Refresh Session"):
