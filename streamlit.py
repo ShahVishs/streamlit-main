@@ -164,6 +164,9 @@ loaded_sessions = load_previous_sessions()
 # Create a dictionary to group sessions by user
 user_sessions = {}
 
+# Get the current user's username
+current_username = st.session_state.user_name
+
 # Iterate through sessions and group them by user
 for session_id, session_data in loaded_sessions.items():
     user_name = session_data['user_name']
@@ -186,10 +189,9 @@ if is_admin:
         st.sidebar.subheader(f"User: {user_name}")
 
         for session in sessions:
-            session_id = session['session_id']
-            formatted_session_name = f"Session {session_id}"
+            formatted_session_name = f"{user_name} - {session['timestamp']}"
 
-            button_key = f"session_button_{session_id}"
+            button_key = f"session_button_{session['session_id']}"
             if st.sidebar.button(formatted_session_name, key=button_key):
                 # Set the current chat history to the selected session's chat history
                 st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
@@ -199,17 +201,18 @@ if is_admin:
                 st.session_state.user_role = session['user_role']
 else:
     # If the user is not an admin, show only their own session
-    if st.session_state.user_name:
+    if current_username:
         st.sidebar.subheader(f"Your Session")
 
         # Display the user's session
-        formatted_session_name = f"Session {st.session_state.user_name}"
+        formatted_session_name = f"{current_username} - {current_timestamp}"
 
         if st.sidebar.button(formatted_session_name):
             # Set the current chat history to the user's session history
-            st.session_state.chat_history = user_sessions[st.session_state.user_name][0]['chat_history'].copy()  # Make a copy to avoid modifying the original
+            st.session_state.chat_history = user_sessions[current_username][0]['chat_history'].copy()  # Make a copy to avoid modifying the original
             # Update the user role to match the user's role
-            st.session_state.user_role = user_sessions[st.session_state.user_name][0]['user_role']
+            st.session_state.user_role = user_sessions[current_username][0]['user_role']
+
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
