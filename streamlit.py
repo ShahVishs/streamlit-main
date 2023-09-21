@@ -160,6 +160,10 @@ if st.button("Refresh Session"):
             st.session_state.user_name = selected_user_name
             # Set the user role to match the selected user's role
             st.session_state.user_role = user_sessions[selected_user_name][0]['user_role']
+            
+            # Update the chat history to match the selected user's chat history
+            selected_user_history = user_sessions[selected_user_name][0]['chat_history']
+            st.session_state.chat_history = selected_user_history.copy()
 
 # Display a list of past sessions in the sidebar along with a delete button
 st.sidebar.header("Chat Sessions")
