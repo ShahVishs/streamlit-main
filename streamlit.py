@@ -220,7 +220,11 @@ if 'user_name' not in st.session_state:
 
 # Check if the user's name is "vishakha"
 if st.session_state.user_name == "vishakha":
-    st.session_state.chat_history = []  # Clear chat history for Vishakha
+    is_admin = True
+    st.session_state.user_role = "admin"
+    st.session_state.user_name = user_name
+    st.session_state.new_session = False  # Prevent clearing chat history
+    st.session_state.sessions = load_previous_sessions()
 else:
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature = 0)
     langchain.debug=True
