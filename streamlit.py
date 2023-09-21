@@ -277,7 +277,36 @@ else:
         st.session_state.agent_executor = agent_executor
     else:
         agent_executor = st.session_state.agent_executor
+    response_container = st.container()
+    container = st.container()
+    airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
+    # Function to save chat data to Airtable
+    def save_chat_to_airtable(user_name, user_input, output):
+        try:
+            timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+            airtable.insert(
+                {
+                    "username": user_name,
+                    "question": user_input,
+                    "answer": output,
+                    "timestamp": timestamp,
+                }
+            )
+        except Exception as e:
+            st.error(f"An error occurred while saving data to Airtable: {e}")
 
+    # Function for conversational chat
+    def conversational_chat(user_input):
+        result = agent_executor({"input": user_input})
+        st.session_state.chat_history.append((user_input, result["output"]))
+        return result["output"]
+
+    if st.session_state.user_name is None:
+        user_name = st.text_input("Your name:")
+        if user_name:
+            st.session_state.user_name = user_name
+    user_input = ""
+    output = ""
     with st.form(key='my_form', clear_on_submit=True):
         user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
         submit_button = st.form_submit_button(label='Send')
