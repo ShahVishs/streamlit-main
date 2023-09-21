@@ -307,6 +307,8 @@ if st.session_state.user_name is None:
     user_name = st.text_input("Your name:")
     if user_name:
         st.session_state.user_name = user_name
+        if user_name == "vishakha":
+            st.session_state.is_admin = True  # Set as admin
 user_input = ""
 output = ""
 
@@ -335,3 +337,30 @@ with response_container:
             save_chat_to_airtable(st.session_state.user_name, user_input, output)
         except Exception as e:
             st.error(f"An error occurred: {e}")
+# In your Streamlit UI
+if st.session_state.is_admin:
+    if st.button("View Chat History"):
+        # Display chat history sessions for the admin user
+        # You can use a separate container to display the chat history
+        # You might want to format and display the chat history as needed
+        for session_id, session_data in st.session_state.sessions.items():
+            user_name = session_data['user_name']
+            chat_history = session_data['chat_history']
+            user_role = session_data['user_role']
+            
+            formatted_session_name = f"{user_name} - {session_id}"
+            
+            if st.button(formatted_session_name):
+                # Set the current chat history to the selected session's chat history
+                st.session_state.chat_history = chat_history
+                # Update the user name to match the session's user name
+                st.session_state.user_name = user_name
+                # Update the user role to match the session's user role
+                st.session_state.user_role = user_role
+
+# Display chat history if the admin is logged in and a conversation is selected
+if st.session_state.is_admin and st.session_state.user_name:
+    st.write(f"Admin: {st.session_state.user_name}")
+    for i, (query, answer) in enumerate(st.session_state.chat_history):
+        st.write(f"Query {i + 1}: {query}")
+        st.write(f"Answer {i + 1}: {answer}")
