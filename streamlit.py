@@ -72,9 +72,9 @@ if 'user_name' not in st.session_state:
 if 'is_admin' not in st.session_state:
     st.session_state.is_admin = False
 
-# Set is_admin to True if the user is "vishakha"
-if st.session_state.user_name == "vishakha":
-    st.session_state.is_admin = True
+# Initialize user role in session state
+if 'user_role' not in st.session_state:
+    st.session_state.user_role = None
     
 # Define roles (e.g., 'admin' and 'user')
 ROLES = ['admin', 'user']
@@ -305,15 +305,20 @@ def save_chat_to_airtable(user_name, user_input, output):
 # Function for conversational chat
 def conversational_chat(user_input):
     result = agent_executor({"input": user_input})
-    st.session_state.chat_history.append((user_input, result["output"]))
+    user_role = st.session_state.user_role
+
+    # Append the message to the chat history along with the user's role
+    st.session_state.chat_history.append((st.session_state.user_name, user_role, user_input, result["output"]))
     return result["output"]
 
+# Set the user role based on the user's name
 if st.session_state.user_name:
-    user_name = st.text_input("Your name:")
-    if user_name:
-        st.session_state.user_name = user_name
-        if user_name == "vishakha":
-            st.session_state.is_admin = True  # Set as admin
+    if st.session_state.user_name == "vishakha":
+        st.session_state.user_role = "admin"
+        st.session_state.is_admin = True
+    else:
+        st.session_state.user_role = "user"
+        
 user_input = ""
 output = ""
 
@@ -343,7 +348,7 @@ with response_container:
         except Exception as e:
             st.error(f"An error occurred: {e}")
 # Display chat history sessions for the admin user
-if st.session_state.user_name == "vishakha":
+if st.session_state.is_admin:
     if st.button("View Chat History"):
         # Display chat history for all sessions
         for session_id, session_data in st.session_state.sessions.items():
@@ -364,7 +369,8 @@ if st.session_state.user_name == "vishakha":
 # Display chat history if a user is logged in and a conversation is selected
 if st.session_state.user_name:
     st.write(f"User: {st.session_state.user_name}")
-    user_chat_history = [(user, query, answer) for user, query, answer in st.session_state.chat_history if user == st.session_state.user_name]
-    for i, (user, query, answer) in enumerate(user_chat_history):
+    user_chat_history = [(user, user_role, query, answer) for user, user_role, query, answer in st.session_state.chat_history if user == st.session_state.user_name]
+    for i, (user, user_role, query, answer) in enumerate(user_chat_history):
+        st.write(f"Role: {user_role}")
         st.write(f"Query {i + 1}: {query}")
         st.write(f"Answer {i + 1}: {answer}")
