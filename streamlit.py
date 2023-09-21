@@ -374,13 +374,13 @@ else:
     with response_container:
        # Display chat history for all users
         if is_admin:
-        # Get the selected session's chat history
-        selected_session_chat_history = st.session_state.chat_history
-
-        # Display chat history for the selected session
-        for i, (query, answer) in enumerate(selected_session_chat_history):
-            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+            # Get the selected session's chat history
+            selected_session_chat_history = st.session_state.chat_history
+    
+            # Display chat history for the selected session
+            for i, (query, answer) in enumerate(selected_session_chat_history):
+                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+                message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
