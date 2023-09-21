@@ -372,10 +372,14 @@ else:
         st.session_state.past.append(current_session_data)
 
     with response_container:
-        for i, (query, answer) in enumerate(st.session_state.chat_history):
-            user_name = st.session_state.user_name
-            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+        # Display chat history
+        if st.session_state.user_name:
+            selected_user_sessions = user_sessions.get(st.session_state.user_name, [])
+            for session in selected_user_sessions:
+                for i, (query, answer) in enumerate(session['chat_history']):
+                    user_name = st.session_state.user_name
+                    message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+                    message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
