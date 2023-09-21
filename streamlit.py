@@ -64,18 +64,13 @@ current_date = datetime.today().strftime("%m/%d/%y")
 day_of_week = datetime.today().weekday()
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 current_day = days[day_of_week]
-# Initialize user name in session state
+# Initialize session state
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 
-# Initialize is_admin attribute to False by default
-if 'is_admin' not in st.session_state:
-    st.session_state.is_admin = False
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
 
-# Initialize user role in session state
-if 'user_role' not in st.session_state:
-    st.session_state.user_role = None
-    
 # Define roles (e.g., 'admin' and 'user')
 ROLES = ['admin', 'user']
 
@@ -155,6 +150,9 @@ if st.button("Refresh Session"):
     st.session_state.new_session = True
     st.session_state.refreshing_session = False  # Reset refreshing_session to False
 
+# Add this check to determine if the user is the admin (Vishakha)
+is_admin = st.session_state.user_name == "vishakha"
+
 # Load previous sessions if it's a new session or a revisit
 if st.session_state.new_session:
     st.session_state.sessions = load_previous_sessions()
@@ -167,11 +165,11 @@ for session_id, session_data in st.session_state.sessions.items():
     user_name = session_data['user_name']
     chat_history = session_data['chat_history']
     user_role = session_data['user_role']
-    
-    formatted_session_name = f"{user_name} - {session_id}"
-    
-    # Check if the current user is an admin (user_role is 'admin') or a regular user (user_role is 'user')
-    if st.session_state.user_name == "vishakha" or st.session_state.user_name == user_name:
+
+    # Check if the user is the admin (Vishakha) or not
+    if is_admin or st.session_state.user_name == user_name:
+        formatted_session_name = f"{user_name} - {session_id}"
+
         button_key = f"session_button_{session_id}"
         if st.sidebar.button(formatted_session_name, key=button_key):
             # Set the current chat history to the selected session's chat history
@@ -305,19 +303,13 @@ def save_chat_to_airtable(user_name, user_input, output):
 # Function for conversational chat
 def conversational_chat(user_input):
     result = agent_executor({"input": user_input})
-    user_role = st.session_state.user_role
-
-    # Append the message to the chat history along with the user's role
-    st.session_state.chat_history.append((st.session_state.user_name, user_role, user_input, result["output"]))
+    st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
 
-if st.session_state.user_name:
+if st.session_state.user_name is None:
     user_name = st.text_input("Your name:")
     if user_name:
         st.session_state.user_name = user_name
-        if user_name == "vishakha":
-            st.session_state.is_admin = True  # Set as admin
-        
 user_input = ""
 output = ""
 
@@ -346,30 +338,3 @@ with response_container:
             save_chat_to_airtable(st.session_state.user_name, user_input, output)
         except Exception as e:
             st.error(f"An error occurred: {e}")
-# Display chat history sessions for the admin user
-if st.session_state.is_admin:
-    if st.button("View Chat History"):
-        # Display chat history for all sessions
-        for session_id, session_data in st.session_state.sessions.items():
-            user_name = session_data['user_name']
-            chat_history = session_data['chat_history']
-            user_role = session_data['user_role']
-            
-            formatted_session_name = f"{user_name} - {session_id}"
-            
-            if st.button(formatted_session_name):
-                # Set the current chat history to the selected session's chat history
-                st.session_state.chat_history = chat_history
-                # Update the user name to match the session's user name
-                st.session_state.user_name = user_name
-                # Update the user role to match the session's user role
-                st.session_state.user_role = user_role
-
-# Display chat history if a user is logged in and a conversation is selected
-if st.session_state.user_name:
-    st.write(f"User: {st.session_state.user_name}")
-    user_chat_history = [(user, user_role, query, answer) for user, user_role, query, answer in st.session_state.chat_history if user == st.session_state.user_name]
-    for i, (user, user_role, query, answer) in enumerate(user_chat_history):
-        st.write(f"Role: {user_role}")
-        st.write(f"Query {i + 1}: {query}")
-        st.write(f"Answer {i + 1}: {answer}")
