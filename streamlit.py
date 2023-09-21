@@ -164,17 +164,16 @@ for session_id, session_data in st.session_state.sessions.items():
     user_role = session_data['user_role']
     
     # Check if the current user is an admin (user_role is 'admin') or a regular user (user_role is 'user')
-    if is_admin or st.session_state.user_name == user_name:
-        formatted_session_name = f"{user_name} - {session_id}"
-        
-        button_key = f"session_button_{session_id}"
-        if st.sidebar.button(formatted_session_name, key=button_key):
-            # Set the current chat history to the selected session's chat history
-            st.session_state.chat_history = chat_history
-            # Update the user name to match the session's user name
-            st.session_state.user_name = user_name
-            # Update the user role to match the session's user role
-            st.session_state.user_role = user_role
+    formatted_session_name = f"{user_name} - {session_id}"
+    
+    button_key = f"session_button_{session_id}"
+    if st.sidebar.button(formatted_session_name, key=button_key):
+        # Set the current chat history to the selected session's chat history
+        st.session_state.chat_history = chat_history
+        # Update the user name to match the session's user name
+        st.session_state.user_name = user_name
+        # Update the user role to match the session's user role
+        st.session_state.user_role = user_role
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
@@ -220,7 +219,11 @@ if 'user_name' not in st.session_state:
 
 # Check if the user's name is "vishakha"
 if st.session_state.user_name == "vishakha":
-    st.session_state.chat_history = []  # Clear chat history for Vishakha
+    is_admin = True
+    st.session_state.user_role = "admin"
+    st.session_state.user_name = "vishakha"
+    st.session_state.new_session = False  # Prevent clearing chat history
+    st.session_state.sessions = load_previous_sessions()
 else:
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature = 0)
     langchain.debug=True
