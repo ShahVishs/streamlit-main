@@ -304,7 +304,7 @@ else:
         except Exception as e:
             st.error(f"An error occurred while saving data to Airtable: {e}")
 
-    # Function for conversational chat
+   # Function for conversational chat
     def conversational_chat(user_input):
         result = agent_executor({"input": user_input})
         st.session_state.chat_history.append((user_input, result["output"]))
@@ -323,7 +323,16 @@ else:
             st.session_state.user_name = user_name
             st.session_state.new_session = False  # Prevent clearing chat history
             st.session_state.sessions = load_previous_sessions()
-  
+      
+    if st.session_state.user_role == "admin" or st.session_state.user_name == "vishakha":
+        # Show complete chat history for admin or "vishakha"
+        chat_history_to_display = st.session_state.chat_history
+    else:
+        # Show user-specific chat history for regular users
+        chat_history_to_display = [
+            (query, answer) for query, answer in st.session_state.chat_history if query != ""
+        ]
+      
     user_input = st.session_state.user_input if st.session_state.user_name != "vishakha" else ""
     output = ""
     with st.form(key='my_form', clear_on_submit=True):
@@ -344,12 +353,11 @@ else:
         st.session_state.past.append(current_session_data)
 
     with response_container:
-        for i, (query, answer) in enumerate(st.session_state.chat_history):
-            if st.session_state.user_name == "vishakha" or i >= len(st.session_state.chat_history) - 1:
-                # "vishakha" sees the complete chat history, other users only see their own history
-                user_name = st.session_state.user_name
+        for i, (query, answer) in enumerate(chat_history_to_display):
+            user_name = st.session_state.user_name
+            if query:
                 message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-                message(answer, key=f"{i}_answer", avatar_style="thumbs")
+            message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
