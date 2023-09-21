@@ -337,7 +337,7 @@ else:
             st.error(f"An error occurred while saving data to Airtable: {e}")
 
     # Function for conversational chat
-    # @st.cache
+    @st.cache
     def conversational_chat(user_input):
         result = agent_executor({"input": user_input})
         st.session_state.chat_history.append((user_input, result["output"]))
