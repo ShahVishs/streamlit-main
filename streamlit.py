@@ -376,9 +376,9 @@ else:
         # Display chat history
         if st.session_state.user_name:
             for i, (query, answer) in enumerate(st.session_state.chat_history):
-            user_name = st.session_state.user_name
-            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+                user_name = st.session_state.user_name
+                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+                message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
