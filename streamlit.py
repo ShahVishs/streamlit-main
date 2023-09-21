@@ -74,9 +74,7 @@ ROLES = ['admin', 'user']
 # Initialize user role in session state
 if 'user_role' not in st.session_state:
     st.session_state.user_role = None
-# Initialize st.session_state.new_session as True
-if 'new_session' not in st.session_state:
-    st.session_state.new_session = True
+
 # Function to save chat session data
 def save_chat_session(session_data, session_id):
     session_directory = "chat_sessions"
@@ -116,17 +114,17 @@ def load_previous_sessions():
     
     return previous_sessions
 
-# Initialize session state
-if 'chat_history' not in st.session_state:
-    st.session_state.chat_history = []
-if 'generated' not in st.session_state:
-    st.session_state.generated = []
+# Initialize st.session_state.past as an empty list if it doesn't exist
 if 'past' not in st.session_state:
     st.session_state.past = []
-if 'user_name' not in st.session_state:
-    st.session_state.user_name = None
-if 'user_input' not in st.session_state:
-    st.session_state.user_input = ""
+
+# Initialize st.session_state.new_session as True
+if 'new_session' not in st.session_state:
+    st.session_state.new_session = True
+
+# Initialize user name input
+if 'user_name_input' not in st.session_state:
+    st.session_state.user_name_input = None
 
 # Refresh Session Button
 if st.button("Refresh Session"):
@@ -166,17 +164,17 @@ for session_id, session_data in st.session_state.sessions.items():
     user_role = session_data['user_role']
     
     # Check if the current user is an admin (user_role is 'admin') or a regular user (user_role is 'user')
-    formatted_session_name = f"{user_name} - {session_id}"
-    
-    button_key = f"session_button_{session_id}"
-    if st.sidebar.button(formatted_session_name, key=button_key):
-        # Set the current chat history to the selected session's chat history
-        st.session_state.chat_history = chat_history
-        # Update the user name to match the session's user name
-        st.session_state.user_name = user_name
-        # Update the user role to match the session's user role
-        st.session_state.user_role = user_role
-
+    if is_admin or st.session_state.user_name == user_name:
+        formatted_session_name = f"{user_name} - {session_id}"
+        
+        button_key = f"session_button_{session_id}"
+        if st.sidebar.button(formatted_session_name, key=button_key):
+            # Set the current chat history to the selected session's chat history
+            st.session_state.chat_history = chat_history
+            # Update the user name to match the session's user name
+            st.session_state.user_name = user_name
+            # Update the user role to match the session's user role
+            st.session_state.user_role = user_role
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
@@ -220,18 +218,9 @@ if 'past' not in st.session_state:
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 
-if st.session_state.user_name is None:
-    user_name = st.text_input("Your name:")
-    if user_name:
-        st.session_state.user_name = user_name
-        st.session_state.chat_history = []  # Clear chat history for new user
-    if user_name == "vishakha":
-        # Load chat history for "vishakha" without asking for a query
-        is_admin = True
-        st.session_state.user_role = "admin"
-        st.session_state.user_name = user_name
-        st.session_state.new_session = False  # Prevent clearing chat history
-        st.session_state.sessions = load_previous_sessions()
+# Check if the user's name is "vishakha"
+if st.session_state.user_name == "vishakha":
+    st.session_state.chat_history = []  # Clear chat history for Vishakha
 else:
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature = 0)
     langchain.debug=True
@@ -306,7 +295,8 @@ else:
         except Exception as e:
             st.error(f"An error occurred while saving data to Airtable: {e}")
 
-   # Function for conversational chat
+    # Function for conversational chat
+    # Function for conversational chat
     def conversational_chat(user_input):
         result = agent_executor({"input": user_input})
         st.session_state.chat_history.append((user_input, result["output"]))
@@ -316,8 +306,6 @@ else:
         user_name = st.text_input("Your name:")
         if user_name:
             st.session_state.user_name = user_name
-            st.session_state.chat_history = []  # Clear chat history for new user
-            st.session_state.user_name_input = None  # Clear user_name_input
         if user_name == "vishakha":
             # Load chat history for "vishakha" without asking for a query
             is_admin = True
@@ -325,23 +313,12 @@ else:
             st.session_state.user_name = user_name
             st.session_state.new_session = False  # Prevent clearing chat history
             st.session_state.sessions = load_previous_sessions()
-      
-    if st.session_state.user_role == "admin" or st.session_state.user_name == "vishakha":
-        # Show complete chat history for admin or "vishakha"
-        chat_history_to_display = st.session_state.chat_history
-    else:
-        # Show user-specific chat history for regular users
-        chat_history_to_display = [
-            (query, answer) for query, answer in st.session_state.chat_history if query != ""
-        ]
-      
-    user_input = st.session_state.user_input if st.session_state.user_name != "vishakha" else ""
+   
+    user_input = ""
     output = ""
     with st.form(key='my_form', clear_on_submit=True):
         if st.session_state.user_name != "vishakha":
-            # Show the query input only for users other than "vishakha"
-            st.session_state.user_input = user_input  # Store user input in session state
-            user_input = st.text_input("Query:", value=user_input, placeholder="Type your question here :)", key='input')
+            user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
@@ -355,10 +332,9 @@ else:
         st.session_state.past.append(current_session_data)
 
     with response_container:
-        for i, (query, answer) in enumerate(chat_history_to_display):
+        for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-            if query:
-                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
             message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
