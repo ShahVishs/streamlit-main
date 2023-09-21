@@ -311,13 +311,12 @@ def conversational_chat(user_input):
     st.session_state.chat_history.append((st.session_state.user_name, user_role, user_input, result["output"]))
     return result["output"]
 
-# Set the user role based on the user's name
 if st.session_state.user_name:
-    if st.session_state.user_name == "vishakha":
-        st.session_state.user_role = "admin"
-        st.session_state.is_admin = True
-    else:
-        st.session_state.user_role = "user"
+    user_name = st.text_input("Your name:")
+    if user_name:
+        st.session_state.user_name = user_name
+        if user_name == "vishakha":
+            st.session_state.is_admin = True  # Set as admin
         
 user_input = ""
 output = ""
