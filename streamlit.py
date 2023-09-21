@@ -282,6 +282,7 @@ else:
     container = st.container()
     airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
     # Function to save chat data to Airtable
+    @st.cache
     def save_chat_to_airtable(user_name, user_input, output):
         try:
             timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
