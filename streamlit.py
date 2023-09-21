@@ -96,7 +96,7 @@ def save_chat_session(session_data, session_id):
         st.error(f"An error occurred while saving the chat session: {e}")
 
 # Function to load previous chat sessions from files
-@st.cache(allow_output_mutation=True)
+@st.cache
 def load_previous_sessions():
     previous_sessions = {}
     
