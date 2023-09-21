@@ -158,23 +158,33 @@ st.sidebar.header("Chat Sessions")
 # Check if the user is the admin (vishakha) or not
 is_admin = st.session_state.user_name == "vishakha"
 
+# Create a list to store all chat sessions, not just unique ones
+all_chat_sessions = []
+
 for session_id, session_data in st.session_state.sessions.items():
     user_name = session_data['user_name']
     chat_history = session_data['chat_history']
     user_role = session_data['user_role']
     
-    # Check if the current user is an admin (user_role is 'admin') or a regular user (user_role is 'user')
-    if is_admin or st.session_state.user_name == user_name:
-        formatted_session_name = f"{user_name} - {session_id}"
-        
-        button_key = f"session_button_{session_id}"
-        if st.sidebar.button(formatted_session_name, key=button_key):
-            # Set the current chat history to the selected session's chat history
-            st.session_state.chat_history = chat_history
-            # Update the user name to match the session's user name
-            st.session_state.user_name = user_name
-            # Update the user role to match the session's user role
-            st.session_state.user_role = user_role
+    # Append each session to the list of all chat sessions
+    all_chat_sessions.append((user_name, session_id, chat_history, user_role))
+
+# Sort the list of all chat sessions by session ID (or any other criteria)
+all_chat_sessions.sort(key=lambda x: x[1])  # Sort by session ID
+
+# Display a dropdown to allow selecting a specific session
+selected_session = st.sidebar.selectbox("Select a chat session:", [f"{user_name} - {session_id}" for user_name, session_id, _, _ in all_chat_sessions])
+
+# Find the selected session based on the user's choice
+for user_name, session_id, chat_history, user_role in all_chat_sessions:
+    formatted_session_name = f"{user_name} - {session_id}"
+    if selected_session == formatted_session_name:
+        # Set the current chat history to the selected session's chat history
+        st.session_state.chat_history = chat_history
+        # Update the user name to match the session's user name
+        st.session_state.user_name = user_name
+        # Update the user role to match the session's user role
+        st.session_state.user_role = user_role
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
