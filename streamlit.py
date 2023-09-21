@@ -172,13 +172,11 @@ for session_id, session_data in st.session_state.sessions.items():
 # Sort the list of all chat sessions by session ID (or any other criteria)
 all_chat_sessions.sort(key=lambda x: x[1])  # Sort by session ID
 
-# Display a dropdown to allow selecting a specific session
-selected_session = st.sidebar.selectbox("Select a chat session:", [f"{user_name} - {session_id}" for user_name, session_id, _, _ in all_chat_sessions])
-
-# Find the selected session based on the user's choice
 for user_name, session_id, chat_history, user_role in all_chat_sessions:
     formatted_session_name = f"{user_name} - {session_id}"
-    if selected_session == formatted_session_name:
+    
+    button_key = f"session_button_{session_id}"
+    if st.sidebar.button(formatted_session_name, key=button_key):
         # Set the current chat history to the selected session's chat history
         st.session_state.chat_history = chat_history
         # Update the user name to match the session's user name
