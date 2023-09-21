@@ -311,18 +311,18 @@ else:
         return result["output"]
     
     if st.session_state.user_name is None:
-    user_name = st.text_input("Your name:")
-    if user_name:
-        st.session_state.user_name = user_name
-        st.session_state.chat_history = []  # Clear chat history for new user
-        st.session_state.user_name_input = None  # Clear user_name_input
-    if user_name == "vishakha":
-        # Load chat history for "vishakha" without asking for a query
-        is_admin = True
-        st.session_state.user_role = "admin"
-        st.session_state.user_name = user_name
-        st.session_state.new_session = False  # Prevent clearing chat history
-        st.session_state.sessions = load_previous_sessions()
+        user_name = st.text_input("Your name:")
+        if user_name:
+            st.session_state.user_name = user_name
+            st.session_state.chat_history = []  # Clear chat history for new user
+            st.session_state.user_name_input = None  # Clear user_name_input
+        if user_name == "vishakha":
+            # Load chat history for "vishakha" without asking for a query
+            is_admin = True
+            st.session_state.user_role = "admin"
+            st.session_state.user_name = user_name
+            st.session_state.new_session = False  # Prevent clearing chat history
+            st.session_state.sessions = load_previous_sessions()
   
     user_input = ""
     output = ""
