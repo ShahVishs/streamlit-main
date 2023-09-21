@@ -188,7 +188,7 @@ if is_admin:
         st.sidebar.subheader(f"User: {user_name}")
 
         for session in sessions:
-            formatted_session_name = f"{user_name} - {session['timestamp']}"
+            formatted_session_name = f"{user_name} - {current_date} - {current_day}"
 
             button_key = f"session_button_{session['session_id']}"
             if st.sidebar.button(formatted_session_name, key=button_key):
@@ -204,7 +204,7 @@ else:
         st.sidebar.subheader(f"Your Session")
 
         # Display the user's session
-        formatted_session_name = f"{current_username} - {current_date}"
+        formatted_session_name = f"{current_username} - {current_date} - {current_day}"
 
         if st.sidebar.button(formatted_session_name):
             # Set the current chat history to the user's session history
