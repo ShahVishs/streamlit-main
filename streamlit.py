@@ -372,15 +372,23 @@ else:
         st.session_state.past.append(current_session_data)
 
     with response_container:
-       # Display chat history for all users
+        # Display chat history for the selected user's sessions
         if is_admin:
-            # Get the selected session's chat history
-            selected_session_chat_history = st.session_state.chat_history
+            # Display a list of user names in the sidebar
+            selected_user_name = st.selectbox("Select User:", list(user_sessions.keys()))
     
-            # Display chat history for the selected session
-            for i, (query, answer) in enumerate(selected_session_chat_history):
-                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-                message(answer, key=f"{i}_answer", avatar_style="thumbs")
+            # Get the chat sessions for the selected user
+            selected_sessions = user_sessions.get(selected_user_name, [])
+    
+            # Display chat history for each session
+            for session in selected_sessions:
+                st.subheader(f"Session ID: {session['session_id']}")
+                chat_history = session['chat_history']
+    
+                # Display chat history for the session
+                for i, (query, answer) in enumerate(chat_history):
+                    message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+                    message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
