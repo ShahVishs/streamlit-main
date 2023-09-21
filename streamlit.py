@@ -64,13 +64,18 @@ current_date = datetime.today().strftime("%m/%d/%y")
 day_of_week = datetime.today().weekday()
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 current_day = days[day_of_week]
-# Initialize session state
+# Initialize user name in session state
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 
-if 'chat_history' not in st.session_state:
-    st.session_state.chat_history = []
+# Initialize is_admin attribute to False by default
+if 'is_admin' not in st.session_state:
+    st.session_state.is_admin = False
 
+# Set is_admin to True if the user is "vishakha"
+if st.session_state.user_name == "vishakha":
+    st.session_state.is_admin = True
+    
 # Define roles (e.g., 'admin' and 'user')
 ROLES = ['admin', 'user']
 
