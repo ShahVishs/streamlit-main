@@ -194,11 +194,11 @@ if is_admin:
 else:
     # If the user is not an admin, show only their own session
     current_username = st.session_state.user_name
-    if current_username:
+    if current_username is not None:
         # st.sidebar.subheader(f"Your Sessions")
 
         # Display the user's sessions
-        for session in user_sessions[current_username]:
+        for session in user_sessions.get(current_username, []):
             formatted_session_name = f"{current_username} - {session['session_id']}"
 
             if st.sidebar.button(formatted_session_name):
