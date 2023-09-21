@@ -74,7 +74,9 @@ ROLES = ['admin', 'user']
 # Initialize user role in session state
 if 'user_role' not in st.session_state:
     st.session_state.user_role = None
-
+# Initialize st.session_state.new_session as True
+if 'new_session' not in st.session_state:
+    st.session_state.new_session = True
 # Function to save chat session data
 def save_chat_session(session_data, session_id):
     session_directory = "chat_sessions"
