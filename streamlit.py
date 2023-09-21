@@ -148,22 +148,6 @@ if st.button("Refresh Session"):
     st.session_state.new_session = True
     st.session_state.refreshing_session = False  # Reset refreshing_session to False
 
-    # Initialize user role in session state
-    if 'user_role' not in st.session_state:
-        st.session_state.user_role = None
-
-    # If the user is "vishakha", show a button to manually select a user
-    if st.session_state.user_name == "vishakha":
-        selected_user_name = st.selectbox("Select User:", list(user_sessions.keys()))
-        if selected_user_name:
-            # Set the user_name to the selected user
-            st.session_state.user_name = selected_user_name
-            # Set the user role to match the selected user's role
-            st.session_state.user_role = user_sessions[selected_user_name][0]['user_role']
-            
-            # Update the chat history to match the selected user's chat history
-            selected_user_history = user_sessions[selected_user_name][0]['chat_history']
-            st.session_state.chat_history = selected_user_history.copy()
 
 # Display a list of past sessions in the sidebar along with a delete button
 st.sidebar.header("Chat Sessions")
@@ -188,25 +172,23 @@ for session_id, session_data in st.session_state.sessions.items():
         'user_role': user_role
     })
 if is_admin:
-    # If the user is an admin (vishakha), show all users in the sidebar
-    all_users = list(user_sessions.keys())
-    selected_user = st.sidebar.selectbox("Select a user:", all_users)
+    # If the user is an admin (vishakha), show all sessions for all users
+    selected_user_name = st.sidebar.selectbox("Select User:", list(user_sessions.keys()))
+    for user_name, sessions in user_sessions.items():
+        st.sidebar.subheader(f"User: {user_name}")
 
-    if selected_user:
-        st.sidebar.subheader(f"User: {selected_user}")
+        if selected_user_name == user_name:
+            for session in sessions:
+                formatted_session_name = f"{user_name} - {session['session_id']}"
 
-        for session in user_sessions[selected_user]:
-            formatted_session_name = f"{selected_user} - {session['session_id']}"
-
-            button_key = f"session_button_{session['session_id']}"
-            if st.sidebar.button(formatted_session_name, key=button_key):
-                # Set the current chat history to the selected session's chat history
-                st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
-                # Update the user name to match the session's user name
-                st.session_state.user_name = selected_user
-                # Update the user role to match the session's user role
-                st.session_state.user_role = session['user_role']
-
+                button_key = f"session_button_{session['session_id']}"
+                if st.sidebar.button(formatted_session_name, key=button_key):
+                    # Set the current chat history to the selected session's chat history
+                    st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
+                    # Update the user name to match the session's user name
+                    st.session_state.user_name = user_name
+                    # Update the user role to match the session's user role
+                    st.session_state.user_role = session['user_role']
 else:
     # If the user is not an admin, show only their own session
     current_username = st.session_state.user_name
