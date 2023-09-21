@@ -374,21 +374,24 @@ else:
     with response_container:
         # Display chat history for the selected user's sessions
         if is_admin:
-            # Display a list of user names in the sidebar
-            selected_user_name = st.selectbox("Select User:", list(user_sessions.keys()))
-    
-            # Get the chat sessions for the selected user
-            selected_sessions = user_sessions.get(selected_user_name, [])
-    
-            # Display chat history for each session
-            for session in selected_sessions:
-                st.subheader(f"Session ID: {session['session_id']}")
-                chat_history = session['chat_history']
-    
-                # Display chat history for the session
-                for i, (query, answer) in enumerate(chat_history):
-                    message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-                    message(answer, key=f"{i}_answer", avatar_style="thumbs")
+            # If the user is an admin (vishakha), show all sessions for all users
+            for user_name, sessions in user_sessions.items():
+                for session in sessions:
+                    formatted_session_name = f"{user_name} - {session['session_id']}"
+                    button_key = f"session_button_{session['session_id']}"
+                    if st.sidebar.button(formatted_session_name, key=button_key):
+                        st.session_state.selected_session_id = session['session_id']
+                        st.session_state.selected_user_name = user_name
+                        st.session_state.selected_chat_history = session['chat_history'].copy()
+                        st.session_state.user_role = session['user_role']
+        
+        # Display chat history for the selected session
+        if hasattr(st.session_state, 'selected_session_id'):
+            st.subheader(f"Chat History for Session: {st.session_state.selected_session_id}")
+            for i, (query, answer) in enumerate(st.session_state.selected_chat_history):
+                message(f"User: {st.session_state.selected_user_name}", key=f"{i}_user_name", avatar_style="smile")
+                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+                message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
