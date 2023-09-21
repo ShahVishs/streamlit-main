@@ -181,7 +181,7 @@ loader = CSVLoader(file_path=file_1)
 docs_1 = loader.load()
 embeddings = OpenAIEmbeddings()
 vectorstore_1 = FAISS.from_documents(docs_1, embeddings)
-retriever_1 = vectorstore_1.as_retriever(search_type="similarity", search_kwargs={"k": 8})
+retriever_1 = vectorstore_1.as_retriever(search_type="similarity", search_kwargs={"k": 8})#check without similarity search and k=8
 
 # Create the first tool
 tool1 = create_retriever_tool(
@@ -231,42 +231,42 @@ if st.session_state.user_name is None:
         st.session_state.new_session = False  # Prevent clearing chat history
         st.session_state.sessions = load_previous_sessions()
 else:
-    llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature=0)
-    langchain.debug = True
+    llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature = 0)
+    langchain.debug=True
     memory_key = "history"
     memory = AgentTokenBufferMemory(memory_key=memory_key, llm=llm)
-    template = (
-        """You're the Business Development Manager at our car dealership./
-        When responding to inquiries, please adhere to the following guidelines:
-        Car Inventory Questions: If the customer's inquiry lacks specific details such as their preferred/
-        make, model, new or used car, and trade-in, kindly engage by asking for these specifics./
-        Specific Car Details: When addressing questions about a particular car, limit the information provided/
-        to make, year, model, and trim. For example, if asked about 
-        'Do you have Jeep Cherokee Limited 4x4'
-        Best answer should be 'Yes we have,
-        Jeep Cherokee Limited 4x4:
-        Year: 2022
-        Model :
-        Make :
-        Trim:
-        scheduling Appointments: If the customer's inquiry lacks specific details such as their preferred/
-        day, date or time kindly engage by asking for these specifics. {details} Use these details that is todays date and day /
-        to find the appointment date from the users input and check for appointment availabity for that specific date and time. 
-        If the appointment schedule is not available provide this 
-        link: www.dummy_calenderlink.com to schedule appointment by the user himself. 
-        If appointment schedules are not available, you should send this link: www.dummy_calendarlink.com to the 
-        costumer to schedule an appointment on your own.
+    template=(
+    """You're the Business Development Manager at our car dealership./
+    When responding to inquiries, please adhere to the following guidelines:
+    Car Inventory Questions: If the customer's inquiry lacks specific details such as their preferred/
+    make, model, new or used car, and trade-in, kindly engage by asking for these specifics./
+    Specific Car Details: When addressing questions about a particular car, limit the information provided/
+    to make, year, model, and trim. For example, if asked about 
+    'Do you have Jeep Cherokee Limited 4x4'
+    Best answer should be 'Yes we have,
+    Jeep Cherokee Limited 4x4:
+    Year: 2022
+    Model :
+    Make :
+    Trim:
+    scheduling Appointments: If the customer's inquiry lacks specific details such as their preferred/
+    day, date or time kindly engage by asking for these specifics. {details} Use these details that is todays date and day /
+    to find the appointment date from the users input and check for appointment availabity for that specific date and time. 
+    If the appointment schedule is not available provide this 
+    link: www.dummy_calenderlink.com to schedule appointment by the user himself. 
+    If appointment schedules are not available, you should send this link: www.dummy_calendarlink.com to the 
+    costumer to schedule an appointment on your own.
 
-        Encourage Dealership Visit: Our goal is to encourage customers to visit the dealership for test drives or/
-        receive product briefings from our team. After providing essential information on the car's make, model,/
-        color, and basic features, kindly invite the customer to schedule an appointment for a test drive or visit us/
-        for a comprehensive product overview by our experts.
+    Encourage Dealership Visit: Our goal is to encourage customers to visit the dealership for test drives or/
+    receive product briefings from our team. After providing essential information on the car's make, model,/
+    color, and basic features, kindly invite the customer to schedule an appointment for a test drive or visit us/
+    for a comprehensive product overview by our experts.
 
-        Please maintain a courteous and respectful tone in your American English responses./
-        If you're unsure of an answer, respond with 'I am sorry.'/
-        Make every effort to assist the customer promptly while keeping responses concise, not exceeding two sentences."
-        Feel free to use any tools available to look up for relevant information.
-        Answer the question not more than two sentence.""")
+    Please maintain a courteous and respectful tone in your American English responses./
+    If you're unsure of an answer, respond with 'I am sorry.'/
+    Make every effort to assist the customer promptly while keeping responses concise, not exceeding two sentences."
+    Feel free to use any tools available to look up for relevant information.
+    Answer the question not more than two sentence.""")
 
     details = "Today's current date is " + todays_date + " and today's week day is " + day_of_the_week + "."
 
@@ -289,7 +289,6 @@ else:
     response_container = st.container()
     container = st.container()
     airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
-
     # Function to save chat data to Airtable
     def save_chat_to_airtable(user_name, user_input, output):
         try:
@@ -310,22 +309,44 @@ else:
         result = agent_executor({"input": user_input})
         st.session_state.chat_history.append((user_input, result["output"]))
         return result["output"]
-
-    # Show query placeholder only for non-admin users
-    if not is_admin:
-        with st.form(key='my_form', clear_on_submit=True):
-            st.session_state.user_input = user_input  # Store user input in session state
+    
+    if st.session_state.user_name is None:
+        user_name = st.text_input("Your name:")
+        if user_name:
+            st.session_state.user_name = user_name
+            st.session_state.chat_history = []  # Clear chat history for new user
+            st.session_state.user_name_input = None  # Clear user_name_input
+        if user_name == "vishakha":
+            # Load chat history for "vishakha" without asking for a query
+            is_admin = True
+            st.session_state.user_role = "admin"
+            st.session_state.user_name = user_name
+            st.session_state.new_session = False  # Prevent clearing chat history
+            st.session_state.sessions = load_previous_sessions()
+  
+    user_input = st.session_state.user_input if st.session_state.user_name != "vishakha" else ""
+    output = ""
+    with st.form(key='my_form', clear_on_submit=True):
+        if st.session_state.user_name != "vishakha":
             user_input = st.text_input("Query:", value=user_input, placeholder="Type your question here :)", key='input')
-            submit_button = st.form_submit_button(label='Send')
-        if submit_button and user_input:
-            output = conversational_chat(user_input)
+        submit_button = st.form_submit_button(label='Send')
+    
+    if submit_button and user_input:
+        output = conversational_chat(user_input)
+
+    if st.session_state.user_name and st.session_state.chat_history:
+        current_session_data = {
+            'user_name': st.session_state.user_name,
+            'chat_history': st.session_state.chat_history
+        }
+        st.session_state.past.append(current_session_data)
 
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
             message(answer, key=f"{i}_answer", avatar_style="thumbs")
-
+    
         if st.session_state.user_name:
             try:
                 save_chat_to_airtable(st.session_state.user_name, user_input, output)
