@@ -222,6 +222,7 @@ if st.session_state.user_name is None:
     if user_name:
         st.session_state.user_name = user_name
         st.session_state.chat_history = []  # Clear chat history for new user
+        st.session_state.user_input = ""  # Initialize user_input in session state
     if user_name == "vishakha":
         # Load chat history for "vishakha" without asking for a query
         is_admin = True
@@ -328,8 +329,8 @@ else:
     output = ""
     with st.form(key='my_form', clear_on_submit=True):
         if st.session_state.user_name != "vishakha":
-            st.session_state.user_input = user_input  # Store user input in session state
             user_input = st.text_input("Query:", value=user_input, placeholder="Type your question here :)", key='input')
+            st.session_state.user_input = user_input  # Store user input in session state
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
