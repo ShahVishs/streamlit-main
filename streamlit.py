@@ -331,14 +331,14 @@ else:
         }
         st.session_state.past.append(current_session_data)
 
-with response_container:
-    for i, (query, answer) in enumerate(st.session_state.chat_history):
-        user_name = st.session_state.user_name
-        message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-        message(answer, key=f"{i}_answer", avatar_style="thumbs")
-
-    if st.session_state.user_name:
-        try:
-            save_chat_to_airtable(st.session_state.user_name, user_input, output)
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+    with response_container:
+        for i, (query, answer) in enumerate(st.session_state.chat_history):
+            user_name = st.session_state.user_name
+            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+    
+        if st.session_state.user_name:
+            try:
+                save_chat_to_airtable(st.session_state.user_name, user_input, output)
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
