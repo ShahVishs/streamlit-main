@@ -252,17 +252,20 @@ if is_admin:
 else:
     # If the user is not an admin, show only their own session
     # Check if the user is not an admin, show only their own session
+    # Check if the user is not an admin, show only their own session
     current_username = st.session_state.user_name
     
     if current_username:
-        if current_username in user_sessions:
+        if current_username in st.session_state.user_sessions:
+            user_sessions = st.session_state.user_sessions[current_username]
+    
             # Display the user's sessions
-            for session in user_sessions[current_username]:
+            for session in user_sessions:
                 formatted_session_name = f"{current_username} - {session['session_id']}"
     
                 if st.sidebar.button(formatted_session_name):
                     # Set the current chat history to the selected session's chat history
-                    st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
+                    st.session_state.chat_history = session['chat_history'].copy()
                     # Update the user role to match the session's user role
                     st.session_state.user_role = session['user_role']
         else:
@@ -275,7 +278,9 @@ else:
                 'chat_history': [],
                 'user_role': 'user',  # Set the user role for the new session
             }
-            user_sessions[current_username] = [new_session]
+    
+            # Add the new session to the user's sessions
+            st.session_state.user_sessions.setdefault(current_username, []).append(new_session)
     
             # Set the current chat history to the new session's chat history
             st.session_state.chat_history = new_session['chat_history'].copy()
@@ -287,7 +292,7 @@ else:
     
             if st.sidebar.button(formatted_session_name):
                 # Set the current chat history to the new session's chat history
-                st.session_state.chat_history = new_session['chat_history'].copy()  # Make a copy to avoid modifying the original
+                st.session_state.chat_history = new_session['chat_history'].copy()
                 # Update the user role to match the new session's user role
                 st.session_state.user_role = new_session['user_role']
 file_1 = r'dealer_1_inventry.csv'
