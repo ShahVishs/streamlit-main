@@ -59,7 +59,13 @@ hide_manage_app_button_style = """
     }
     </style>
 """
+div.stActionButton {
+    display: none;
+}
 
+div.st-emotion-cache-1wbqy5l.e3g6aar1 {
+    display: none;
+}
 # Apply the CSS styles
 st.markdown(hide_share_button_style, unsafe_allow_html=True)
 st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
