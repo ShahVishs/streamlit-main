@@ -437,7 +437,7 @@ else:
             
             # Display user's message with the logo as an avatar
             if user_name:
-                user_avatar = st.image("https://github.com/ShahVishs/streamlit-main/blob/main/logo.png", width=50, caption="", use_container_width=False)
+                user_avatar = st.image("https://raw.githubusercontent.com/ShahVishs/streamlit-main/main/logo.png", width=50, caption="", use_container_width=False)
                 message(query, is_user=True, key=f"{i}_user", avatar=user_avatar)
             
             # Display the bot's response with the "thumbs" avatar
