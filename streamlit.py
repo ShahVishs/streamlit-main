@@ -251,19 +251,20 @@ if is_admin:
                 st.session_state.user_role = session['user_role']
 else:
     # If the user is not an admin, show only their own session
-    current_username = st.session_state.user_name
-    if current_username:
+    user_name = st.session_state.user_name
+    if user_name:
         # st.sidebar.subheader(f"Your Sessions")
 
-        # Display the user's sessions
-        for session in user_sessions[current_username]:
-            formatted_session_name = f"{current_username} - {session['session_id']}"
+        # Display the user's sessions if they exist
+        if user_name in user_sessions:
+            for session in user_sessions[user_name]:
+                formatted_session_name = f"{user_name} - {session['session_id']}"
 
-            if st.sidebar.button(formatted_session_name):
-                # Set the current chat history to the selected session's chat history
-                st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
-                # Update the user role to match the session's user role
-                st.session_state.user_role = session['user_role']
+                if st.sidebar.button(formatted_session_name):
+                    # Set the current chat history to the selected session's chat history
+                    st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
+                    # Update the user role to match the session's user role
+                    st.session_state.user_role = session['user_role']
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
