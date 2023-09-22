@@ -79,7 +79,7 @@ st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
 custom_css = """
     <style>
     .image-container {
-        margin-top: 10px;  /* Adjust the margin as needed */
+        margin-top: 5px;  /* Adjust the margin as needed */
     }
     </style>
 """
