@@ -85,6 +85,21 @@ st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
 st.markdown(hide_mainmenu_style, unsafe_allow_html=True)
 st.markdown(hide_fork_app_button_style, unsafe_allow_html=True)
 
+# JavaScript code to hide elements by class name
+hide_elements_script = """
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Hide elements by class name
+    var elementsToHide = document.getElementsByClassName('st-emotion-cache-alurl0 e3g6aar0');
+    for (var i = 0; i < elementsToHide.length; i++) {
+        elementsToHide[i].style.display = 'none';
+    }
+});
+</script>
+"""
+
+# Apply the JavaScript code
+st.markdown(hide_elements_script, unsafe_allow_html=True)
 # # Display the image
 # st.image("Twitter.jpg", caption="Twitter.jpg", use_column_width=True, output_format="JPEG", key="image", container_class="image-container")
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
