@@ -353,6 +353,10 @@ else:
     # Initialize st.session_state.new_session as True for new users (excluding vishakha)
     if 'new_session' not in st.session_state and st.session_state.user_name != "vishakha":
         st.session_state.new_session = True
+     # Initialize st.session_state.chat_history for new users
+    if 'chat_history' not in st.session_state:
+        st.session_state.chat_history = []
+
     llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature = 0)
     langchain.debug=True
     memory_key = "history"
