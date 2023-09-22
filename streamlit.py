@@ -31,17 +31,17 @@ from langchain.schema.messages import SystemMessage
 from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 import json
+
+# Add custom CSS to hide the GitHub icon
+hide_github_icon = """
+#GithubIcon {
+  visibility: hidden;
+}
+"""
+st.markdown(hide_github_icon, unsafe_allow_html=True)
+
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 st.image("socialai.jpg")
-hide_header_links_style = """
-    <style>
-    .streamlit-container .main .stApp > div:nth-child(2) {
-        display: none; /* Hide the Share, Star, and GitHub links */
-    }
-    </style>
-"""
-
-st.markdown(hide_header_links_style, unsafe_allow_html=True)
 # datetime.datetime.now()
 datetime.now()
 # Get the current date in "%m/%d/%y" format
