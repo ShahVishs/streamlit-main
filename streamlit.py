@@ -78,34 +78,12 @@ hide_mainmenu_style = """
     </style>
 """
 
-# CSS to hide the "Manage app" button
-hide_manage_app_button_style = """
-    <style>
-    .styles_terminalButton__JBj5T {
-        display: none;
-    }
-    </style>
-"""
-
 # Apply the CSS styles
 st.markdown(hide_share_button_style, unsafe_allow_html=True)
 st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
 st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
 st.markdown(hide_mainmenu_style, unsafe_allow_html=True)
 st.markdown(hide_fork_app_button_style, unsafe_allow_html=True)
-
-
-# # CSS to adjust the margin for the image container
-# custom_css = """
-#     <style>
-#     .image-container {
-#         margin-top: 5px;  /* Adjust the margin as needed */
-#     }
-#     </style>
-# """
-
-# # Apply the CSS styles
-# st.markdown(custom_css, unsafe_allow_html=True)
 
 # # Display the image
 # st.image("Twitter.jpg", caption="Twitter.jpg", use_column_width=True, output_format="JPEG", key="image", container_class="image-container")
