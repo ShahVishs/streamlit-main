@@ -32,7 +32,6 @@ from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 import json
 
-
 # CSS to hide the Share button
 hide_share_button_style = """
     <style>
