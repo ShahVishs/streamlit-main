@@ -364,7 +364,6 @@ else:
     else:
         agent_executor = st.session_state.agent_executor
     response_container = st.container()
-    container = st.container()
     airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
     # Function to save chat data to Airtable
    
