@@ -60,10 +60,20 @@ hide_mainmenu_style = """
     </style>
 """
 
+# CSS to hide the "Manage app" button
+hide_manage_app_button_style = """
+    <style>
+    .styles_terminalButton__JBj5T {
+        display: none;
+    }
+    </style>
+"""
+
 # Apply the CSS styles
 st.markdown(hide_share_button_style, unsafe_allow_html=True)
 st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
 st.markdown(hide_mainmenu_style, unsafe_allow_html=True)
+st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
 
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 st.image("socialai.jpg")
