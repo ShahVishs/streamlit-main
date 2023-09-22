@@ -32,15 +32,15 @@ from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 import json
 
-hide_header_buttons_style = """
+hide_share_button_style = """
     <style>
-    .streamlit-container .main .stApp > div:nth-child(2) {
-        display: none; /* Hide the Share, Star, and GitHub buttons */
+    .css-1wbqy5l.e3g6aar1 > span {
+        display: none;
     }
     </style>
 """
 
-st.markdown(hide_header_buttons_style, unsafe_allow_html=True)
+st.markdown(hide_share_button_style, unsafe_allow_html=True)
 
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 st.image("socialai.jpg")
