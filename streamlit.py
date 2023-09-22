@@ -257,7 +257,7 @@ else:
     # Check if the user is new or has not provided a name
     if current_username is None:
         # Ask the user to input their name
-        current_username = st.text_input("Your name:")
+        current_username = st.text_input("Your name:", key="user_name_input")
     
     if current_username:
         # Check if the user is new or if they have existing sessions
