@@ -32,6 +32,7 @@ from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 import json
 
+
 # CSS to hide the Share button
 hide_share_button_style = """
     <style>
@@ -434,13 +435,12 @@ else:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-            
-            # Display user's message with the logo as an avatar
+    
+            # Display user's message with their avatar (e.g., logo.png)
             if user_name:
-                user_avatar = st.image("https://raw.githubusercontent.com/ShahVishs/streamlit-main/main/logo.png", width=50, caption="", use_container_width=False)
-                message(query, is_user=True, key=f"{i}_user", avatar=user_avatar)
-            
-            # Display the bot's response with the "thumbs" avatar
+                user_avatar_html = f'<img src="logo.png" alt="{user_name}" style="width: 50px; height: 50px; border-radius: 50%;">'
+                st.markdown(user_avatar_html, unsafe_allow_html=True)
+            message(query, is_user=True, key=f"{i}_user", avatar_style="none")  # Use "none" to hide the avatar
             message(answer, key=f"{i}_answer", avatar_style="thumbs")
         
         if st.session_state.user_name:
