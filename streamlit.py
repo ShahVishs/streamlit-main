@@ -33,40 +33,15 @@ from langchain.agents import AgentExecutor
 import json
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 st.image("socialai.jpg")
-# Add the CSS code here to hide the headers
-hide_header_style = """
+hide_header_links_style = """
     <style>
-    .streamlit-container .sidebar-content {
-        padding-top: 0px;
-    }
-    .streamlit-container .sidebar .stImage {
-        display: none;
-    }
-    .streamlit-container .main .stApp {
-        padding-top: 0px;
-    }
-    .streamlit-container .main .block-container {
-        padding: 0px;
-    }
-    .streamlit-container .main .block-container .stMarkdown {
-        margin-top: 0px;
-    }
-    .streamlit-container .main .block-container .stTextInput.st-eb {
-        margin-top: 0px;
-    }
-    .streamlit-container .main .block-container .stForm {
-        margin-top: 0px;
-    }
-    .streamlit-container .main .block-container .stDataFrame.stDataFrame {
-        margin-top: 0px;
-    }
-    .streamlit-container .main .block-container .stButton.st-eb .css-145kmo2 {
-        margin-top: 0px;
+    .streamlit-container .main .stApp > div:nth-child(2) {
+        display: none; /* Hide the Share, Star, and GitHub links */
     }
     </style>
 """
 
-st.markdown(hide_header_style, unsafe_allow_html=True)
+st.markdown(hide_header_links_style, unsafe_allow_html=True)
 # datetime.datetime.now()
 datetime.now()
 # Get the current date in "%m/%d/%y" format
