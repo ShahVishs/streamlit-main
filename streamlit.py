@@ -32,6 +32,7 @@ from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 import json
 
+# CSS to hide the Share button
 hide_share_button_style = """
     <style>
     .css-1wbqy5l.e3g6aar1 > span {
@@ -40,7 +41,19 @@ hide_share_button_style = """
     </style>
 """
 
+# CSS to hide the Star and GitHub elements
+hide_star_and_github_style = """
+    <style>
+    .css-1lb4qcp.e3g6aar0,
+    .css-30do4w.e3g6aar0 {
+        display: none;
+    }
+    </style>
+"""
+
+# Apply the CSS styles
 st.markdown(hide_share_button_style, unsafe_allow_html=True)
+st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
 
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 st.image("socialai.jpg")
