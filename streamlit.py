@@ -35,8 +35,8 @@ import json
 # CSS to hide the Share button
 hide_share_button_style = """
     <style>
-    .css-1wbqy5l.e3g6aar1 > span {
-        display: none;
+    .st-emotion-cache-zq5wmm.ezrtsby0 .stActionButton:nth-child(1) {
+        display: none !important;
     }
     </style>
 """
@@ -44,36 +44,27 @@ hide_share_button_style = """
 # CSS to hide the Star and GitHub elements
 hide_star_and_github_style = """
     <style>
-    .css-1lb4qcp.e3g6aar0,
-    .css-30do4w.e3g6aar0 {
-        display: none;
+    .st-emotion-cache-1lb4qcp.e3g6aar0,
+    .st-emotion-cache-30do4w.e3g6aar0 {
+        display: none !important;
     }
     </style>
 """
-
-# CSS to hide the Manage app button
-hide_manage_app_button_style = """
-    <style>
-    .styles_terminalButton__JBj5T {
-        display: none;
-    }
-    </style>
-"""
-# CSS to hide the "Fork this app" button
-hide_fork_app_button_style = """
-    <style>
-    .st-emotion-cache-alurl0.e3g6aar0 > span {
-        display: none;
-    }
-    </style>
-"""
-
 
 # CSS to hide the MainMenu
 hide_mainmenu_style = """
     <style>
     #MainMenu {
-        display: none;
+        display: none !important;
+    }
+    </style>
+"""
+
+# CSS to hide the "Fork this app" button
+hide_fork_app_button_style = """
+    <style>
+    .st-emotion-cache-alurl0.e3g6aar0 {
+        display: none !important;
     }
     </style>
 """
@@ -81,25 +72,9 @@ hide_mainmenu_style = """
 # Apply the CSS styles
 st.markdown(hide_share_button_style, unsafe_allow_html=True)
 st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
-st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
 st.markdown(hide_mainmenu_style, unsafe_allow_html=True)
 st.markdown(hide_fork_app_button_style, unsafe_allow_html=True)
 
-# JavaScript code to hide elements by class name
-hide_elements_script = """
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Hide elements by class name
-    var elementsToHide = document.getElementsByClassName('st-emotion-cache-alurl0 e3g6aar0');
-    for (var i = 0; i < elementsToHide.length; i++) {
-        elementsToHide[i].style.display = 'none';
-    }
-});
-</script>
-"""
-
-# Apply the JavaScript code
-st.markdown(hide_elements_script, unsafe_allow_html=True)
 # # Display the image
 # st.image("Twitter.jpg", caption="Twitter.jpg", use_column_width=True, output_format="JPEG", key="image", container_class="image-container")
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
