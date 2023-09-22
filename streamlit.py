@@ -251,19 +251,34 @@ if is_admin:
                 st.session_state.user_role = session['user_role']
 else:
     # If the user is not an admin, show only their own session
-    current_username = st.session_state.user_name
-    if current_username:
-        # st.sidebar.subheader(f"Your Sessions")
+    # If the user is not an admin, show only their own session
+current_username = st.session_state.user_name
 
-        # Display the user's sessions
-        for session in user_sessions[current_username]:
-            formatted_session_name = f"{current_username} - {session['session_id']}"
+# Check if the user is new or has not provided a name
+if current_username is None:
+    # Ask the user to input their name
+    current_username = st.text_input("Your name:")
 
-            if st.sidebar.button(formatted_session_name):
-                # Set the current chat history to the selected session's chat history
-                st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
-                # Update the user role to match the session's user role
-                st.session_state.user_role = session['user_role']
+if current_username:
+    # Check if the user is new or if they have existing sessions
+    if current_username not in user_sessions:
+        # The user is new and doesn't have any sessions, create an empty session
+        user_sessions[current_username] = []
+
+    # st.sidebar.subheader(f"Your Sessions")
+
+    # Display the user's sessions
+    for session in user_sessions[current_username]:
+        formatted_session_name = f"{current_username} - {session['session_id']}"
+
+        if st.sidebar.button(formatted_session_name):
+            # Set the current chat history to the selected session's chat history
+            st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
+            # Update the user role to match the session's user role
+            st.session_state.user_role = session['user_role']
+else:
+    # The user is new and hasn't provided a name yet, so we won't display any sessions
+    st.sidebar.text("Please provide your name to create a session.")
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
