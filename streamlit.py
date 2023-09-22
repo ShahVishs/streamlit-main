@@ -74,7 +74,7 @@ st.markdown(hide_share_button_style, unsafe_allow_html=True)
 st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
 st.markdown(hide_mainmenu_style, unsafe_allow_html=True)
 st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
- CSS to hide the Share button and adjust the margin for the image
+
 custom_css = """
     <style>
     .css-1wbqy5l.e3g6aar1 > span {
