@@ -59,17 +59,15 @@ hide_manage_app_button_style = """
     }
     </style>
 """
-div.stActionButton {
-    display: none;
-}
+# CSS to hide the "Fork this app" button
+hide_fork_app_button_style = """
+    <style>
+    .st-emotion-cache-alurl0.e3g6aar0 > span {
+        display: none;
+    }
+    </style>
+"""
 
-div.st-emotion-cache-1wbqy5l.e3g6aar1 {
-    display: none;
-}
-# Apply the CSS styles
-st.markdown(hide_share_button_style, unsafe_allow_html=True)
-st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
-st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
 
 # CSS to hide the MainMenu
 hide_mainmenu_style = """
@@ -89,7 +87,12 @@ hide_manage_app_button_style = """
     </style>
 """
 
+# Apply the CSS styles
+st.markdown(hide_share_button_style, unsafe_allow_html=True)
+st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
+st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
 st.markdown(hide_mainmenu_style, unsafe_allow_html=True)
+st.markdown(hide_fork_app_button_style, unsafe_allow_html=True)
 
 
 # # CSS to adjust the margin for the image container
