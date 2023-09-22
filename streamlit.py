@@ -205,6 +205,13 @@ if st.button("Refresh Session"):
     st.session_state.new_session = True
     st.session_state.refreshing_session = False  # Reset refreshing_session to False
 
+# Add a button to create a new session
+if st.button("Create New Session"):
+    st.session_state.chat_history = []  # Clear chat history
+    st.session_state.user_name = None   # Clear user name
+    st.session_state.user_role = None   # Clear user role
+    st.session_state.new_session = True  # Set new session flag
+    
 # Load previous sessions if it's a new session or a revisit
 if st.session_state.new_session:
     st.session_state.sessions = load_previous_sessions()
@@ -213,7 +220,7 @@ if st.session_state.new_session:
 # Display a list of past sessions in the sidebar along with a delete button
 st.sidebar.header("Chat Sessions")
 
-# Check if the user is the admin (vishakha) or not
+# Check if the user is an admin (vishakha) or not
 is_admin = st.session_state.user_name == "vishakha"
 
 # Create a dictionary to store sessions for each user
@@ -233,6 +240,7 @@ for session_id, session_data in st.session_state.sessions.items():
         'chat_history': chat_history,
         'user_role': user_role
     })
+
 if is_admin:
     # If the user is an admin (vishakha), show all sessions for all users
     for user_name, sessions in user_sessions.items():
