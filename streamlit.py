@@ -125,6 +125,9 @@ current_day = days[day_of_week]
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 
+if 'user_sessions' not in st.session_state:
+    st.session_state.user_sessions = {}
+    
 # Define roles (e.g., 'admin' and 'user')
 ROLES = ['admin', 'user']
 
