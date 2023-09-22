@@ -205,12 +205,6 @@ if st.button("Refresh Session"):
     st.session_state.new_session = True
     st.session_state.refreshing_session = False  # Reset refreshing_session to False
 
-# Add a button to create a new session
-if st.button("Create New Session"):
-    st.session_state.chat_history = []  # Clear chat history
-    st.session_state.user_name = None   # Clear user name
-    st.session_state.user_role = None   # Clear user role
-    st.session_state.new_session = True  # Set new session flag
     
 # Load previous sessions if it's a new session or a revisit
 if st.session_state.new_session:
