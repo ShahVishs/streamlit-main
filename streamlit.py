@@ -417,36 +417,15 @@ else:
             'chat_history': st.session_state.chat_history
         }
         st.session_state.past.append(current_session_data)
-def custom_message(text, key=None, is_user=False, avatar_style=None, avatar=None):
-    """
-    Displays a message in the chat with a custom avatar (logo).
-    Args:
-        text (str): The text of the message.
-        key (str): A unique key for the message.
-        is_user (bool): True if the message is from the user, False otherwise.
-        avatar_style (str): Avatar style (e.g., "big-smile", "thumbs").
-        avatar (str): URL of the custom avatar image (logo hosted on GitHub).
-    """
-    if is_user:
-        st.markdown(
-            f'<div class="message user-message" key="{key}">{text}</div>', unsafe_allow_html=True
-        )
-    else:
-        avatar_html = f'<img src="{avatar}" alt="Avatar" class="avatar-{avatar_style}">'
-        st.markdown(
-            f'<div class="message assistant-message" key="{key}">{avatar_html}{text}</div>',
-            unsafe_allow_html=True,
-        )
+
     # with response_container:
     # Inside your Streamlit app:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-        
-            # Display the custom logo as the avatar for assistant messages
-            custom_message(query, is_user=True, key=f"{i}_user")
-            custom_message(answer, key=f"{i}_answer", avatar="https://raw.https://github.com/ShahVishs/streamlit-main/blob/main/logo.png")  # Replace with the actual URL of your logo
-            custom_message(answer, key=f"{i}_answer", avatar="https://raw.githubusercontent.com/yourusername/your-repo/main/path-to-your-logo.png")
+            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+    
         if st.session_state.user_name:
             try:
                 save_chat_to_airtable(st.session_state.user_name, user_input, output)
