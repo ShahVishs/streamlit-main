@@ -432,16 +432,14 @@ else:
         st.session_state.past.append(current_session_data)
 
     # with response_container:
+    # Inside your Streamlit app:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-    
-            # Display the logo as the avatar for all messages
-            logo_avatar_html = f'<img src="logo.png" alt="Logo" style="width: 50px; height: 50px; border-radius: 50%;">'
-            st.markdown(logo_avatar_html, unsafe_allow_html=True)
-    
-            message(query, is_user=True, key=f"{i}_user", avatar_style="none")  # Use "none" to hide the avatar
-            message(answer, key=f"{i}_answer", avatar_style="none")  # Use "none" to hide the avatar
+        
+            # Display the custom logo as the avatar for assistant messages
+            custom_message(query, is_user=True, key=f"{i}_user")
+            custom_message(answer, key=f"{i}_answer", avatar="https://raw.https://github.com/ShahVishs/streamlit-main/blob/main/logo.png")  # Replace with the actual URL of your logo
     
         if st.session_state.user_name:
             try:
