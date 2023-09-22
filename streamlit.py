@@ -76,7 +76,7 @@ st.markdown(hide_mainmenu_style, unsafe_allow_html=True)
 st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
 
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
-st.image("socialai.jpg")
+st.image("Twitter.jpg")
 # datetime.datetime.now()
 datetime.now()
 # Get the current date in "%m/%d/%y" format
