@@ -35,8 +35,8 @@ import json
 # CSS to hide the Share button
 hide_share_button_style = """
     <style>
-    button.stToolbar-sharingButton {
-        display: none !important;
+    .css-1wbqy5l.e3g6aar1 > span {
+        display: none;
     }
     </style>
 """
@@ -44,9 +44,9 @@ hide_share_button_style = """
 # CSS to hide the Star and GitHub elements
 hide_star_and_github_style = """
     <style>
-    button.stToolbar-feedbackButton,
-    button.stToolbar-githubButton {
-        display: none !important;
+    .css-1lb4qcp.e3g6aar0,
+    .css-30do4w.e3g6aar0 {
+        display: none;
     }
     </style>
 """
