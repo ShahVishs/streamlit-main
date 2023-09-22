@@ -437,8 +437,8 @@ else:
             
             # Display user's message with the logo as an avatar
             if user_name:
-                user_avatar = f'<img src="logo.png" style="width: 50px; height: 50px;" />'
-                message(query, is_user=True, key=f"{i}_user", avatar=st.markdown(user_avatar, unsafe_allow_html=True))
+                user_avatar = st.image("logo.png", width=50, caption="", use_container_width=False)
+                message(query, is_user=True, key=f"{i}_user", avatar=user_avatar)
             
             # Display the bot's response with the "thumbs" avatar
             message(answer, key=f"{i}_answer", avatar_style="thumbs")
