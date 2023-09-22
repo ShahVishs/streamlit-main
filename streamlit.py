@@ -74,7 +74,24 @@ st.markdown(hide_share_button_style, unsafe_allow_html=True)
 st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
 st.markdown(hide_mainmenu_style, unsafe_allow_html=True)
 st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
+ CSS to hide the Share button and adjust the margin for the image
+custom_css = """
+    <style>
+    .css-1wbqy5l.e3g6aar1 > span {
+        display: none;
+    }
+    .image-container {
+        margin-top: 10px;  /* Adjust the margin as needed */
+    }
+    </style>
+"""
 
+# Apply the CSS styles
+st.markdown(custom_css, unsafe_allow_html=True)
+
+# Display the image
+st.image("Twitter.jpg", caption="Your Image", use_column_width=True, output_format="JPEG", key="image", container_class="image-container")
+          
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 st.image("Twitter.jpg")
 # datetime.datetime.now()
