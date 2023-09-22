@@ -51,9 +51,19 @@ hide_star_and_github_style = """
     </style>
 """
 
+# CSS to hide the Manage app button
+hide_manage_app_button_style = """
+    <style>
+    .styles_terminalButton__JBj5T {
+        display: none;
+    }
+    </style>
+"""
+
 # Apply the CSS styles
 st.markdown(hide_share_button_style, unsafe_allow_html=True)
 st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
+st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
 
 # CSS to hide the MainMenu
 hide_mainmenu_style = """
@@ -74,7 +84,7 @@ hide_manage_app_button_style = """
 """
 
 st.markdown(hide_mainmenu_style, unsafe_allow_html=True)
-st.markdown(hide_manage_app_button_style, unsafe_allow_html=True)
+
 
 # # CSS to adjust the margin for the image container
 # custom_css = """
