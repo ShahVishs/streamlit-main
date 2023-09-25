@@ -447,7 +447,7 @@ else:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-            message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=4)
+            message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=5)
             message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
