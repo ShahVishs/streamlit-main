@@ -463,7 +463,22 @@ else:
         st.session_state.chat_history.append((user_input, response))
         
         return response
-  
+      def get_previous_answer_from_airtable(user_input):
+        try:
+            # Query Airtable to check if there's a previous answer for this question
+            records = airtable.search('question', user_input)
+            
+            if records:
+                # Assuming you're only interested in the first matching record
+                previous_answer = records[0]['fields']['answer']
+                return previous_answer
+            else:
+                # Handle the case when no records are found
+                return None
+        except Exception as e:
+            # Log the error for debugging
+            st.error(f"An error occurred while querying Airtable: {e}")
+            return None  # Return None or an appropriate error message
             
     if st.session_state.user_name is None:
         user_name = st.text_input("Your name:")
