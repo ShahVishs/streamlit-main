@@ -435,7 +435,7 @@ else:
             
             if records:
                 # Assuming you're only interested in the first matching record
-                previous_answer = records[0]['fields'].get('answer', 'No previous answer found.')
+                previous_answer = records[0]['fields']['answer']
                 return previous_answer
             else:
                 return None  # Return None if no previous answer is found
