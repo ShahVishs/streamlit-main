@@ -444,7 +444,7 @@ else:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            message(answer, key=f"{i}_answer", avatar_style=f"background-image: url('{logo_url}'); background-size: cover;")
+            message(answer, key=f"{i}_answer", avatar_style=f"background-image: url('{logo_url}'); background-size: contain; background-repeat: no-repeat; width: 50px; height: 50px;")
     
         if st.session_state.user_name:
             try:
