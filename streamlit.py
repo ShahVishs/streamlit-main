@@ -444,18 +444,11 @@ else:
     # Inside your Streamlit app, when displaying messages:
     # Inside your Streamlit app, when displaying messages:
    # Inside your Streamlit app:
-    # Define the URL of your logo image on GitHub
-    github_logo_url = "https://github.com/ShahVishs/streamlit-main/raw/main/logo.png"
-    
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-            message(query, is_user=True, key=f"{i}_user")
-            
-            # Display the logo image from the GitHub URL
-            st.image(github_logo_url, width=50, key=f"{i}_logo")
-            
-            message(answer, key=f"{i}_answer")
+            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+            message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
