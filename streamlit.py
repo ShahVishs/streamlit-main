@@ -428,6 +428,7 @@ else:
         result = agent_executor({"input": user_input})
         st.session_state.chat_history.append((user_input, result["output"]))
         return result["output"]
+        
     def get_previous_answer_from_airtable(user_input):
         try:
             # Query Airtable to check if there's a previous answer for this question
@@ -438,7 +439,8 @@ else:
                 previous_answer = records[0]['fields']['answer']
                 return previous_answer
             else:
-                return None  # Return None if no previous answer is found
+                 new_answer = conversational_chat(user_input)
+                 return new_answer
         except Exception as e:
             st.error(f"An error occurred while querying Airtable: {e}")
         
