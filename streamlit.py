@@ -497,8 +497,8 @@ else:
             'user_name': st.session_state.user_name,
             'chat_history': st.session_state.chat_history
         }
-        st.session_state.past.append(current_session_data)
-    
+        # st.session_state.past.append(current_session_data)
+        st.session_state.sessions[session_id] = current_session_data
     # Inside your Streamlit app:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
