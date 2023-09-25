@@ -429,29 +429,40 @@ else:
     #     st.session_state.chat_history.append((user_input, result["output"]))
     #     return result["output"]
         
+    # Initialize session-specific context
+    session_context = {}
+    
     def conversational_chat(user_input):
-        # Retrieve the chat history for the current session from session state
-        chat_history = st.session_state.chat_history
+        user_name = st.session_state.user_name
+        
+        # Check if this is a new session or a returning session
+        if user_name not in session_context:
+            session_context[user_name] = []
     
-        # Check if there are any previous messages in the chat history
-        if chat_history:
-            # Get the last question-answer pair
-            last_question, last_answer = chat_history[-1]
-    
-            # Check if the user's input is similar to the last question asked
-            if is_similar(user_input, last_question):
-                return last_answer
-    
-        # If there's no relevant previous answer, generate a new response
-        result = agent_executor({"input": user_input})
-        st.session_state.chat_history.append((user_input, result["output"]))
-        return result["output"]
-    
-    # Function to check if two strings are similar (you can use a more advanced similarity measure)
-    def is_similar(input_1, input_2):
-        # Implement your similarity check logic here
-        # Example: you can use a text similarity library like spaCy or gensim
-        return input_1 == input_2  # Placeholder for similarity check
+        # Check if there is relevant context within the session
+        for i in range(len(session_context[user_name]) - 1, -1, -1):
+            prev_question, prev_answer = session_context[user_name][i]
+            if user_input.lower() in prev_question.lower():
+                # Found relevant context within the session
+                response = prev_answer
+                break
+        else:
+            # No relevant context within the session, check Airtable
+            previous_answer = get_previous_answer_from_airtable(user_input)
+            if previous_answer:
+                response = previous_answer
+            else:
+                # Generate a new answer using the AI model
+                result = agent_executor({"input": user_input})
+                response = result["output"]
+            
+            # Append the current question-answer pair to the session context
+            session_context[user_name].append((user_input, response))
+        
+        # Append the user's question and the response to the chat history
+        st.session_state.chat_history.append((user_input, response))
+        
+        return response
   
             
     if st.session_state.user_name is None:
