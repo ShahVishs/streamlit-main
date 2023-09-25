@@ -437,6 +437,7 @@ else:
     # Inside your Streamlit app:
     with response_container:
         # Inside your response_container
+        # Inside your response_container
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
             
@@ -444,11 +445,14 @@ else:
             custom_avatar_url = "https://github.com/ShahVishs/streamlit-main/blob/main/logo.png"
             
             # Define a custom CSS style for the avatar with the background image
-            custom_avatar_style = f"background-image: url('{custom_avatar_url}');"
+            custom_avatar_style = f"background-image: url('{custom_avatar_url}'); width: 50px; height: 50px;"
             
-            # Display the message with the custom avatar style
-            message(query, is_user=True, key=f"{i}_user", avatar_style=custom_avatar_style)
-            message(answer, key=f"{i}_answer", avatar_style=custom_avatar_style)
+            # Display the message with the custom avatar style using HTML
+            st.markdown(f'<div class="avatar" style="{custom_avatar_style}"></div>', unsafe_allow_html=True)
+            
+            # Display the message content
+            st.write(user_name if is_user else "Bot")
+            st.write(query if is_user else answer)
     
         if st.session_state.user_name:
             try:
