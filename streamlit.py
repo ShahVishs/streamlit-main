@@ -419,8 +419,15 @@ else:
 
     # with response_container:
     # Inside your Streamlit app:
+    # Define the maximum number of messages to load initially
+    max_messages_to_load = 10
+    
+    # Create a button to load more messages
+    if st.button("Load More Messages"):
+        max_messages_to_load += 10  # Increase the number of messages to load
     with response_container:
-        for i, (query, answer) in enumerate(st.session_state.chat_history):
+        # Display only the last 'max_messages_to_load' messages
+        for i, (query, answer) in enumerate(st.session_state.chat_history[-max_messages_to_load:]):
             user_name = st.session_state.user_name
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
             message(answer, key=f"{i}_answer", avatar_style="thumbs")
