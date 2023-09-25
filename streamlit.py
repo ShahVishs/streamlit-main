@@ -404,7 +404,7 @@ else:
     #     st.session_state.chat_history.append((user_input, result["output"]))
     #     return result["output"]
     # Function for conversational chat
-    @st.cache_data
+    # @st.cache_data
     def conversational_chat(user_input):
         # Check if the user has asked this question before
         previous_answer = get_previous_answer_from_airtable(user_input)
