@@ -424,7 +424,7 @@ else:
     
     # Create a button to load more messages
     if st.button("Load More Messages"):
-        max_messages_to_load += 10  # Increase the number of messages to load
+        max_messages_to_load += 5  # Increase the number of messages to load
     with response_container:
         # Display only the last 'max_messages_to_load' messages
         for i, (query, answer) in enumerate(st.session_state.chat_history[-max_messages_to_load:]):
