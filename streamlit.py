@@ -448,7 +448,11 @@ else:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
             message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
-            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+            # Display the logo image before the answer
+            st.image("logo.png", width=40, key=f"{i}_logo", use_container_width=False)
+            
+            # Display the answer without an avatar
+            message(answer, key=f"{i}_answer", avatar_style=None)
     
         if st.session_state.user_name:
             try:
