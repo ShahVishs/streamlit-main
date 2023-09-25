@@ -440,11 +440,13 @@ else:
     # Inside your Streamlit app, when displaying user messages:
     # with response_container:
         # Inside your Streamlit app, when displaying messages:
+    # Inside your Streamlit app, when displaying messages:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            message(answer, key=f"{i}_answer", avatar_style=f"background-image: url('{logo_url}'); background-size: contain; background-repeat: no-repeat; width: 50px; height: 50px;")
+            message(f'<img src="{logo_url}" width="50" height="50">', key=f"{i}_logo", avatar_style="logo")
+            message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
