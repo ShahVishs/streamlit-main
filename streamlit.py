@@ -438,11 +438,13 @@ else:
     logo_url = "https://github.com/ShahVishs/streamlit-main/blob/main/logo.png"  # Replace with your actual logo URL
     
     # Inside your Streamlit app, when displaying user messages:
+    # with response_container:
+        # Inside your Streamlit app, when displaying messages:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-            message(query, is_user=True, key=f"{i}_user", avatar_style=f"background-image: url('{logo_url}'); background-size: cover;")
-            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+            message(answer, key=f"{i}_answer", avatar_style=f"background-image: url('{logo_url}'); background-size: cover;")
     
         if st.session_state.user_name:
             try:
