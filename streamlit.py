@@ -398,11 +398,11 @@ else:
             st.error(f"An error occurred while saving data to Airtable: {e}")
 
     # Function for conversational chat
-    # @st.cache_data
-    # def conversational_chat(user_input):
-    #     result = agent_executor({"input": user_input})
-    #     st.session_state.chat_history.append((user_input, result["output"]))
-    #     return result["output"]
+    @st.cache_data
+    def conversational_chat(user_input):
+        result = agent_executor({"input": user_input})
+        st.session_state.chat_history.append((user_input, result["output"]))
+        return result["output"]
     # Function for conversational chat
     # # @st.cache_data
     # def conversational_chat(user_input):
@@ -415,19 +415,19 @@ else:
     #     result = agent_executor({"input": user_input})
     #     st.session_state.chat_history.append((user_input, result["output"]))
     #     return result["output"]
-    @st.cache_data
-    def conversational_chat(user_input):
-        # Check if the user has asked this question before
-        previous_answer = get_previous_answer_from_airtable(user_input)
+    # @st.cache_data
+    # def conversational_chat(user_input):
+    #     # Check if the user has asked this question before
+    #     previous_answer = get_previous_answer_from_airtable(user_input)
         
-        if previous_answer:
-            # Append the repeated question and answer to the chat history
-            st.session_state.chat_history.append((user_input, previous_answer))
-            return previous_answer
+    #     if previous_answer:
+    #         # Append the repeated question and answer to the chat history
+    #         st.session_state.chat_history.append((user_input, previous_answer))
+    #         return previous_answer
         
-        result = agent_executor({"input": user_input})
-        st.session_state.chat_history.append((user_input, result["output"]))
-        return result["output"]
+    #     result = agent_executor({"input": user_input})
+    #     st.session_state.chat_history.append((user_input, result["output"]))
+    #     return result["output"]
         
     def get_previous_answer_from_airtable(user_input):
         try:
