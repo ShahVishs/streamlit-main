@@ -416,24 +416,19 @@ else:
             'chat_history': st.session_state.chat_history
         }
         st.session_state.past.append(current_session_data)
-
+    # Add a scroll-up button
+    if st.button("Scroll Up"):
+        response_container.scroll_to(0)
     # with response_container:
     # Inside your Streamlit app:
-    # Define the maximum number of messages to load initially
-    if 'max_messages_to_load' not in st.session_state:
-        st.session_state.max_messages_to_load = 2
-    
-    # Create a button to load more messages
-    if st.button("Load More Messages"):
-        st.session_state.max_messages_to_load += 2  # Increase the number of messages to load
-
     with response_container:
-        # Display only the last 'max_messages_to_load' messages
-        for i, (query, answer) in enumerate(st.session_state.chat_history[-st.session_state.max_messages_to_load:]):
+        for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
             message(answer, key=f"{i}_answer", avatar_style="thumbs")
-    
+    # Add a scroll-down button
+    if st.button("Scroll Down"):
+        response_container.scroll_to("end")
         if st.session_state.user_name:
             try:
                 save_chat_to_airtable(st.session_state.user_name, user_input, output)
