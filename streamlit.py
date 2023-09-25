@@ -140,6 +140,10 @@ if 'user_role' not in st.session_state:
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
+# Initialize the sessions variable in session state
+if 'sessions' not in st.session_state:
+    st.session_state.sessions = {}
+    
 # Initialize a dictionary to cache responses for repeated questions
 question_cache = {}
 
@@ -309,9 +313,7 @@ if 'past' not in st.session_state:
 # Initialize user name in session state
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
-# Initialize the sessions variable in session state
-if 'sessions' not in st.session_state:
-    st.session_state.sessions = {}
+
 # Check if the user's name is "vishakha"
 # Check if the user's name is "vishakha"
 if st.session_state.user_name == "vishakha":
