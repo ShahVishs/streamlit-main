@@ -450,10 +450,10 @@ else:
             message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
             
             # Display the logo image
-            # st.image("logo.png")
+            st.image("logo.png")
         
             # Display the answer with the desired avatar style
-            message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
+            message(answer, key=f"{i}_answer", avatar_style="initials", seed="EngagedAi",)
         if st.session_state.user_name:
             try:
                 save_chat_to_airtable(st.session_state.user_name, user_input, output)
