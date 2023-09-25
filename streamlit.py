@@ -451,7 +451,7 @@ else:
             
             # Display a logo image in the chat answer messages
             if "logo.png" in answer:
-                logo_image = st.image("logo.png", width=20)
+                logo_image = st.image("logo.png")
                 message(answer.replace("logo.png", ""), key=f"{i}_answer", avatar_style="none")
             else:
                 message(answer, key=f"{i}_answer", avatar_style="none")
