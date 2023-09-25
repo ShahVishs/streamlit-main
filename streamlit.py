@@ -404,17 +404,17 @@ else:
     #     st.session_state.chat_history.append((user_input, result["output"]))
     #     return result["output"]
     # Function for conversational chat
-    # # @st.cache_data
-    # def conversational_chat(user_input):
-    #     # Check if the user has asked this question before
-    #     previous_answer = get_previous_answer_from_airtable(user_input)
+    # @st.cache_data
+    def conversational_chat(user_input):
+        # Check if the user has asked this question before
+        previous_answer = get_previous_answer_from_airtable(user_input)
         
-    #     if previous_answer:
-    #         return previous_answer
+        if previous_answer:
+            return previous_answer
         
-    #     result = agent_executor({"input": user_input})
-    #     st.session_state.chat_history.append((user_input, result["output"]))
-    #     return result["output"]
+        result = agent_executor({"input": user_input})
+        st.session_state.chat_history.append((user_input, result["output"]))
+        return result["output"]
     # @st.cache_data
     # def conversational_chat(user_input):
     #     # Check if the user has asked this question before
@@ -429,56 +429,56 @@ else:
     #     st.session_state.chat_history.append((user_input, result["output"]))
     #     return result["output"]
         
-    # Initialize session-specific context
-    session_context = {}
+    # # Initialize session-specific context
+    # session_context = {}
     
-    def conversational_chat(user_input):
-        user_name = st.session_state.user_name
+    # def conversational_chat(user_input):
+    #     user_name = st.session_state.user_name
         
-        # Check if this is a new session or a returning session
-        if user_name not in session_context:
-            session_context[user_name] = []
+    #     # Check if this is a new session or a returning session
+    #     if user_name not in session_context:
+    #         session_context[user_name] = []
     
-        # Check if there is relevant context within the session
-        for i in range(len(session_context[user_name]) - 1, -1, -1):
-            prev_question, prev_answer = session_context[user_name][i]
-            if user_input.lower() in prev_question.lower():
-                # Found relevant context within the session
-                response = prev_answer
-                break
-        else:
-            # No relevant context within the session, check Airtable
-            previous_answer = get_previous_answer_from_airtable(user_input)
-            if previous_answer:
-                response = previous_answer
-            else:
-                # Generate a new answer using the AI model
-                result = agent_executor({"input": user_input})
-                response = result["output"]
+    #     # Check if there is relevant context within the session
+    #     for i in range(len(session_context[user_name]) - 1, -1, -1):
+    #         prev_question, prev_answer = session_context[user_name][i]
+    #         if user_input.lower() in prev_question.lower():
+    #             # Found relevant context within the session
+    #             response = prev_answer
+    #             break
+    #     else:
+    #         # No relevant context within the session, check Airtable
+    #         previous_answer = get_previous_answer_from_airtable(user_input)
+    #         if previous_answer:
+    #             response = previous_answer
+    #         else:
+    #             # Generate a new answer using the AI model
+    #             result = agent_executor({"input": user_input})
+    #             response = result["output"]
             
-            # Append the current question-answer pair to the session context
-            session_context[user_name].append((user_input, response))
+    #         # Append the current question-answer pair to the session context
+    #         session_context[user_name].append((user_input, response))
         
-        # Append the user's question and the response to the chat history
-        st.session_state.chat_history.append((user_input, response))
+    #     # Append the user's question and the response to the chat history
+    #     st.session_state.chat_history.append((user_input, response))
         
-        return response
-    def get_previous_answer_from_airtable(user_input):
-        try:
-            # Query Airtable to check if there's a previous answer for this question
-            records = airtable.search('question', user_input)
+    #     return response
+    # def get_previous_answer_from_airtable(user_input):
+    #     try:
+    #         # Query Airtable to check if there's a previous answer for this question
+    #         records = airtable.search('question', user_input)
             
-            if records:
-                # Assuming you're only interested in the first matching record
-                previous_answer = records[0]['fields']['answer']
-                return previous_answer
-            else:
-                # Handle the case when no records are found
-                return None
-        except Exception as e:
-            # Log the error for debugging
-            st.error(f"An error occurred while querying Airtable: {e}")
-            return None  # Return None or an appropriate error message
+    #         if records:
+    #             # Assuming you're only interested in the first matching record
+    #             previous_answer = records[0]['fields']['answer']
+    #             return previous_answer
+    #         else:
+    #             # Handle the case when no records are found
+    #             return None
+    #     except Exception as e:
+    #         # Log the error for debugging
+    #         st.error(f"An error occurred while querying Airtable: {e}")
+    #         return None  # Return None or an appropriate error message
             
     if st.session_state.user_name is None:
         user_name = st.text_input("Your name:")
@@ -509,16 +509,7 @@ else:
         }
         st.session_state.past.append(current_session_data)
 
-    # with response_container:
-    # Define the URL of your logo image
-    logo_url = "https://github.com/ShahVishs/streamlit-main/blob/main/logo.png"  # Replace with your actual logo URL
-    
-    # Inside your Streamlit app, when displaying user messages:
-    # with response_container:
-        # Inside your Streamlit app, when displaying messages:
-    # Inside your Streamlit app, when displaying messages:
-    # Inside your Streamlit app, when displaying messages:
-    # Inside your Streamlit app, when displaying messages:
+  
    # Inside your Streamlit app:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
