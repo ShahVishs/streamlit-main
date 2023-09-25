@@ -399,10 +399,10 @@ else:
 
     # Function for conversational chat
     # @st.cache_data
-    def conversational_chat(user_input):
-        result = agent_executor({"input": user_input})
-        st.session_state.chat_history.append((user_input, result["output"]))
-        return result["output"]
+    # def conversational_chat(user_input):
+    #     result = agent_executor({"input": user_input})
+    #     st.session_state.chat_history.append((user_input, result["output"]))
+    #     return result["output"]
     # Function for conversational chat
     # # @st.cache_data
     # def conversational_chat(user_input):
@@ -429,19 +429,31 @@ else:
     #     st.session_state.chat_history.append((user_input, result["output"]))
     #     return result["output"]
         
-    def get_previous_answer_from_airtable(user_input):
-        try:
-            # Query Airtable to check if there's a previous answer for this question
-            records = airtable.search('question', user_input)
+    def conversational_chat(user_input):
+        # Retrieve the chat history for the current session from session state
+        chat_history = st.session_state.chat_history
+    
+        # Check if there are any previous messages in the chat history
+        if chat_history:
+            # Get the last question-answer pair
+            last_question, last_answer = chat_history[-1]
+    
+            # Check if the user's input is similar to the last question asked
+            if is_similar(user_input, last_question):
+                return last_answer
+    
+        # If there's no relevant previous answer, generate a new response
+        result = agent_executor({"input": user_input})
+        st.session_state.chat_history.append((user_input, result["output"]))
+        return result["output"]
+    
+    # Function to check if two strings are similar (you can use a more advanced similarity measure)
+    def is_similar(input_1, input_2):
+        # Implement your similarity check logic here
+        # Example: you can use a text similarity library like spaCy or gensim
+        return input_1 == input_2  # Placeholder for similarity check
+  
             
-            if records:
-                # Assuming you're only interested in the first matching record
-                previous_answer = records[0]['fields']['answer']
-                return previous_answer
-           
-        except Exception as e:
-            st.error(f"An error occurred while querying Airtable: {e}")
-        
     if st.session_state.user_name is None:
         user_name = st.text_input("Your name:")
         if user_name:
