@@ -419,12 +419,28 @@ else:
 
     # with response_container:
     # Inside your Streamlit app:
+    # Define the number of initially visible messages and the increment for lazy loading
+    initial_messages_to_show = 10
+    lazy_load_increment = 5
+    
+    # Function to load more chat messages lazily
+    def load_more_messages():
+        # Load the next batch of messages
+        additional_messages = []  # Add your logic to load more messages here
+        st.session_state.chat_history.extend(additional_messages)
+    
+    # Inside your Streamlit app:
     with response_container:
-        for i, (query, answer) in enumerate(st.session_state.chat_history):
+        # Display the initial chat messages
+        for i, (query, answer) in enumerate(st.session_state.chat_history[:initial_messages_to_show]):
             user_name = st.session_state.user_name
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
             message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
+        # Add a button to load more messages
+        if len(st.session_state.chat_history) > initial_messages_to_show:
+            st.button("Load More Messages", on_click=load_more_messages)
+        
         if st.session_state.user_name:
             try:
                 save_chat_to_airtable(st.session_state.user_name, user_input, output)
