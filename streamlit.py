@@ -423,15 +423,16 @@ else:
     initial_messages_to_show = 3
     lazy_load_increment = 5
     
-    # Function to load more chat messages lazily
+   
     # Function to load more chat messages lazily
     def load_more_messages():
         # Simulate loading more messages (replace this with your actual logic)
         additional_messages = []
         for i in range(lazy_load_increment):
-            timestamp = datetime.datetime.now().strftime("%H:%M:%S")  # Fix the import here
+            timestamp = datetime.now().strftime("%H:%M:%S")  # Use datetime without the module prefix
             additional_messages.append(f"Lazy Loaded Message {len(st.session_state.chat_history) + i + 1} at {timestamp}")
         st.session_state.chat_history.extend(additional_messages)
+
     
     # Inside your Streamlit app:
     with response_container:
