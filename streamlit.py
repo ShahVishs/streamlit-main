@@ -75,6 +75,22 @@ st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
 st.markdown(hide_mainmenu_style, unsafe_allow_html=True)
 st.markdown(hide_fork_app_button_style, unsafe_allow_html=True)
 
+# Custom CSS style to set the avatar as your logo
+custom_avatar_style = """
+<style>
+    .custom-avatar {
+        background-image: url("https://github.com/ShahVishs/streamlit-main/blob/main/logo.png"); /* Replace with the path to your logo image */
+        background-size: cover;
+        width: 40px; /* Adjust the width and height as needed */
+        height: 40px;
+        border-radius: 50%; /* To make it circular */
+        margin-right: 10px; /* Adjust the margin as needed */
+    }
+</style>
+"""
+
+# Apply the custom CSS style
+st.markdown(custom_avatar_style, unsafe_allow_html=True)
 # # Display the image
 # st.image("Twitter.jpg", caption="Twitter.jpg", use_column_width=True, output_format="JPEG", key="image", container_class="image-container")
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
@@ -420,10 +436,19 @@ else:
     # with response_container:
     # Inside your Streamlit app:
     with response_container:
+        # Inside your response_container
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+            
+            # Set your custom avatar image URL here
+            custom_avatar_url = "https://github.com/ShahVishs/streamlit-main/blob/main/logo.png"
+            
+            # Define a custom CSS style for the avatar with the background image
+            custom_avatar_style = f"background-image: url('{custom_avatar_url}');"
+            
+            # Display the message with the custom avatar style
+            message(query, is_user=True, key=f"{i}_user", avatar_style=custom_avatar_style)
+            message(answer, key=f"{i}_answer", avatar_style=custom_avatar_style)
     
         if st.session_state.user_name:
             try:
