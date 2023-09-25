@@ -450,7 +450,7 @@ else:
         response = result["output"]
         
         # Append the current question and its response to chat history
-        st.session_state.chat_history.append((user_input, response))
+        # st.session_state.chat_history.append((user_input, response))
         
         return response
     # def get_previous_answer_from_airtable(user_input):
