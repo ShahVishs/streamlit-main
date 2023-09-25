@@ -442,12 +442,18 @@ else:
         # Inside your Streamlit app, when displaying messages:
     # Inside your Streamlit app, when displaying messages:
     # Inside your Streamlit app, when displaying messages:
+    # Inside your Streamlit app, when displaying messages:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            message("![Logo](https://github.com/ShahVishs/streamlit-main/blob/main/logo.png)", key=f"{i}_logo")
-            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+            
+            if "![Logo](" in answer:
+                # Extract the URL from the Markdown image syntax
+                logo_url = answer.split("](")[1].split(")")[0]
+                st.markdown(f'<img src="{logo_url}" width="50" height="50">', unsafe_allow_html=True)
+            else:
+                message(answer, key=f"{i}_answer", avatar_style="thumbs")
     
         if st.session_state.user_name:
             try:
