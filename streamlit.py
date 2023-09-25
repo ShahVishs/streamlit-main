@@ -451,7 +451,8 @@ else:
             st.markdown(f'<div class="avatar" style="{custom_avatar_style}"></div>', unsafe_allow_html=True)
             
             # Display the message content
-            st.write(user_name if is_user else "Bot")
+            if user_name is not None:
+                st.write(user_name if is_user else "Bot")
             st.write(query if is_user else answer)
     
         if st.session_state.user_name:
