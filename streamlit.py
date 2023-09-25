@@ -447,8 +447,11 @@ else:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            logo_image = st.image("logo.png")
+            message(query, is_user=True, key=f"{i}_user")
+            
+            # Display the logo image
+            st.image("logo.png", width=50, key=f"{i}_logo")
+            
             message(answer, key=f"{i}_answer")
           
     
