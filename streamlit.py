@@ -438,9 +438,7 @@ else:
                 # Assuming you're only interested in the first matching record
                 previous_answer = records[0]['fields']['answer']
                 return previous_answer
-            else:
-                 new_answer = conversational_chat(user_input)
-                 return new_answer
+           
         except Exception as e:
             st.error(f"An error occurred while querying Airtable: {e}")
         
