@@ -448,13 +448,9 @@ else:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            
-            # Display a logo image in the chat answer messages
-            if "logo.png" in answer:
-                logo_image = st.image("logo.png")
-                message(answer.replace("logo.png", ""), key=f"{i}_answer", avatar_style="none")
-            else:
-                message(answer, key=f"{i}_answer", avatar_style="none")
+            logo_image = st.image("logo.png")
+            message(answer.replace("logo.png", ""), key=f"{i}_answer", avatar_style="none")
+          
     
         if st.session_state.user_name:
             try:
