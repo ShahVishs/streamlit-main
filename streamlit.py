@@ -486,17 +486,18 @@ else:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-        output = conversational_chat(user_input)
-
+        response = conversational_chat(user_input)
+        # Append the user's question and its answer to the chat history
+        st.session_state.chat_history.append((user_input, response))
+    
     if st.session_state.user_name and st.session_state.chat_history:
         current_session_data = {
             'user_name': st.session_state.user_name,
             'chat_history': st.session_state.chat_history
         }
         st.session_state.past.append(current_session_data)
-
-  
-   # Inside your Streamlit app:
+    
+    # Inside your Streamlit app:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
