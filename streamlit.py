@@ -423,10 +423,10 @@ else:
             
             if records:
                 # Assuming you're only interested in the first matching record
-                previous_answer = records[0]['fields']['answer']
+                previous_answer = records[0]['fields'].get('answer', 'No previous answer found.')
                 return previous_answer
             else:
-                return None
+                return None  # Return None if no previous answer is found
         except Exception as e:
             st.error(f"An error occurred while querying Airtable: {e}")
         
