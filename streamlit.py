@@ -450,7 +450,7 @@ else:
             message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
             
             # Display the logo image
-            st.image("icon-1024.png")
+            st.image("icon-1024.png", width=40)
         
             # Display the answer with the desired avatar style
             message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
