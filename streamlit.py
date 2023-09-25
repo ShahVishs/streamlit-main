@@ -451,10 +451,9 @@ else:
             
             # Display the logo image
             st.image("logo.png")
-    
-            # Display the answer as plain text
-            # st.text(answer)
-            message(answer, key=f"{i}_answer",  avatar_style="Initials", seed="EngagedAi")
+        
+            # Display the answer with the desired avatar style
+            message(answer, key=f"{i}_answer", avatar_style="Initials", seed="EngagedAi")
         if st.session_state.user_name:
             try:
                 save_chat_to_airtable(st.session_state.user_name, user_input, output)
