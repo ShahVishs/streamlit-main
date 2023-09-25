@@ -449,7 +449,7 @@ else:
             user_name = st.session_state.user_name
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
             logo_image = st.image("logo.png")
-            message(answer.replace("logo.png", ""), key=f"{i}_answer")
+            message(answer, key=f"{i}_answer")
           
     
         if st.session_state.user_name:
