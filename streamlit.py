@@ -420,7 +420,7 @@ else:
     # with response_container:
     # Inside your Streamlit app:
     # Define the number of initially visible messages and the increment for lazy loading
-    initial_messages_to_show = 10
+    initial_messages_to_show = 3
     lazy_load_increment = 5
     
     # Function to load more chat messages lazily
