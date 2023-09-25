@@ -136,44 +136,49 @@ ROLES = ['admin', 'user']
 if 'user_role' not in st.session_state:
     st.session_state.user_role = None
 
+# Initialize session-specific chat history
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
+
+# Initialize a dictionary to cache responses for repeated questions
+question_cache = {}
+
 # Function to save chat session data
 def save_chat_session(session_data, session_id):
     session_directory = "chat_sessions"
     session_filename = f"{session_directory}/chat_session_{session_id}.json"
-    
+
     if not os.path.exists(session_directory):
         os.makedirs(session_directory)
-    
+
     session_dict = {
         'user_name': session_data['user_name'],
-        'user_role': session_data['user_role'],  # Include user role
         'chat_history': session_data['chat_history']
     }
-    
+
     try:
         with open(session_filename, "w") as session_file:
             json.dump(session_dict, session_file)
     except Exception as e:
         st.error(f"An error occurred while saving the chat session: {e}")
 
-# Function to load previous sessions
-# @st.cache
+# Load previous sessions
 def load_previous_sessions():
     previous_sessions = {}
-    
+
     if not os.path.exists("chat_sessions"):
         os.makedirs("chat_sessions")
-    
+
     session_files = os.listdir("chat_sessions")
-    
+
     for session_file in session_files:
         session_filename = os.path.join("chat_sessions", session_file)
         session_id = session_file.split("_")[-1].split(".json")[0]
-        
+
         with open(session_filename, "r") as session_file:
             session_data = json.load(session_file)
             previous_sessions[session_id] = session_data
-    
+
     return previous_sessions
 
 # Initialize st.session_state.past as an empty list if it doesn't exist
@@ -193,8 +198,7 @@ if st.button("Refresh Session"):
     # Save the current session and start a new one
     current_session = {
         'user_name': st.session_state.user_name,
-        'chat_history': st.session_state.chat_history,
-        'user_role': st.session_state.user_role
+        'chat_history': st.session_state.chat_history
     }
 
     # Generate a unique session_id based on the timestamp
@@ -226,49 +230,36 @@ user_sessions = {}
 for session_id, session_data in st.session_state.sessions.items():
     user_name = session_data['user_name']
     chat_history = session_data['chat_history']
-    user_role = session_data['user_role']
-    
-    # Check if the current user is an admin (user_role is 'admin') or a regular user (user_role is 'user')
+
     if user_name not in user_sessions:
         user_sessions[user_name] = []
 
     user_sessions[user_name].append({
         'session_id': session_id,
-        'chat_history': chat_history,
-        'user_role': user_role
+        'chat_history': chat_history
     })
-if is_admin:
-    # If the user is an admin (vishakha), show all sessions for all users
-    for user_name, sessions in user_sessions.items():
-        # st.sidebar.subheader(f"User: {user_name}")
 
+# If the user is an admin (vishakha), show all sessions for all users
+if st.session_state.user_name == "vishakha":
+    for user_name, sessions in user_sessions.items():
         for session in sessions:
             formatted_session_name = f"{user_name} - {session['session_id']}"
 
             button_key = f"session_button_{session['session_id']}"
             if st.sidebar.button(formatted_session_name, key=button_key):
-                # Set the current chat history to the selected session's chat history
-                st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
-                # Update the user name to match the session's user name
-                st.session_state.user_name = user_name
-                # Update the user role to match the session's user role
-                st.session_state.user_role = session['user_role']
+                st.session_state.chat_history = session['chat_history'].copy()
 else:
     # If the user is not an admin, show only their own session
     user_name = st.session_state.user_name
     if user_name:
-        # st.sidebar.subheader(f"Your Sessions")
-
-        # Display the user's sessions if they exist
         if user_name in user_sessions:
             for session in user_sessions[user_name]:
                 formatted_session_name = f"{user_name} - {session['session_id']}"
 
                 if st.sidebar.button(formatted_session_name):
-                    # Set the current chat history to the selected session's chat history
-                    st.session_state.chat_history = session['chat_history'].copy()  # Make a copy to avoid modifying the original
-                    # Update the user role to match the session's user role
-                    st.session_state.user_role = session['user_role']
+                    st.session_state.chat_history = session['chat_history'].copy()
+
+
 file_1 = r'dealer_1_inventry.csv'
 
 loader = CSVLoader(file_path=file_1)
@@ -415,19 +406,22 @@ else:
     #     result = agent_executor({"input": user_input})
     #     st.session_state.chat_history.append((user_input, result["output"]))
     #     return result["output"]
-    # @st.cache_data
+    # Function to remember the conversation for a session and cache responses
     def conversational_chat(user_input):
-        # Check if the user has asked this question before
-        previous_answer = get_previous_answer_from_airtable(user_input)
-        
-        if previous_answer:
-            # Append the repeated question and answer to the chat history
-            st.session_state.chat_history.append((user_input, previous_answer))
-            return previous_answer
-        
-        result = agent_executor({"input": user_input})
-        st.session_state.chat_history.append((user_input, result["output"]))
-        return result["output"]
+        # Check if the user's input is in the cache
+        if user_input in question_cache:
+            # If yes, retrieve the cached response
+            output = question_cache[user_input]
+        else:
+            # If no, generate a new response and append to chat history
+            # You should include your code for generating AI responses here
+            # For demonstration, let's assume we generate a simple response
+            output = "AI Response: " + user_input
+            st.session_state.chat_history.append((user_input, output))
+            # Cache the response for future use
+            question_cache[user_input] = output
+    
+        return output
         
     # # Initialize session-specific context
     # session_context = {}
