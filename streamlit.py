@@ -309,7 +309,9 @@ if 'past' not in st.session_state:
 # Initialize user name in session state
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
-
+# Initialize the sessions variable in session state
+if 'sessions' not in st.session_state:
+    st.session_state.sessions = {}
 # Check if the user's name is "vishakha"
 # Check if the user's name is "vishakha"
 if st.session_state.user_name == "vishakha":
