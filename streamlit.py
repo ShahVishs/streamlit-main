@@ -439,7 +439,7 @@ else:
         for query, answer in reversed(st.session_state.chat_history):
             if query.lower() == user_input.lower():  # Case-insensitive comparison
                 # If a match is found, return both the question and its answer
-                return f"User's Question: {query}\nAI's Response: {answer}"
+                 return answer
         
         # If not found in history, continue the conversation with the AI agent
         result = agent_executor({"input": user_input})
