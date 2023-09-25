@@ -450,7 +450,7 @@ else:
             message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
             
             # Display the logo image
-            st.image("logo.png", width=40, key=f"{i}_logo", use_container_width=False)
+            st.image("logo.png")
     
             # Display the answer as plain text
             st.text(answer)
