@@ -421,11 +421,11 @@ else:
     # Inside your Streamlit app:
     # Define the maximum number of messages to load initially
     if 'max_messages_to_load' not in st.session_state:
-        st.session_state.max_messages_to_load = 10
+        st.session_state.max_messages_to_load = 2
     
     # Create a button to load more messages
     if st.button("Load More Messages"):
-        st.session_state.max_messages_to_load += 10  # Increase the number of messages to load
+        st.session_state.max_messages_to_load += 2  # Increase the number of messages to load
 
     with response_container:
         # Display only the last 'max_messages_to_load' messages
