@@ -484,6 +484,19 @@ else:
    
     user_input = ""
     output = ""
+    
+    if st.session_state.user_name is None:
+        user_name = st.text_input("Your name:")
+        if user_name:
+            st.session_state.user_name = user_name
+        if user_name == "vishakha":
+            # Load chat history for "vishakha" without asking for a query
+            is_admin = True
+            st.session_state.user_role = "admin"
+            st.session_state.user_name = user_name
+            st.session_state.new_session = False  # Prevent clearing chat history
+            st.session_state.sessions = load_previous_sessions()
+    
     with st.form(key='my_form', clear_on_submit=True):
         if st.session_state.user_name != "vishakha":
             user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
@@ -494,13 +507,6 @@ else:
         # Append the user's question and its answer to the chat history
         st.session_state.chat_history.append((user_input, response))
     
-    if st.session_state.user_name and st.session_state.chat_history:
-        current_session_data = {
-            'user_name': st.session_state.user_name,
-            'chat_history': st.session_state.chat_history
-        }
-        st.session_state.past.append(current_session_data)
-        # st.session_state.sessions[session_id] = current_session_data
     # Inside your Streamlit app:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
@@ -512,8 +518,9 @@ else:
         
             # Display the answer with the desired avatar style
             message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
-        if st.session_state.user_name:
-            try:
-                save_chat_to_airtable(st.session_state.user_name, user_input, output)
-            except Exception as e:
-                st.error(f"An error occurred: {e}")
+    
+    if st.session_state.user_name and st.session_state.chat_history:
+        try:
+            save_chat_to_airtable(st.session_state.user_name, user_input, output)
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
