@@ -405,29 +405,29 @@ else:
     #     return result["output"]
     # Function for conversational chat
     # @st.cache_data
-    def conversational_chat(user_input):
-        # Check if the user has asked this question before
-        previous_answer = get_previous_answer_from_airtable(user_input)
-        
-        if previous_answer:
-            return previous_answer
-        
-        result = agent_executor({"input": user_input})
-        st.session_state.chat_history.append((user_input, result["output"]))
-        return result["output"]
-    # @st.cache_data
     # def conversational_chat(user_input):
     #     # Check if the user has asked this question before
     #     previous_answer = get_previous_answer_from_airtable(user_input)
         
     #     if previous_answer:
-    #         # Append the repeated question and answer to the chat history
-    #         st.session_state.chat_history.append((user_input, previous_answer))
     #         return previous_answer
         
     #     result = agent_executor({"input": user_input})
     #     st.session_state.chat_history.append((user_input, result["output"]))
     #     return result["output"]
+    # @st.cache_data
+    def conversational_chat(user_input):
+        # Check if the user has asked this question before
+        previous_answer = get_previous_answer_from_airtable(user_input)
+        
+        if previous_answer:
+            # Append the repeated question and answer to the chat history
+            st.session_state.chat_history.append((user_input, previous_answer))
+            return previous_answer
+        
+        result = agent_executor({"input": user_input})
+        st.session_state.chat_history.append((user_input, result["output"]))
+        return result["output"]
         
     # # Initialize session-specific context
     # session_context = {}
@@ -463,22 +463,22 @@ else:
     #     st.session_state.chat_history.append((user_input, response))
         
     #     return response
-    # def get_previous_answer_from_airtable(user_input):
-    #     try:
-    #         # Query Airtable to check if there's a previous answer for this question
-    #         records = airtable.search('question', user_input)
+    def get_previous_answer_from_airtable(user_input):
+        try:
+            # Query Airtable to check if there's a previous answer for this question
+            records = airtable.search('question', user_input)
             
-    #         if records:
-    #             # Assuming you're only interested in the first matching record
-    #             previous_answer = records[0]['fields']['answer']
-    #             return previous_answer
-    #         else:
-    #             # Handle the case when no records are found
-    #             return None
-    #     except Exception as e:
-    #         # Log the error for debugging
-    #         st.error(f"An error occurred while querying Airtable: {e}")
-    #         return None  # Return None or an appropriate error message
+            if records:
+                # Assuming you're only interested in the first matching record
+                previous_answer = records[0]['fields']['answer']
+                return previous_answer
+            else:
+                # Handle the case when no records are found
+                return None
+        except Exception as e:
+            # Log the error for debugging
+            st.error(f"An error occurred while querying Airtable: {e}")
+            return None  # Return None or an appropriate error message
             
     if st.session_state.user_name is None:
         user_name = st.text_input("Your name:")
