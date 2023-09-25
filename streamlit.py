@@ -436,13 +436,17 @@ else:
     def conversational_chat(user_input):
         # Check if the user's question matches any previous questions in chat history
         for query, answer in reversed(st.session_state.chat_history):
-            if query == user_input:
+            if query.lower() == user_input.lower():  # Case-insensitive comparison
                 return answer
     
         # If not found in history, perform the chat with the AI agent
         result = agent_executor({"input": user_input})
-        st.session_state.chat_history.append((user_input, result["output"]))
-        return result["output"]
+        response = result["output"]
+        
+        # Append the current question and its response to chat history
+        st.session_state.chat_history.append((user_input, response))
+        
+        return response
     # def get_previous_answer_from_airtable(user_input):
     #     try:
     #         # Query Airtable to check if there's a previous answer for this question
