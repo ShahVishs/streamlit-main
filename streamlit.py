@@ -463,7 +463,7 @@ else:
         st.session_state.chat_history.append((user_input, response))
         
         return response
-      def get_previous_answer_from_airtable(user_input):
+    def get_previous_answer_from_airtable(user_input):
         try:
             # Query Airtable to check if there's a previous answer for this question
             records = airtable.search('question', user_input)
