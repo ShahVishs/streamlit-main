@@ -425,14 +425,14 @@ else:
     
    
     # Function to load more chat messages lazily
+    # Function to load more chat messages lazily
     def load_more_messages():
         # Simulate loading more messages (replace this with your actual logic)
         additional_messages = []
         for i in range(lazy_load_increment):
-            timestamp = datetime.now().strftime("%H:%M:%S")  # Use datetime without the module prefix
+            timestamp = datetime.now().strftime("%H:%M:%S")
             additional_messages.append(f"Lazy Loaded Message {len(st.session_state.chat_history) + i + 1} at {timestamp}")
         st.session_state.chat_history.extend(additional_messages)
-
     
     # Inside your Streamlit app:
     with response_container:
@@ -444,7 +444,8 @@ else:
     
         # Add a button to load more messages
         if len(st.session_state.chat_history) > initial_messages_to_show:
-            st.button("Load More Messages", on_click=load_more_messages)
+            load_more_messages()  # Load more messages initially
+            st.button("Load More Messages", on_click=load_more_messages)  # Change this line
         
         if st.session_state.user_name:
             try:
