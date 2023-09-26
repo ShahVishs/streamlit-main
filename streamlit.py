@@ -514,11 +514,11 @@ else:
             message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
             
             # Display the logo image
-            st.image("icon-1024.png", width=40)
+            # st.image("icon-1024.png", width=40)
         
             # Display the answer with the desired avatar style
-            message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
-    
+            # message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
+            st.image("icon-1024.png", width=40); st.text(answer)
     if st.session_state.user_name and st.session_state.chat_history:
         try:
             save_chat_to_airtable(st.session_state.user_name, user_input, output)
