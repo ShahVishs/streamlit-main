@@ -515,10 +515,11 @@ else:
             user_name = st.session_state.user_name
             # message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
              # Display the query on the right with an image
-            # Create a container for the query on the right
-            query_container = st.container()
-            with query_container:
+            # Display the query on the right with an image
+            col1, col2 = st.columns([1, 10])  # Adjust the ratio as needed
+            with col1:
                 st.image("icons8-user-96.png", width=50)
+            with col2:
                 st.markdown(
                     f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px;'
                     f' width: 50%; border-top-right-radius: 10px; border-bottom-right-radius: 10px;'
@@ -528,10 +529,11 @@ else:
                     unsafe_allow_html=True
                 )
     
-            # Create a container for the answer on the left
-            answer_container = st.container()
-            with answer_container:
+            # Display the answer on the left with an image
+            col3, col4 = st.columns([1, 10])  # Adjust the ratio as needed
+            with col3:
                 st.image("icon-1024.png", width=50)
+            with col4:
                 st.markdown(
                     f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px;'
                     f' width: 50%; border-top-right-radius: 0; border-bottom-right-radius: 0;'
