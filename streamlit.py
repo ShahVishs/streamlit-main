@@ -519,9 +519,9 @@ else:
             # Display the answer with the desired avatar style
             # message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
             # st.image("icon-1024.png", width=40); st.text(answer)
-            st.markdown(
-            f'<div style="background-color: #e0e0e0; border-radius: 10px; padding: 10px;">'
-            f'<img src="icon-1024.png" width="40" style="vertical-align: middle; margin-right: 10px;">'
+            st.write(
+            f'<div style="background-color: #e0e0e0; border-radius: 10px; padding: 10px; display: flex; align-items: center;">'
+            f'<img src="icon-1024.png" width="40" style="margin-right: 10px;">'
             f'{answer}'
             f'</div>',
             unsafe_allow_html=True
