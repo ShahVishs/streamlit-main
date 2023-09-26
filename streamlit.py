@@ -515,6 +515,7 @@ else:
             user_name = st.session_state.user_name
             # message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
                     # Display the user icon and query on the right
+            # Display the user icon and query on the right
             col1, col2 = st.columns([1, 10])  # Adjust the ratio as needed
             with col1:
                 st.image("icons8-user-96.png", width=50)
@@ -529,12 +530,12 @@ else:
                 )
     
             # Display the answer icon and response on the right
-            col3, col4 = st.columns([8, 1])  # Adjust the ratio as needed
+            col3, col4 = st.columns([9, 2])  # Adjust the ratio as needed
             with col3:
                 st.markdown(
-                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
+                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 90%;'
                     f' border-top-right-radius: 10px; border-bottom-right-radius: 10px;'
-                    f' border-top-left-radius: 0; border-bottom-left-radius: 0; box-shadow: 2px 2px 5px #888888;">'
+                    f' border-top-left-radius: 0; border-bottom-left-radius: 0; box-shadow: 2px 2px 5px #888888; margin-bottom: 10px;">'
                     f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
                     f'</div>',
                     unsafe_allow_html=True
