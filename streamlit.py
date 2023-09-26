@@ -519,10 +519,14 @@ else:
             # Display the answer with the desired avatar style
             # message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
             # st.image("icon-1024.png", width=40); st.text(answer)
-            col1, _ = st.beta_columns([1, 10])  # Adjust the ratio as needed
-            with col1:
-                st.image("icon-1024.png", width=40)
-                st.text(answer)
+            # Create a div with custom styling for image and text
+            st.markdown(
+                f'<div style="display: flex; align-items: center;">'
+                f'<img src="icon-1024.png" width="40" style="margin-right: 10px;">'
+                f'{answer}'
+                f'</div>',
+                unsafe_allow_html=True
+                )
     if st.session_state.user_name and st.session_state.chat_history:
         try:
             save_chat_to_airtable(st.session_state.user_name, user_input, output)
