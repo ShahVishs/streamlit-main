@@ -530,7 +530,7 @@ else:
             with col2:
                 st.markdown(
                 f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%; position: relative;">'
-                f'<div style="position: absolute; top: 0; left: 0; background-color: #F5F5F5; width: 20px; height: 20px; clip-path: polygon(100% 0%, 100% 100%, 0% 100%);"></div>'
+                f'<div style="position: absolute; top: 0; right: 0; transform: translate(50%, -50%); background-color: #FFD700; width: 20px; height: 20px; border-radius: 50%;"></div>'
                 f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
                 f'</div>',
                 unsafe_allow_html=True
