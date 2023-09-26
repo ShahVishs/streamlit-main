@@ -524,7 +524,7 @@ else:
             # st.image("icon-1024.png", width=40)
     
             # Display the answer without avatars
-            col1, col2 = st.columns([0.5, 10])  # Adjust the ratio as needed
+            col1, col2 = st.columns([0.7, 10])  # Adjust the ratio as needed
             with col1:
                 st.image("icon-1024.png", width=40)
             with col2:
