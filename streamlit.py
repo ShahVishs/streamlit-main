@@ -509,17 +509,7 @@ else:
     # GitHub repository URL for the image
     # image_url = 'https://raw.githubusercontent.com/ShahVishs/streamlit-main/blob/main/icon-1024.png'
     # Inside your Streamlit app:
-    # Create a container for the chat messages
-    chat_container = st.container()
-    
-    # Set a maximum width for the chat container (adjust as needed)
-    max_container_width = "70%"
-    
-    # Apply CSS style to limit the width of the chat container
-    chat_container.markdown(
-        f'<div style="max-width: {max_container_width};">',
-        unsafe_allow_html=True
-    )
+
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
@@ -539,7 +529,7 @@ else:
                 st.image("icon-1024.png", width=40)
             with col2:
                 st.markdown(
-                    f'<div style="background-color: #e0e0e0; border-radius: 5px; padding: 10px;">'
+                    f'<div style="background-color: #e0e0e0; border-radius: 5px; padding: 10px; width: 70%;">'
                     f'<span style="font-family: Arial, sans-serif; font-size: 14px; white-space: pre-wrap;">{answer}</span>'
                     f'</div>',
                     unsafe_allow_html=True
