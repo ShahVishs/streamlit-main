@@ -520,7 +520,7 @@ else:
             # Display the answer with the desired avatar style
             # message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
             # Display the logo image for the user's query
-            st.image("icon-1024.png", width=40)
+            # st.image("icon-1024.png", width=40)
     
             # Display the answer without avatars
             col1, col2 = st.columns([1, 10])  # Adjust the ratio as needed
