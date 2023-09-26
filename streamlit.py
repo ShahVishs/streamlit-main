@@ -529,7 +529,7 @@ else:
                 )
     
             # Display the answer icon and response on the right
-            col3, col4 = st.columns([10, 1])  # Adjust the ratio as needed
+            col3, col4 = st.columns([10, 8])  # Adjust the ratio as needed
             with col3:
                 st.markdown(
                     f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
