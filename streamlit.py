@@ -516,31 +516,31 @@ else:
             # message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
             # Display the answer without avatars
             col1, col2 = st.columns([10, 0.7])  # Adjust the ratio as needed
-                with col1:
-                    st.markdown(
-                        f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
-                        f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
-                        f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888;">'
-                        f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
-                        f'</div>',
-                        unsafe_allow_html=True
-                    )
-                with col2:
-                    st.image("icon-1024.png", width=50)
+            with col1:
+                st.markdown(
+                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
+                    f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
+                    f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888;">'
+                    f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
+            with col2:
+                st.image("icon-1024.png", width=50)
                 
             # Display the query on the right side
             col1, col2 = st.columns([10, 0.7])  # Adjust the ratio as needed
-                with col1:
-                    st.markdown(
-                        f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
-                        f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
-                        f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888;">'
-                        f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{query}</span>'
-                        f'</div>',
-                        unsafe_allow_html=True
-                    )
-                with col2:
-                    st.image("icons8-user-96", width=50)
+            with col1:
+                st.markdown(
+                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
+                    f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
+                    f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888;">'
+                    f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{query}</span>'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
+            with col2:
+                st.image("icons8-user-96", width=50)
             # Display the logo image
             # st.image("icon-1024.png", width=40)
         
