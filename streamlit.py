@@ -521,10 +521,10 @@ else:
             # st.image("icon-1024.png", width=40); st.text(answer)
             # Create a div with custom styling for image and text
             st.markdown(
-                f'<p style="display: flex; align-items: center;">'
+                f'<div style="display: flex; align-items: center;">'
                 f'<img src="icon-1024.png" width="40" style="margin-right: 10px;">'
-                f'{answer}'
-                f'</p>',
+                f'<span>{answer}</span>'
+                f'</div>',
                 unsafe_allow_html=True
             )
     if st.session_state.user_name and st.session_state.chat_history:
