@@ -516,42 +516,38 @@ else:
             # message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
               # Display the user message on the right
                     # Create a container div for each message pair
-            message_container_style = 'display: flex; justify-content: flex-start; margin-bottom: 10px;'
-            
-            # If the message is from the user, align it to the right
-            if user_name and query:
-                message_container_style = 'display: flex; justify-content: flex-end; margin-bottom: 10px;'
-            
-                # Apply the message container style
-                st.markdown(f'<div style="{message_container_style}">', unsafe_allow_html=True)
-        
-                # Display user's message on the right
-                if user_name and query:
-                    st.image("icons8-user-96.png", width=50)
-                    st.markdown(
-                        f'<div style="background-color: #DCF8C6; border-radius: 10px; padding: 10px; width: 70%;'
-                        f' border-top-left-radius: 0; border-bottom-left-radius: 0;'
-                        f' border-top-right-radius: 10px; border-bottom-right-radius: 10px; box-shadow: 2px 2px 5px #888888;">'
-                        f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{query}</span>'
-                        f'</div>',
-                        unsafe_allow_html=True
-                    )
-                else:  # Display AI's response on the left
-                    st.image("icon-1024.png", width=50)
-                    st.markdown(
-                        f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 70%;'
-                        f' border-top-left-radius: 10px; border-bottom-left-radius: 10px;'
-                        f' border-top-right-radius: 0; border-bottom-right-radius: 0; box-shadow: 2px 2px 5px #888888;">'
-                        f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
-                        f'</div>',
-                        unsafe_allow_html=True
-                    )
-                
-                # Close the message container div
-                st.markdown('</div>', unsafe_allow_html=True)
-        
-                # Add some spacing between question and answer
-                st.write("")
+                    # Display the user message on the right
+            col1, col2 = st.columns([1, 8])  # Adjust the ratio as needed
+            with col1:
+                st.image("icons8-user-96.png", width=50, key=f"{i}_user")
+            with col2:
+                st.markdown(
+                    f'<div style="display: flex; flex-direction: row-reverse; justify-content: flex-end; margin-bottom: 10px;">'
+                    f'<div style="background-color: #DCF8C6; border-radius: 10px; padding: 10px; max-width: 70%;'
+                    f' border-top-left-radius: 0; border-bottom-left-radius: 0; text-align: right; box-shadow: 2px 2px 5px #888888;">'
+                    f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{query}</span>'
+                    f'</div>'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
+    
+            # Display the response on the left
+            col3, col4 = st.columns([1, 8])  # Adjust the ratio as needed
+            with col3:
+                st.image("icon-1024.png", width=50, key=f"{i}_answer")
+            with col4:
+                st.markdown(
+                    f'<div style="display: flex; flex-direction: row; justify-content: flex-start; margin-bottom: 10px;">'
+                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; max-width: 70%;'
+                    f' border-top-right-radius: 0; border-bottom-right-radius: 0; text-align: left; box-shadow: 2px 2px 5px #888888;">'
+                    f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
+                    f'</div>'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
+    
+            # Add some spacing between question and answer
+            st.write("")
             # Display the logo image
             # st.image("icon-1024.png", width=40)
         
