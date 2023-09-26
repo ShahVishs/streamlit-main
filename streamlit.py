@@ -513,7 +513,8 @@ else:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-            message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
+            # message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
+            message(query, is_user=True, key=f"{i}_user", avatar_style="personas")
             # Display the user message on the right
             # col1, col2 = st.columns([1, 8])  # Adjust the ratio as needed
             # with col1:
