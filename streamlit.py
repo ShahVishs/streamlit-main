@@ -515,7 +515,7 @@ else:
             user_name = st.session_state.user_name
             # message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
             # Display the answer without avatars
-                col1, col2 = st.columns([10, 0.7])  # Adjust the ratio as needed
+            col1, col2 = st.columns([10, 0.7])  # Adjust the ratio as needed
                 with col1:
                     st.markdown(
                         f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
@@ -528,8 +528,8 @@ else:
                 with col2:
                     st.image("icon-1024.png", width=50)
                 
-                # Display the query on the right side
-                col1, col2 = st.columns([10, 0.7])  # Adjust the ratio as needed
+            # Display the query on the right side
+            col1, col2 = st.columns([10, 0.7])  # Adjust the ratio as needed
                 with col1:
                     st.markdown(
                         f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
