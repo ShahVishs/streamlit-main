@@ -95,23 +95,6 @@ if 'chat_history' not in st.session_state:
 if 'sessions' not in st.session_state:
     st.session_state.sessions = {}
     
-if 'past' not in st.session_state:
-    st.session_state.past = []
-
-if 'new_session' not in st.session_state:
-    st.session_state.new_session = True
-    
-st.session_state.clear()
-
-if 'user_name_input' not in st.session_state:
-    st.session_state.user_name_input = None
-
-if 'generated' not in st.session_state:
-    st.session_state.generated = []
-
-if 'user_name' not in st.session_state:
-    st.session_state.user_name = None
-
 question_cache = {}
 def save_chat_session(session_data, session_id):
     session_directory = "chat_sessions"
@@ -149,7 +132,15 @@ def load_previous_sessions():
             previous_sessions[session_id] = session_data
 
     return previous_sessions
+    
+if 'past' not in st.session_state:
+    st.session_state.past = []
 
+if 'new_session' not in st.session_state:
+    st.session_state.new_session = True
+    
+if 'user_name_input' not in st.session_state:
+    st.session_state.user_name_input = None
 
 if st.button("Refresh Session"):
     current_session = {
@@ -166,6 +157,9 @@ if st.button("Refresh Session"):
     st.session_state.new_session = True
     st.session_state.refreshing_session = False  
 
+# Initialize chat history in session state
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
 
 if st.session_state.new_session:
     user_name = st.session_state.user_name
@@ -241,6 +235,12 @@ AIRTABLE_TABLE_NAME = "Question_Answer_Data"
 
 st.info("Introducing **Otto**, your cutting-edge partner in streamlining dealership and customer-related operations. At EngagedAi, we specialize in harnessing the power of automation to revolutionize the way dealerships and customers interact. Our advanced solutions seamlessly handle tasks, from managing inventory and customer inquiries to optimizing sales processes, all while enhancing customer satisfaction. Discover a new era of efficiency and convenience with us as your trusted automation ally. [engagedai.io](https://funnelai.com/). For this demo application, we will use the Inventory Dataset. Please explore it [here](https://github.com/ShahVishs/workflow/blob/main/2013_Inventory.csv) to get a sense for what questions you can ask.")
 
+if 'generated' not in st.session_state:
+    st.session_state.generated = []
+if 'past' not in st.session_state:
+    st.session_state.past = []
+if 'user_name' not in st.session_state:
+    st.session_state.user_name = None
 
 
 if st.session_state.user_name == "vishakha":
