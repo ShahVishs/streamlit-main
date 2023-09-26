@@ -100,6 +100,8 @@ if 'past' not in st.session_state:
 
 if 'new_session' not in st.session_state:
     st.session_state.new_session = True
+    
+st.session_state.clear()
 
 if 'user_name_input' not in st.session_state:
     st.session_state.user_name_input = None
