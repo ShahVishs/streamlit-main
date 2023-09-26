@@ -519,18 +519,15 @@ else:
         
             # Display the answer with the desired avatar style
             # message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
-            # Display the logo image
+            # Display the logo image for the user's query
             st.image("icon-1024.png", width=40)
-            
-            # Add a gap between the query and answer messages
-            st.markdown("<br>", unsafe_allow_html=True)
-            
-            # Display the answer with the desired format (single image + text)
+    
+            # Display the answer without avatars
             col1, col2 = st.beta_columns([1, 10])  # Adjust the ratio as needed
+            with col1:
+                st.image("icon-1024.png", width=40)
             with col2:
                 st.text(answer)
-            # Display the logo image
-            # st.image("icon-1024.png", width=40)
             
             # # Add a bit more space between the query and answer messages
             # st.markdown('<div style="height: 10px;"></div>', unsafe_allow_html=True)
