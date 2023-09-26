@@ -528,12 +528,12 @@ else:
                 st.image("icon-1024.png", width=40)
             with col2:
                 st.markdown(
-                    f'<div style="background-color: #e0e0e0; border-radius: 5px; padding: 5px;">'
-                    f'<span style="font-family: Arial, sans-serif; font-size: 14px;">{answer}</span>'
+                    f'<div style="background-color: #e0e0e0; border-radius: 5px; padding: 10px;">'
+                    f'<span style="font-family: Arial, sans-serif; font-size: 14px; white-space: pre-wrap;">{answer}</span>'
                     f'</div>',
                     unsafe_allow_html=True
                 )
-            
+                
             # # Add a bit more space between the query and answer messages
             # st.markdown('<div style="height: 10px;"></div>', unsafe_allow_html=True)
             
