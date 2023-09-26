@@ -529,7 +529,10 @@ else:
                 st.image("icon-1024.png", width=40)
             with col2:
                 st.markdown(
-                    f'<div style="background-color: #FFFF99; border-radius: 10px; padding: 10px; width: 100%; border: 2px solid #FFCC66; box-shadow: 2px 2px 5px #888888;">'
+                    f'<div style="background-color: #66FF99; border-radius: 10px; padding: 10px; width: 50%;'
+                    f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
+                    f' border-top-left-radius: 10px; border-bottom-left-radius: 10px;'
+                    f' border: 2px solid #00CC66; box-shadow: 2px 2px 5px #888888;">'
                     f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
                     f'</div>',
                     unsafe_allow_html=True
