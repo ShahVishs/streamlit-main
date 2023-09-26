@@ -524,9 +524,9 @@ else:
             # st.image("icon-1024.png", width=40)
     
             # Display the answer without avatars
-            col1, col2 = st.columns([0.7, 10])  # Adjust the ratio as needed
+            col1, col2 = st.columns([0.6, 10])  # Adjust the ratio as needed
             with col1:
-                st.image("icon-1024.png", width=40)
+                st.image("icon-1024.png", width=50)
             with col2:
                 st.markdown(
                 f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
