@@ -514,19 +514,16 @@ else:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
             # message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
-              # Display the user message on the right
-                    # Create a container div for each message pair
-                    # Display the user message on the right
+            # Display the user message on the right
             col1, col2 = st.columns([1, 8])  # Adjust the ratio as needed
             with col1:
-                st.image("icons8-user-96.png", width=50, key=f"{i}_user")
+                st.image("icons8-user-96.png", width=50)
             with col2:
                 st.markdown(
-                    f'<div style="display: flex; flex-direction: row-reverse; justify-content: flex-end; margin-bottom: 10px;">'
-                    f'<div style="background-color: #DCF8C6; border-radius: 10px; padding: 10px; max-width: 70%;'
-                    f' border-top-left-radius: 0; border-bottom-left-radius: 0; text-align: right; box-shadow: 2px 2px 5px #888888;">'
+                    f'<div style="background-color: #DCF8C6; border-radius: 10px; padding: 10px; width: 70%;'  # Adjusted width here
+                    f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
+                    f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888; margin-bottom: 10px;">'
                     f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{query}</span>'
-                    f'</div>'
                     f'</div>',
                     unsafe_allow_html=True
                 )
@@ -534,14 +531,13 @@ else:
             # Display the response on the left
             col3, col4 = st.columns([1, 8])  # Adjust the ratio as needed
             with col3:
-                st.image("icon-1024.png", width=50, key=f"{i}_answer")
+                st.image("icon-1024.png", width=50)
             with col4:
                 st.markdown(
-                    f'<div style="display: flex; flex-direction: row; justify-content: flex-start; margin-bottom: 10px;">'
-                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; max-width: 70%;'
-                    f' border-top-right-radius: 0; border-bottom-right-radius: 0; text-align: left; box-shadow: 2px 2px 5px #888888;">'
+                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 70%;'  # Adjusted width here
+                    f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
+                    f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888; margin-bottom: 10px;">'
                     f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
-                    f'</div>'
                     f'</div>',
                     unsafe_allow_html=True
                 )
