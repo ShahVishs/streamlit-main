@@ -327,7 +327,8 @@ else:
 
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = [] 
-
+        
+    @st.cache_data
     def conversational_chat(user_input):
         for query, answer in reversed(st.session_state.chat_history):
             if query.lower() == user_input.lower():  
