@@ -521,12 +521,16 @@ else:
             # message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
             # st.image("icon-1024.png", width=40); st.text(answer)
             st.image("icon-1024.png", width=40)
+            # Add a gap between the query and answer messages
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # Wrap the answer in a div with background color and padding
             st.markdown(
-                f'<div style="background-color: #e0e0e0; border-radius: 05px; padding: 05px; display: flex; align-items: left;">'
+                f'<div style="background-color: #e0e0e0; border-radius: 5px; padding: 10px;">'
                 f'{answer}'
                 f'</div>',
                 unsafe_allow_html=True
-            )
+                )
     if st.session_state.user_name and st.session_state.chat_history:
         try:
             save_chat_to_airtable(st.session_state.user_name, user_input, output)
