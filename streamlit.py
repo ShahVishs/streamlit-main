@@ -528,7 +528,7 @@ else:
                 st.image("icon-1024.png", width=40)
             with col2:
                 st.markdown(
-                    f'<div style="background-color: #e0e0e0; border-radius: 5px; padding: 10px;">'
+                    f'<div style="background-color: #e0e0e0; border-radius: 5px; padding: 5px;">'
                     f'<span style="font-family: Arial, sans-serif; font-size: 14px;">{answer}</span>'
                     f'</div>',
                     unsafe_allow_html=True
