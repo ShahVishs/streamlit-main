@@ -518,7 +518,8 @@ else:
             # st.image("icon-1024.png", width=40)
         
             # Display the answer with the desired avatar style
-            message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
+            # message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
+            message(st.image("icon-1024.png", width=40),answer, key=f"{i}_answer", avatar_style="None",)
             # Display the logo image
             # st.image("icon-1024.png", width=40)
             
