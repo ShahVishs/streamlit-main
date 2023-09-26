@@ -529,7 +529,8 @@ else:
                 st.image("icon-1024.png", width=40)
             with col2:
                 st.markdown(
-                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;">'
+                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%; position: relative;">'
+                    f'<div style="position: absolute; top: 5px; left: -20px;">📌</div>'  # Pinned corner icon
                     f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
                     f'</div>',
                     unsafe_allow_html=True
