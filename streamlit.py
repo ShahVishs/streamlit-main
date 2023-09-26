@@ -506,7 +506,8 @@ else:
         response = conversational_chat(user_input)
         # Append the user's question and its answer to the chat history
         st.session_state.chat_history.append((user_input, response))
-    
+    # GitHub repository URL for the image
+    image_url = 'https://raw.githubusercontent.com/ShahVishs/streamlit-main/blob/main/icon-1024.png'
     # Inside your Streamlit app:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
@@ -521,11 +522,11 @@ else:
             # st.image("icon-1024.png", width=40); st.text(answer)
             # Create a div with custom styling for image and text
             st.markdown(
-                f'<div style="display: flex; align-items: center;">'
-                f'<img src="icon-1024.png" width="40" style="margin-right: 10px;">'
-                f'<span>{answer}</span>'
-                f'</div>',
-                unsafe_allow_html=True
+            f'<div style="display: flex; align-items: center;">'
+            f'<img src="{image_url}" width="40" style="margin-right: 10px;">'
+            f'<span>{answer}</span>'
+            f'</div>',
+            unsafe_allow_html=True
             )
     if st.session_state.user_name and st.session_state.chat_history:
         try:
