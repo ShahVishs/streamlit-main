@@ -519,10 +519,11 @@ else:
         
             # Display the answer with the desired avatar style
             # message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
-            # st.image("icon-1024.png", width=40); st.text(answer)
+            # Display the logo image
             st.image("icon-1024.png", width=40)
-            # Add a gap between the query and answer messages
-            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # Add a bit more space between the query and answer messages
+            st.markdown('<div style="height: 10px;"></div>', unsafe_allow_html=True)
             
             # Wrap the answer in a div with background color and padding
             st.markdown(
@@ -530,7 +531,7 @@ else:
                 f'{answer}'
                 f'</div>',
                 unsafe_allow_html=True
-                )
+            )
     if st.session_state.user_name and st.session_state.chat_history:
         try:
             save_chat_to_airtable(st.session_state.user_name, user_input, output)
