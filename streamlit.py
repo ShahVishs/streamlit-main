@@ -515,7 +515,6 @@ else:
             user_name = st.session_state.user_name
             # message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
              # Display the query on the right with an image
-            # Display the query on the right with an image
             col1, col2 = st.columns([1, 10])  # Adjust the ratio as needed
             with col1:
                 st.image("icons8-user-96.png", width=50)
