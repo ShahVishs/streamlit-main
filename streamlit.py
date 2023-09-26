@@ -522,7 +522,7 @@ else:
             with col2:
                 st.markdown(
                     f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px;'
-                    f' border-top-right-radius: 10px; border-bottom-right-radius: 10px;'
+                    f' width: 50%; border-top-right-radius: 10px; border-bottom-right-radius: 10px;'
                     f' border-top-left-radius: 0; border-bottom-left-radius: 0; box-shadow: 2px 2px 5px #888888;">'
                     f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{query}</span>'
                     f'</div>',
@@ -536,7 +536,7 @@ else:
             with col4:
                 st.markdown(
                     f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px;'
-                    f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
+                    f' width: 50%; border-top-right-radius: 0; border-bottom-right-radius: 0;'
                     f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888;">'
                     f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
                     f'</div>',
