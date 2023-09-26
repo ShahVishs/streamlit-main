@@ -531,7 +531,7 @@ else:
                 )
     
             # Display the answer icon and response on the left
-            col3, col4 = st.columns([2, 10])  # Adjust the ratio as needed
+            col3, col4 = st.columns([5, 10])  # Adjust the ratio as needed
             with col3:
                 st.image("icon-1024.png", width=50)
             with col4:
