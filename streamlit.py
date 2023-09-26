@@ -517,7 +517,7 @@ else:
                     # Display the user icon and query on the right
             # Display the user icon and query on the right
                    # Display the user icon and query on the right
-            col1, col2 = st.columns([1, 10])  # Adjust the ratio as needed
+            col1, col2 = st.columns([1, 8])  # Adjust the ratio as needed
             with col1:
                 st.image("icons8-user-96.png", width=50)
             with col2:
@@ -531,7 +531,7 @@ else:
                 )
     
             # Display the answer icon and response on the left
-            col3, col4 = st.columns([5, 10])  # Adjust the ratio as needed
+            col3, col4 = st.columns([5, 8])  # Adjust the ratio as needed
             with col3:
                 st.image("icon-1024.png", width=50)
             with col4:
