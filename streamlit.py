@@ -507,7 +507,7 @@ else:
         # Append the user's question and its answer to the chat history
         st.session_state.chat_history.append((user_input, response))
     # GitHub repository URL for the image
-    image_url = 'https://raw.githubusercontent.com/ShahVishs/streamlit-main/blob/main/icon-1024.png'
+    # image_url = 'https://raw.githubusercontent.com/ShahVishs/streamlit-main/blob/main/icon-1024.png'
     # Inside your Streamlit app:
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
@@ -520,13 +520,12 @@ else:
             # Display the answer with the desired avatar style
             # message(answer, key=f"{i}_answer", avatar_style="initials", seed="AI",)
             # st.image("icon-1024.png", width=40); st.text(answer)
-            # Create a div with custom styling for image and text
+            st.image("icon-1024.png", width=40)
             st.markdown(
-            f'<div style="display: flex; align-items: center;">'
-            f'<img src="{image_url}" width="40" style="margin-right: 10px;">'
-            f'<span>{answer}</span>'
-            f'</div>',
-            unsafe_allow_html=True
+                f'<div style="background-color: #e0e0e0; border-radius: 10px; padding: 10px; display: flex; align-items: center;">'
+                f'{answer}'
+                f'</div>',
+                unsafe_allow_html=True
             )
     if st.session_state.user_name and st.session_state.chat_history:
         try:
