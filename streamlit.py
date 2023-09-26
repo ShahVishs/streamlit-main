@@ -519,7 +519,7 @@ else:
                 st.image("icons8-user-96.png", width=50)
             with col2:
                 st.markdown(
-                    f'<div style="background-color: #DCF8C6; border-radius: 10px; padding: 10px; width: 90%;'
+                    f'<div style="background-color: #DCF8C6; border-radius: 10px; padding: 10px; width: 50%;'
                     f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
                     f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888; margin-bottom: 10px;">'
                     f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{query}</span>'
@@ -533,7 +533,7 @@ else:
                 st.image("icon-1024.png", width=50)
             with col4:
                 st.markdown(
-                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 90%;'
+                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
                     f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
                     f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888; margin-bottom: 10px;">'
                     f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
