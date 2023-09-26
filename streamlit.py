@@ -515,7 +515,7 @@ else:
             user_name = st.session_state.user_name
             # message(query, is_user=True, key=f"{i}_user", avatar_style="icons", seed=6)
              # Display the query on the right with an image
-            # Display the query on the right with an image
+              # Display the query on the right with a user icon
             col1, col2 = st.columns([1, 10])  # Adjust the ratio as needed
             with col1:
                 st.image("icons8-user-96.png", width=50)
@@ -529,10 +529,12 @@ else:
                     unsafe_allow_html=True
                 )
     
-            # Display the answer on the left with an image
+            # Display the answer on the left
             col3, col4 = st.columns([1, 10])  # Adjust the ratio as needed
             with col3:
-                st.image("icon-1024.png", width=50)
+                # Empty space for alignment
+                st.write("")
+    
             with col4:
                 st.markdown(
                     f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px;'
@@ -542,9 +544,6 @@ else:
                     f'</div>',
                     unsafe_allow_html=True
                 )
-    
-            # Add some spacing between question and answer
-            st.write("")
             # Display the logo image
             # st.image("icon-1024.png", width=40)
         
