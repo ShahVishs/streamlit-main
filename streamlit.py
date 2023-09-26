@@ -522,7 +522,7 @@ else:
             # st.image("icon-1024.png", width=40); st.text(answer)
             st.image("icon-1024.png", width=40)
             st.markdown(
-                f'<div style="background-color: #e0e0e0; border-radius: 10px; padding: 10px; display: flex; align-items: center;">'
+                f'<div style="background-color: #e0e0e0; border-radius: 05px; padding: 05px; display: flex; align-items: left;">'
                 f'{answer}'
                 f'</div>',
                 unsafe_allow_html=True
