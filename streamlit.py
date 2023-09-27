@@ -435,7 +435,7 @@ def main():
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 if __name__ == "__main__":
-    # profiler = cProfile.Profile()
+    profiler = cProfile.Profile()
     # profiler.enable()
 
     main()
