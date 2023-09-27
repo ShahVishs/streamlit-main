@@ -336,6 +336,7 @@ else:
                 return answer
         
         result = agent_executor({"input": user_input})
+        st.session_state.chat_history.append((user_input, result["output"]))
         response = result["output"]
         return response
            
@@ -371,7 +372,7 @@ else:
     
     if submit_button and user_input:
         response = conversational_chat(user_input)
-        st.session_state.chat_history.append((user_input, response))
+        # st.session_state.chat_history.append((user_input, response))
 
     with response_container:
         for i, (query, answer) in enumerate(st.session_state.chat_history):
