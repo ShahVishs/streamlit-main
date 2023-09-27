@@ -17,7 +17,7 @@ from langchain.agents.openai_functions_agent.base import OpenAIFunctionsAgent
 from langchain.schema.messages import SystemMessage
 from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
-
+import cProfile
 
 hide_share_button_style = """
     <style>
@@ -426,4 +426,10 @@ def main():
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 if __name__ == "__main__":
+    profiler = cProfile.Profile()
+    profiler.enable()
+
     main()
+
+    profiler.disable()
+    profiler.print_stats(sort='cumtime')
