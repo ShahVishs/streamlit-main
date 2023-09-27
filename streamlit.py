@@ -18,7 +18,7 @@ from langchain.schema.messages import SystemMessage
 from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 import cProfile
-
+import threading
 hide_share_button_style = """
     <style>
     .st-emotion-cache-zq5wmm.ezrtsby0 .stActionButton:nth-child(1) {
@@ -339,9 +339,9 @@ def main():
             # st.session_state.chat_history.append((user_input, result["output"]))
             response = result["output"]
             return response
-     def process_user_input(user_input):
-        output = conversational_chat(user_input)
-        st.session_state.chat_history.append((user_input, output))
+        def process_user_input(user_input):
+            output = conversational_chat(user_input)
+            st.session_state.chat_history.append((user_input, output))
         # st.write(f"Response: {output}") 
         # if st.session_state.user_name is None:
         #     user_name = st.text_input("Your name:")
