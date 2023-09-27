@@ -19,6 +19,7 @@ from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 import cProfile
 import threading
+import concurrent.futures
 hide_share_button_style = """
     <style>
     .st-emotion-cache-zq5wmm.ezrtsby0 .stActionButton:nth-child(1) {
@@ -339,10 +340,10 @@ def main():
             # st.session_state.chat_history.append((user_input, result["output"]))
             response = result["output"]
             return response
-        def process_user_input(user_input):
-            output = conversational_chat(user_input)
-            st.session_state.chat_history.append((user_input, output))
-            st.write(f"Response: {output}") 
+        # def process_user_input(user_input):
+        #     output = conversational_chat(user_input)
+        #     st.session_state.chat_history.append((user_input, output))
+        #     st.write(f"Response: {output}") 
         # if st.session_state.user_name is None:
         #     user_name = st.text_input("Your name:")
         #     if user_name:
@@ -376,8 +377,11 @@ def main():
         if submit_button and user_input:
             # output = conversational_chat(user_input)
             # st.session_state.chat_history.append((user_input, output))
-            thread = threading.Thread(target=process_user_input, args=(user_input,))
-            thread.start()
+            # Use ThreadPoolExecutor to run the chat function in a separate thread
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(conversational_chat, user_input)
+                output = future.result()
+            st.session_state.chat_history.append((user_input, output))
 
         with response_container:
             for i, (query, answer) in enumerate(st.session_state.chat_history):
