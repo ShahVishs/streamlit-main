@@ -436,9 +436,9 @@ def main():
                     st.error(f"An error occurred: {e}")
 if __name__ == "__main__":
     profiler = cProfile.Profile()
-    # profiler.enable()
+    profiler.enable()
 
     main()
 
-    # profiler.disable()
-    # profiler.print_stats(sort='cumtime')
+    profiler.disable()
+    profiler.print_stats(sort='cumtime')
