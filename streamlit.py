@@ -339,7 +339,10 @@ def main():
             # st.session_state.chat_history.append((user_input, result["output"]))
             response = result["output"]
             return response
-            
+     def process_user_input(user_input):
+        output = conversational_chat(user_input)
+        st.session_state.chat_history.append((user_input, output))
+        # st.write(f"Response: {output}") 
         # if st.session_state.user_name is None:
         #     user_name = st.text_input("Your name:")
         #     if user_name:
@@ -371,8 +374,10 @@ def main():
             submit_button = st.form_submit_button(label='Send')
         
         if submit_button and user_input:
-            output = conversational_chat(user_input)
-            st.session_state.chat_history.append((user_input, output))
+            # output = conversational_chat(user_input)
+            # st.session_state.chat_history.append((user_input, output))
+            thread = threading.Thread(target=process_user_input, args=(user_input,output))
+            thread.start()
 
         with response_container:
             for i, (query, answer) in enumerate(st.session_state.chat_history):
@@ -426,10 +431,10 @@ def main():
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 if __name__ == "__main__":
-    profiler = cProfile.Profile()
-    profiler.enable()
+    # profiler = cProfile.Profile()
+    # profiler.enable()
 
     main()
 
-    profiler.disable()
-    profiler.print_stats(sort='cumtime')
+    # profiler.disable()
+    # profiler.print_stats(sort='cumtime')
