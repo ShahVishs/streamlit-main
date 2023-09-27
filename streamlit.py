@@ -339,16 +339,16 @@ else:
         response = result["output"]
         return response
            
-    if st.session_state.user_name is None:
-        user_name = st.text_input("Your name:")
-        if user_name:
-            st.session_state.user_name = user_name
-        if user_name == "vishakha":
-            is_admin = True
-            st.session_state.user_role = "admin"
-            st.session_state.user_name = user_name
-            st.session_state.new_session = False  
-            st.session_state.sessions = load_previous_sessions()
+    # if st.session_state.user_name is None:
+    #     user_name = st.text_input("Your name:")
+    #     if user_name:
+    #         st.session_state.user_name = user_name
+    #     if user_name == "vishakha":
+    #         is_admin = True
+    #         st.session_state.user_role = "admin"
+    #         st.session_state.user_name = user_name
+    #         st.session_state.new_session = False  
+    #         st.session_state.sessions = load_previous_sessions()
    
     user_input = ""
     output = ""
