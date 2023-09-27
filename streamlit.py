@@ -375,13 +375,13 @@ def main():
             submit_button = st.form_submit_button(label='Send')
         
         if submit_button and user_input:
-            # output = conversational_chat(user_input)
-            # st.session_state.chat_history.append((user_input, output))
-            # Use ThreadPoolExecutor to run the chat function in a separate thread
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(conversational_chat, user_input)
-                output = future.result()
+            output = conversational_chat(user_input)
             st.session_state.chat_history.append((user_input, output))
+            # Use ThreadPoolExecutor to run the chat function in a separate thread
+            # with concurrent.futures.ThreadPoolExecutor() as executor:
+            #     future = executor.submit(conversational_chat, user_input)
+            #     output = future.result()
+            # st.session_state.chat_history.append((user_input, output))
 
         with response_container:
             for i, (query, answer) in enumerate(st.session_state.chat_history):
