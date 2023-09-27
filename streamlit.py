@@ -419,8 +419,8 @@ else:
     
             # # Add some spacing between question and answer
             # st.write("")
-    if st.session_state.user_name and st.session_state.chat_history:
-        try:
-            save_chat_to_airtable(st.session_state.user_name, user_input, output)
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+        if st.session_state.user_name and st.session_state.chat_history:
+            try:
+                save_chat_to_airtable(st.session_state.user_name, user_input, output)
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
