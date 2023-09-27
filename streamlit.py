@@ -342,7 +342,7 @@ def main():
         def process_user_input(user_input):
             output = conversational_chat(user_input)
             st.session_state.chat_history.append((user_input, output))
-        # st.write(f"Response: {output}") 
+            st.write(f"Response: {output}") 
         # if st.session_state.user_name is None:
         #     user_name = st.text_input("Your name:")
         #     if user_name:
@@ -376,7 +376,7 @@ def main():
         if submit_button and user_input:
             # output = conversational_chat(user_input)
             # st.session_state.chat_history.append((user_input, output))
-            thread = threading.Thread(target=process_user_input, args=(user_input,output))
+            thread = threading.Thread(target=process_user_input, args=(user_input,))
             thread.start()
 
         with response_container:
