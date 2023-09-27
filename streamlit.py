@@ -371,7 +371,7 @@ else:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-        response = conversational_chat(user_input)
+        output = conversational_chat(user_input)
         # st.session_state.chat_history.append((user_input, response))
 
     with response_container:
