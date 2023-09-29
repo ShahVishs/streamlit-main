@@ -240,7 +240,8 @@ with container:
     with st.form(key='my_form', clear_on_submit=True):
         user_input = st.text_input("Query:", placeholder="Type your question here (:", key='input')
         submit_button = st.form_submit_button(label='Send')
-    
+    args_schema = None  # Initialize args_schema outside the conditional block
+
     if submit_button and user_input:
 	    # Create an instance of the PythonInputs class with the user_input
 	    args_schema = PythonInputs(query=user_input)
