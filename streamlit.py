@@ -319,11 +319,11 @@ else:
     Very Very Important Instruction: when ever you are using tools to answer the question. 
     strictly answer only from "System:  " message provided to you.""")
 
-    details = "Today's current date is " + todays_date + " and today's week day is " + day_of_the_week + "."
+    details= "Today's current date is "+ todays_date +" todays week day is "+day_of_the_week+"."
     class PythonInputs(BaseModel):
         query: str = Field(description="code snippet to run")
     if __name__ == "__main__":
-        df = pd.read_csv("appointment_new.csv")
+        df = pd.read_csv("appointment_new_1.csv")
         input_template = template.format(dhead=df.head().to_markdown(),details=details)
     # input_template = template.format(details=details)
 
