@@ -1,6 +1,7 @@
 import os
 import langchain
 import json
+import pydantic
 from airtable import Airtable
 from langchain.llms import OpenAI
 import streamlit as st
