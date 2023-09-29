@@ -1,7 +1,6 @@
 import os
 import langchain
 import json
-import pydantic
 from airtable import Airtable
 from langchain.llms import OpenAI
 import streamlit as st
@@ -320,11 +319,11 @@ else:
     Very Very Important Instruction: when ever you are using tools to answer the question. 
     strictly answer only from "System:  " message provided to you.""")
 
-    details= "Today's current date is "+ todays_date +" todays week day is "+day_of_the_week+"."
+    details = "Today's current date is " + todays_date + " and today's week day is " + day_of_the_week + "."
     class PythonInputs(BaseModel):
         query: str = Field(description="code snippet to run")
     if __name__ == "__main__":
-        df = pd.read_csv("appointment_new_1.csv")
+        df = pd.read_csv("appointment_new.csv")
         input_template = template.format(dhead=df.head().to_markdown(),details=details)
     # input_template = template.format(details=details)
 
@@ -335,25 +334,16 @@ else:
         system_message=system_message,
         extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
     )
-    repl = None
-    try:
-        repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",
-            description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same.",
-            args_schema=PythonInputs())  # Pass an instance of PythonInputs as args_schema
-    except pydantic.ValidationError as e:
-        print(f"Pydantic validation error: {e}")
-    
-    if repl is not None:
-        tools = [tool1, repl, tool3]
-        agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
-    
-        if 'agent_executor' not in st.session_state:
-            agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
-            st.session_state.agent_executor = agent_executor
-        else:
-            agent_executor = st.session_state.agent_executor
+    repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",
+            description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24hour time, for example: 15:00 and 3pm are the same.",args_schema=PythonInputs)
+    tools = [tool1,repl,tool3]
+    agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
+
+    if 'agent_executor' not in st.session_state:
+        agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
+        st.session_state.agent_executor = agent_executor
     else:
-        print("The 'repl' tool could not be created.")
+        agent_executor = st.session_state.agent_executor
     response_container = st.container()
     airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
     
@@ -370,21 +360,22 @@ else:
             )
         except Exception as e:
             st.error(f"An error occurred while saving data to Airtable: {e}")
-    
+
+
     if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
-    
+        st.session_state.chat_history = [] 
+        
     @st.cache_data
     def conversational_chat(user_input):
         for query, answer in reversed(st.session_state.chat_history):
             if query.lower() == user_input.lower():  
+                
                 return answer
-    
-        try:
-            result = agent_executor({"input": user_input})
-            response = result["output"]
-        except Exception as e:
-            print(f"Error executing agent_executor: {e}")
+        
+        result = agent_executor({"input": user_input})
+        # st.session_state.chat_history.append((user_input, result["output"]))
+        response = result["output"]
+        return response
     # def process_user_input(user_input):
     #     output = conversational_chat(user_input)
     #     st.session_state.chat_history.append((user_input, output))
