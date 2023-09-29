@@ -185,11 +185,7 @@ prompt = OpenAIFunctionsAgent.create_prompt(
         system_message=system_message,
         extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
     )
-try:
-	repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",
-        description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24hour time, for example: 15:00 and 3pm are the same.",args_schema=PythonInputs)
-except Exception as e:
-	st.error(f"An error occurred while running pythonrepl: {e}")
+repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24hour time, for example: 15:00 and 3pm are the same.",args_schema=PythonInputs)
 tools = [tool1,repl,tool3]
 
 agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
