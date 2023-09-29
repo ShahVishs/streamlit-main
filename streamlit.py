@@ -113,38 +113,28 @@ class PythonInputs(BaseModel):
 class MyArgsSchema(BaseModel):
     python_inputs: PythonInputs
 
-# Read appointment data
-df = pd.read_csv("appointment_new.csv")
+if __name__ == "__main__":
+    df = pd.read_csv("appointment_new.csv")
+    input_template = template.format(dhead=df.head().to_markdown(), details=details)
 
-# Create system message
-system_message = SystemMessage(content=template)
+    system_message = SystemMessage(content=input_template)
 
-# Create prompt
-prompt = OpenAIFunctionsAgent.create_prompt(
-    system_message=system_message,
-    extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
-)
+    # Update the args_schema parameter with MyArgsSchema
+    repl = PythonAstREPLTool(
+        locals={"df": df},
+        name="python_repl",
+        description="Use to check available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same",
+        args_schema=MyArgsSchema,  # Corrected the args_schema definition here
+    )
+    tools = [tool1, repl, tool3]
 
-# Create REPL tool
-repl = PythonAstREPLTool(
-    locals={"df": df},
-    name="python_repl",
-    description="Use to check available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24hour time, for example: 15:00 and 3pm are the same",
-    args_schema=MyArgsSchema,
-)
+    agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
 
-# Create tools list
-tools = [tool1, repl, tool3]
-
-# Create OpenAI Functions Agent
-agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
-
-# Create or retrieve AgentExecutor
-if 'agent_executor' not in st.session_state:
-    agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
-    st.session_state.agent_executor = agent_executor
-else:
-    agent_executor = st.session_state.agent_executor
+    if 'agent_executor' not in st.session_state:
+        agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
+        st.session_state.agent_executor = agent_executor
+    else:
+        agent_executor = st.session_state.agent_executor
 
 # Container for chat response
 response_container = st.container()
