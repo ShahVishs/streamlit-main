@@ -343,14 +343,17 @@ else:
     except pydantic.ValidationError as e:
         print(f"Pydantic validation error: {e}")
     
-    tools = [tool1, repl, tool3]
-    agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
+    if repl is not None:
+        tools = [tool1, repl, tool3]
+        agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
     
-    if 'agent_executor' not in st.session_state:
-        agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
-        st.session_state.agent_executor = agent_executor
+        if 'agent_executor' not in st.session_state:
+            agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
+            st.session_state.agent_executor = agent_executor
+        else:
+            agent_executor = st.session_state.agent_executor
     else:
-        agent_executor = st.session_state.agent_executor
+        print("The 'repl' tool could not be created.")
     response_container = st.container()
     airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
     
