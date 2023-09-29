@@ -99,8 +99,8 @@ tool3 = create_retriever_tool(
 # airtable
 airtable_api_key = st.secrets["AIRTABLE"]["AIRTABLE_API_KEY"]
 os.environ["AIRTABLE_API_KEY"] = airtable_api_key
-AIRTABLE_BASE_ID = "appAVFD4iKFkBm49q"  
-AIRTABLE_TABLE_NAME = "Question_Answer_Data" 
+AIRTABLE_BASE_ID = "appN324U6FsVFVmx2"  
+AIRTABLE_TABLE_NAME = "python_tool_Q&A"
 
 # Streamlit UI setup
 st.info(" Introducing **Otto**, your cutting-edge partner in streamlining dealership and customer-related operations. At EngagedAi, we specialize in harnessing the power of automation to revolutionize the way dealerships and customers interact. Our advanced solutions seamlessly handle tasks, from managing inventory and customer inquiries to optimizing sales processes, all while enhancing customer satisfaction. Discover a new era of efficiency and convenience with us as your trusted automation ally. [engagedai.io](https://funnelai.com/). For this demo application, we will use the Inventory Dataset. Please explore it [here](https://github.com/ShahVishs/workflow/blob/main/2013_Inventory.csv) to get a sense for what questions you can ask.")
@@ -173,25 +173,21 @@ strictly answer only from "System:  " message provided to you.""")
 details= "Today's current date is "+ todays_date +" todays week day is "+day_of_the_week+"."
 class PythonInputs(BaseModel):
     query: str = Field(description="code snippet to run")
-	
 if __name__ == "__main__":
     df = pd.read_csv("appointment_new.csv")
     input_templete = template.format(dhead=df.head().to_markdown(),details=details)
 
+
 system_message = SystemMessage(
-    content=input_templete)
+        content=input_templete)
 
 prompt = OpenAIFunctionsAgent.create_prompt(
-    system_message=system_message,
-    extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
-)
+        system_message=system_message,
+        extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
+    )
 
-repl = PythonAstREPLTool(
-    locals={"df": df},
-    name="python_repl",
-    description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same.",
-    args_schema=PythonInputs(query="your_query_here")  # Provide a valid query value here.
-)
+repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",
+        description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24hour time, for example: 15:00 and 3pm are the same.",args_schema=PythonInputs)
 tools = [tool1,repl,tool3]
 
 agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
