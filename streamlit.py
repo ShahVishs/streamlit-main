@@ -178,7 +178,7 @@ if __name__ == "__main__":
     input_templete = template.format(dhead=df.head().to_markdown(),details=details)
 
 # Create an instance of the PythonInputs class
-args_schema = PythonInputs()
+args_schema = PythonInputs(query=user_input)
 system_message = SystemMessage(
         content=input_templete)
 
