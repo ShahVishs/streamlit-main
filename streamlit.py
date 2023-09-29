@@ -81,6 +81,11 @@ tool3 = create_retriever_tool(
     "search_business_details",
     "Searches and returns documents related to business working days and hours, location and address details."
 )
+# airtable
+airtable_api_key = st.secrets["AIRTABLE"]["AIRTABLE_API_KEY"]
+os.environ["AIRTABLE_API_KEY"] = airtable_api_key
+AIRTABLE_BASE_ID = "appN324U6FsVFVmx2"  
+AIRTABLE_TABLE_NAME = "python_tool_Q&A"
 
 # Initialize session state
 if 'chat_history' not in st.session_state:
