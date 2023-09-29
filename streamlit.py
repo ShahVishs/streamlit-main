@@ -1,3 +1,4 @@
+from pydantic import BaseModel, Field
 import os
 import streamlit as st
 from airtable import Airtable
@@ -31,7 +32,6 @@ from langchain.schema.messages import SystemMessage
 from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 from langchain.smith import RunEvalConfig, run_on_dataset
-from pydantic import BaseModel, Field
 import pandas as pd
 from langchain.tools import PythonAstREPLTool
 
@@ -190,7 +190,7 @@ repl = PythonAstREPLTool(
     locals={"df": df},
     name="python_repl",
     description="Use to check available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same.",
-    args_schema=PythonInputs  # Remove the instance creation (PythonInputs())
+    args_schema=PythonInputs  # Reference to the class, not an instance
 )
 tools = [tool1,repl,tool3]
 
