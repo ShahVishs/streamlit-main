@@ -171,8 +171,8 @@ def save_chat_to_airtable(user_name, user_input, output):
 # List to store chat history
 chat_history = []
 
-# Function for conversational chat
 def conversational_chat(user_input):
+    print("Input data:", user_input)  # Add this line to check the input data
     result = agent_executor({"input": user_input})
     st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
