@@ -184,7 +184,7 @@ if __name__ == "__main__":
     input_template = template.format(dhead=df.head().to_markdown(), details=details)
 
 system_message = SystemMessage(
-        content=template)  # Corrected variable name here
+        content=input_template)  # Corrected variable name here
 
 prompt = OpenAIFunctionsAgent.create_prompt(
         system_message=system_message,
