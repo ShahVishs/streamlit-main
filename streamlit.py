@@ -117,7 +117,13 @@ if __name__ == "__main__":
     df = pd.read_csv("appointment_new.csv")
     input_template = template.format(dhead=df.head().to_markdown(), details=details)
 
-    system_message = SystemMessage(content=input_template)
+    
+    system_message = SystemMessage(content=input_template)  # Corrected variable name here
+
+    prompt = OpenAIFunctionsAgent.create_prompt(
+            system_message=system_message,
+            extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
+        )
 
     # Create a PythonAstREPLTool without args_schema
     repl = PythonAstREPLTool(
