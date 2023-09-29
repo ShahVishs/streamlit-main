@@ -19,7 +19,16 @@ from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 import cProfile
 import threading
-import concurrent.futures
+from pydantic import BaseModel, Field
+import pandas as pd
+from langchain.tools import PythonAstREPLTool
+
+pd.set_option('display.max_rows', 20)
+pd.set_option('display.max_columns', 20)
+
+
+
+
 hide_share_button_style = """
     <style>
     .st-emotion-cache-zq5wmm.ezrtsby0 .stActionButton:nth-child(1) {
@@ -78,10 +87,10 @@ def main():
         "dealer ship location: https://www.google.com/maps/place/Pine+Belt+Mazda/@40.0835762,-74.1764688,15.63z/data=!4m6!3m5!1s0x89c18327cdc07665:0x23c38c7d1f0c2940!8m2!3d40.0835242!4d-74.1742558!16s%2Fg%2F11hkd1hhhb?entry=ttu"
     ]
     retriever_3 = FAISS.from_texts(business_details_text, OpenAIEmbeddings()).as_retriever()
-    current_date = datetime.today().strftime("%m/%d/%y")
-    day_of_week = datetime.today().weekday()
-    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-    current_day = days[day_of_week]
+    # current_date = datetime.today().strftime("%m/%d/%y")
+    # day_of_week = datetime.today().weekday()
+    # days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    # current_day = days[day_of_week]
 
     if 'user_name' not in st.session_state:
         st.session_state.user_name = None
@@ -213,12 +222,14 @@ def main():
     docs_1 = loader.load()
     embeddings = OpenAIEmbeddings()
     vectorstore_1 = FAISS.from_documents(docs_1, embeddings)
-    retriever_1 = vectorstore_1.as_retriever(search_type="similarity", search_kwargs={"k": 8})
+    retriever_1 = vectorstore_1.as_retriever(search_type="similarity", search_kwargs={"k": 3})
 
     tool1 = create_retriever_tool(
         retriever_1, 
         "search_car_dealership_inventory",
-        "Searches and returns documents regarding the car inventory and Input should be a single string strictly."
+        "This tool is used when answering questions related to car inventory.\
+        Searches and returns documents regarding the car inventory. Input to this can be multi string.\
+        The primary input for this function consists of either the car's make and model, whether it's new or used."
     )
 
     tool3 = create_retriever_tool(
@@ -227,7 +238,7 @@ def main():
         "Searches and returns documents related to business working days and hours, location and address details."
     )
 
-    tools = [tool1, tool3]
+    # tools = [tool1, tool3]
 
     airtable_api_key = st.secrets["AIRTABLE"]["AIRTABLE_API_KEY"]
     os.environ["AIRTABLE_API_KEY"] = airtable_api_key
@@ -253,7 +264,7 @@ def main():
     else:
         if 'new_session' not in st.session_state and st.session_state.user_name != "vishakha":
             st.session_state.new_session = True
-        llm = ChatOpenAI(model="gpt-3.5-turbo-16k", temperature = 0)
+        llm = ChatOpenAI(model="gpt-4", temperature = 0)
         langchain.debug=True
         memory_key = "history"
         memory = AgentTokenBufferMemory(memory_key=memory_key, llm=llm)
@@ -291,8 +302,12 @@ def main():
         Answer the question not more than two sentence.""")
 
         details = "Today's current date is " + todays_date + " and today's week day is " + day_of_the_week + "."
-
-        input_template = template.format(details=details)
+        class PythonInputs(BaseModel):
+            query: str = Field(description="code snippet to run")
+        if __name__ == "__main__":
+            df = pd.read_csv("appointment_new.csv")
+            input_template = template.format(dhead=df.head().to_markdown(),details=details)
+        # input_template = template.format(details=details)
 
         system_message = SystemMessage(
             content=input_template)
@@ -301,6 +316,9 @@ def main():
             system_message=system_message,
             extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
         )
+        repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",
+                description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24hour time, for example: 15:00 and 3pm are the same.",args_schema=PythonInputs)
+        tools = [tool1,repl,tool3]
         agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
 
         if 'agent_executor' not in st.session_state:
@@ -386,46 +404,46 @@ def main():
         with response_container:
             for i, (query, answer) in enumerate(st.session_state.chat_history):
                 user_name = st.session_state.user_name
-                # message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-                # col1, col2 = st.columns([0.7, 10]) 
-                # with col1:
-                #     st.image("icon-1024.png", width=50)
-                # with col2:
-                #     st.markdown(
-                #     f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
-                #     f' border-top-right-radius: 10px; border-bottom-right-radius: 10px;'
-                #     f' border-top-left-radius: 0; border-bottom-left-radius: 0; box-shadow: 2px 2px 5px #888888;">'
-                #     f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
-                #     f'</div>',
-                #     unsafe_allow_html=True
-                #     )
-                # Display the user message on the right
-                col1, col2 = st.columns([1, 8])  # Adjust the ratio as needed
+                message(query, is_user=True, key=f"{i}_user", avatar_style="thumbs")
+                col1, col2 = st.columns([0.7, 10]) 
                 with col1:
-                    st.image("icons8-user-96.png", width=50)
+                    st.image("icon-1024.png", width=50)
                 with col2:
                     st.markdown(
-                        f'<div style="background-color: #DCF8C6; border-radius: 10px; padding: 10px; width: 70%;'  # Adjusted width here
-                        f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
-                        f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888; margin-bottom: 10px;">'
-                        f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{query}</span>'
-                        f'</div>',
-                        unsafe_allow_html=True
+                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
+                    f' border-top-right-radius: 10px; border-bottom-right-radius: 10px;'
+                    f' border-top-left-radius: 0; border-bottom-left-radius: 0; box-shadow: 2px 2px 5px #888888;">'
+                    f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
+                    f'</div>',
+                    unsafe_allow_html=True
                     )
+                # Display the user message on the right
+                # col1, col2 = st.columns([1, 8])  # Adjust the ratio as needed
+                # with col1:
+                #     st.image("icons8-user-96.png", width=50)
+                # with col2:
+                #     st.markdown(
+                #         f'<div style="background-color: #DCF8C6; border-radius: 10px; padding: 10px; width: 70%;'  # Adjusted width here
+                #         f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
+                #         f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888; margin-bottom: 10px;">'
+                #         f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{query}</span>'
+                #         f'</div>',
+                #         unsafe_allow_html=True
+                #     )
         
-                # Display the response on the left
-                col3, col4 = st.columns([1, 8])  # Adjust the ratio as needed
-                with col3:
-                    st.image("icon-1024.png", width=50)
-                with col4:
-                    st.markdown(
-                        f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 70%;'  # Adjusted width here
-                        f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
-                        f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888; margin-bottom: 10px;">'
-                        f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
-                        f'</div>',
-                        unsafe_allow_html=True
-                    )
+                # # Display the response on the left
+                # col3, col4 = st.columns([1, 8])  # Adjust the ratio as needed
+                # with col3:
+                #     st.image("icon-1024.png", width=50)
+                # with col4:
+                #     st.markdown(
+                #         f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 70%;'  # Adjusted width here
+                #         f' border-top-right-radius: 0; border-bottom-right-radius: 0;'
+                #         f' border-top-left-radius: 10px; border-bottom-left-radius: 10px; box-shadow: 2px 2px 5px #888888; margin-bottom: 10px;">'
+                #         f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
+                #         f'</div>',
+                #         unsafe_allow_html=True
+                #     )
         
                 # # Add some spacing between question and answer
                 # st.write("")
@@ -435,10 +453,10 @@ def main():
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 if __name__ == "__main__":
-    profiler = cProfile.Profile()
-    profiler.enable()
+    # profiler = cProfile.Profile()
+    # profiler.enable()
 
     main()
 
-    profiler.disable()
-    profiler.print_stats(sort='cumtime')
+    # profiler.disable()
+    # profiler.print_stats(sort='cumtime')
