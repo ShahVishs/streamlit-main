@@ -338,7 +338,8 @@ else:
     
     try:
         repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",
-                description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24hour time, for example: 15:00 and 3pm are the same.",args_schema=PythonInputs)
+            description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same.",
+            args_schema=PythonInputs())  # Pass an instance of PythonInputs as args_schema
     except pydantic.ValidationError as e:
         print(f"Pydantic validation error: {e}")
     tools = [tool1,repl,tool3]
