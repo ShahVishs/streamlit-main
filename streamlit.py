@@ -61,9 +61,9 @@ day_of_the_week = current_day
 
 business_details_text = [
     "working days: all Days except sunday",
-    "working hours: 9 am to 7 pm"
-    "Phone: (555) 123-4567"
-    "Address: 567 Oak Avenue, Anytown, CA 98765, Email: jessica.smith@example.com",
+    "working hours: 9 am to 7 pm",  # Added a comma here
+    "Phone: (555) 123-4567",  # Added a comma here
+    "Address: 567 Oak Avenue, Anytown, CA 98765, Email: jessica.smith@example.com",  # Added a comma here
     "dealer ship location: https://www.google.com/maps/place/Pine+Belt+Mazda/@40.0835762,-74.1764688,15.63z/data=!4m6!3m5!1s0x89c18327cdc07665:0x23c38c7d1f0c2940!8m2!3d40.0835242!4d-74.1742558!16s%2Fg%2F11hkd1hhhb?entry=ttu"
 ]
 retriever_3 = FAISS.from_texts(business_details_text, OpenAIEmbeddings()).as_retriever()
