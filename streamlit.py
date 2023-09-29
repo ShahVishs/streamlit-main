@@ -242,10 +242,10 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
 
-    if submit_button and user_input:
-	    # Ensure that user_input is in the format expected by the Pydantic model
-	    input_data = {"query": user_input}
-	    output = conversational_chat(input_data)  # Pass input_data to your chat function
+	    if submit_button and user_input:
+		    # Ensure that user_input is in the format expected by the Pydantic model
+		    input_data = {"query": user_input}
+		    output = conversational_chat(input_data)  # Pass input_data to your chat function
 
        with response_container:
            for i, (query, answer) in enumerate(st.session_state.chat_history):
