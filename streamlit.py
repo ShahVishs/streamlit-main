@@ -342,9 +342,10 @@ else:
             args_schema=PythonInputs())  # Pass an instance of PythonInputs as args_schema
     except pydantic.ValidationError as e:
         print(f"Pydantic validation error: {e}")
-    tools = [tool1,repl,tool3]
+    
+    tools = [tool1, repl, tool3]
     agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
-
+    
     if 'agent_executor' not in st.session_state:
         agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
         st.session_state.agent_executor = agent_executor
@@ -366,20 +367,17 @@ else:
             )
         except Exception as e:
             st.error(f"An error occurred while saving data to Airtable: {e}")
-
-
+    
     if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = [] 
-        
+        st.session_state.chat_history = []
+    
     @st.cache_data
     def conversational_chat(user_input):
         for query, answer in reversed(st.session_state.chat_history):
             if query.lower() == user_input.lower():  
-                
                 return answer
-        
+    
         result = agent_executor({"input": user_input})
-        # st.session_state.chat_history.append((user_input, result["output"]))
         response = result["output"]
         return response
     # def process_user_input(user_input):
