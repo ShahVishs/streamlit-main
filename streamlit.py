@@ -242,15 +242,17 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-       output = conversational_chat(user_input)
-       
-       with response_container:
-           for i, (query, answer) in enumerate(st.session_state.chat_history):
-               message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-               message(answer, key=f"{i}_answer", avatar_style="thumbs")
-   
-           if st.session_state.user_name:
-               try:
-                   save_chat_to_airtable(st.session_state.user_name, user_input, output)
-               except Exception as e:
-                   st.error(f"An error occurred: {e}")
+	    # Create an instance of the PythonInputs class with the user_input
+	    args_schema = PythonInputs(query=user_input)
+	    output = conversational_chat(user_input)
+	    
+	    with response_container:
+	        for i, (query, answer) in enumerate(st.session_state.chat_history):
+	            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+	            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+	    
+	        if st.session_state.user_name:
+	            try:
+	                save_chat_to_airtable(st.session_state.user_name, user_input, output)
+	            except Exception as e:
+	                st.error(f"An error occurred: {e}")
