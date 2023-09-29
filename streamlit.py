@@ -189,8 +189,8 @@ prompt = OpenAIFunctionsAgent.create_prompt(
 repl = PythonAstREPLTool(
     locals={"df": df},
     name="python_repl",
-    description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3pm are the same.",
-    args_schema=PythonInputs()  # Note the parentheses to create an instance.
+    description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same.",
+    args_schema=PythonInputs(query="your_query_here")  # Provide a valid query value here.
 )
 tools = [tool1,repl,tool3]
 
