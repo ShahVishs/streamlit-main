@@ -34,6 +34,7 @@ from langchain.smith import RunEvalConfig, run_on_dataset
 from pydantic import BaseModel, Field
 import pandas as pd
 from langchain.tools import PythonAstREPLTool
+from langchain.tools.python import PythonAstREPLTool
 
 pd.set_option('display.max_rows', 20)
 pd.set_option('display.max_columns', 20)
