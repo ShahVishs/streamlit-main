@@ -183,9 +183,8 @@ if __name__ == "__main__":
     df = pd.read_csv("appointment_new.csv")
     input_template = template.format(dhead=df.head().to_markdown(), details=details)
 
-
 system_message = SystemMessage(
-        content=input_templete)
+        content=template)  # Corrected variable name here
 
 prompt = OpenAIFunctionsAgent.create_prompt(
         system_message=system_message,
