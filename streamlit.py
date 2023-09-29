@@ -171,13 +171,14 @@ Make every effort to assist the customer promptly while keeping responses concis
 Very Very Important Instruction: when ever you are using tools to answer the question. 
 strictly answer only from "System:  " message provided to you.""")
 details= "Today's current date is "+ todays_date +" todays week day is "+day_of_the_week+"."
-# class PythonInputs(BaseModel):
-#     query: str = Field(description="code snippet to run")
+class PythonInputs(BaseModel):
+    query: str = Field(description="code snippet to run")
 if __name__ == "__main__":
     df = pd.read_csv("appointment_new.csv")
     input_templete = template.format(dhead=df.head().to_markdown(),details=details)
 
-
+# Create an instance of the PythonInputs class
+args_schema = PythonInputs()
 system_message = SystemMessage(
         content=input_templete)
 
@@ -190,9 +191,7 @@ repl = PythonAstREPLTool(
     locals={"df": df},
     name="python_repl",
     description="Use to check available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same.",
-    args_schema=(
-        ("query", str, "code snippet to run"),
-    )
+    args_schema=args_schema
 )
 tools = [tool1,repl,tool3]
 
