@@ -1,4 +1,3 @@
-from pydantic import BaseModel, Field
 import os
 import streamlit as st
 from airtable import Airtable
@@ -32,6 +31,7 @@ from langchain.schema.messages import SystemMessage
 from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 from langchain.smith import RunEvalConfig, run_on_dataset
+from pydantic import BaseModel, Field
 import pandas as pd
 from langchain.tools import PythonAstREPLTool
 
@@ -171,12 +171,12 @@ Make every effort to assist the customer promptly while keeping responses concis
 Very Very Important Instruction: when ever you are using tools to answer the question. 
 strictly answer only from "System:  " message provided to you.""")
 details= "Today's current date is "+ todays_date +" todays week day is "+day_of_the_week+"."
-# Define the Pydantic model for input validation
 class PythonInputs(BaseModel):
     query: str = Field(description="code snippet to run")
 if __name__ == "__main__":
     df = pd.read_csv("appointment_new.csv")
     input_templete = template.format(dhead=df.head().to_markdown(),details=details)
+
 
 system_message = SystemMessage(
         content=input_templete)
@@ -186,7 +186,6 @@ prompt = OpenAIFunctionsAgent.create_prompt(
         extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
     )
 
-# Initialize the PythonAstREPLTool with the Pydantic model
 repl = PythonAstREPLTool(
     locals={"df": df},
     name="python_repl",
@@ -241,12 +240,10 @@ with container:
         user_input = st.text_input("Query:", placeholder="Type your question here (:", key='input')
         submit_button = st.form_submit_button(label='Send')
     
-
-	    if submit_button and user_input:
-		    # Ensure that user_input is in the format expected by the Pydantic model
-		    input_data = {"query": user_input}
-		    output = conversational_chat(input_data)  # Pass input_data to your chat function
-
+    if submit_button and user_input:
+       input_data = {"query": user_input}  
+       output = conversational_chat(input_data)
+	
        with response_container:
            for i, (query, answer) in enumerate(st.session_state.chat_history):
                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
