@@ -171,14 +171,13 @@ Make every effort to assist the customer promptly while keeping responses concis
 Very Very Important Instruction: when ever you are using tools to answer the question. 
 strictly answer only from "System:  " message provided to you.""")
 details= "Today's current date is "+ todays_date +" todays week day is "+day_of_the_week+"."
+# Define the Pydantic model for input validation
 class PythonInputs(BaseModel):
     query: str = Field(description="code snippet to run")
 if __name__ == "__main__":
     df = pd.read_csv("appointment_new.csv")
     input_templete = template.format(dhead=df.head().to_markdown(),details=details)
 
-# Create an instance of the PythonInputs class
-args_schema = PythonInputs(query="")  # Provide a default value or leave it empty
 system_message = SystemMessage(
         content=input_templete)
 
@@ -187,11 +186,12 @@ prompt = OpenAIFunctionsAgent.create_prompt(
         extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
     )
 
+# Initialize the PythonAstREPLTool with the Pydantic model
 repl = PythonAstREPLTool(
     locals={"df": df},
     name="python_repl",
-    description="Use to check available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same.",
-    args_schema=args_schema
+    description="Your tool description here",
+    args_schema=PythonInputs,  
 )
 tools = [tool1,repl,tool3]
 
@@ -240,20 +240,21 @@ with container:
     with st.form(key='my_form', clear_on_submit=True):
         user_input = st.text_input("Query:", placeholder="Type your question here (:", key='input')
         submit_button = st.form_submit_button(label='Send')
-    args_schema = None  # Initialize args_schema outside the conditional block
+    
 
     if submit_button and user_input:
-	    # Create an instance of the PythonInputs class with the user_input
-	    args_schema = PythonInputs(query=user_input)
-	    output = conversational_chat(user_input)
-	    
-	    with response_container:
-	        for i, (query, answer) in enumerate(st.session_state.chat_history):
-	            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-	            message(answer, key=f"{i}_answer", avatar_style="thumbs")
-	    
-	        if st.session_state.user_name:
-	            try:
-	                save_chat_to_airtable(st.session_state.user_name, user_input, output)
-	            except Exception as e:
-	                st.error(f"An error occurred: {e}")
+       # Ensure that user_input is in the format expected by the Pydantic model
+       input_data = {"query": user_input}
+       
+       output = conversational_chat(input_data)  # Pass input_data to your chat function
+
+       with response_container:
+           for i, (query, answer) in enumerate(st.session_state.chat_history):
+               message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+               message(answer, key=f"{i}_answer", avatar_style="thumbs")
+   
+           if st.session_state.user_name:
+               try:
+                   save_chat_to_airtable(st.session_state.user_name, user_input, output)
+               except Exception as e:
+                   st.error(f"An error occurred: {e}")
