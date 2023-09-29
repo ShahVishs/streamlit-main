@@ -380,9 +380,11 @@ else:
             if query.lower() == user_input.lower():  
                 return answer
     
-        result = agent_executor({"input": user_input})
-        response = result["output"]
-        return response
+        try:
+            result = agent_executor({"input": user_input})
+            response = result["output"]
+        except Exception as e:
+            print(f"Error executing agent_executor: {e}")
     # def process_user_input(user_input):
     #     output = conversational_chat(user_input)
     #     st.session_state.chat_history.append((user_input, output))
