@@ -244,7 +244,7 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-       # input_data = {"query": user_input}
+       input_data = {"query": user_input}
        output = conversational_chat(user_input)
 	
        with response_container:
