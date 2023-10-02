@@ -223,10 +223,9 @@ def conversational_chat(user_input):
             # Append the user input and the output message to the chat history
             st.session_state.chat_history.append((user_input, result["output"]))
         else:
-            st.error("Invalid response format. Expected a string.")
+            st.error(f"Invalid response format: {result['output']}")
     except Exception as e:
         st.error(f"An error occurred in conversational_chat: {e}")
-
 # Streamlit UI setup
 with container:
     if st.session_state.user_name is None:
