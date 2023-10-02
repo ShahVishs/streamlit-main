@@ -159,7 +159,6 @@ template = template.format(dhead="", details=details)
 
 # Define classes for args schema
 class PythonInputs(BaseModel):
-    class PythonInputs(BaseModel):
     query: str
 
 # class MyArgsSchema(BaseModel):
