@@ -175,12 +175,13 @@ if __name__ == "__main__":
             extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
         )
 
-    # Create the PythonAstREPLTool with the PythonInputs class as args_schema
+    # Create an instance of PythonInputs and pass it as args_schema
+    args_schema = PythonInputs(query="")
     repl = PythonAstREPLTool(
         locals={"df": df},
         name="python_repl",
         description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same.",
-        args_schema=PythonInputs  # Use the class, not an instance
+        args_schema=args_schema
     )
 
     tools = [tool1, repl, tool3]
