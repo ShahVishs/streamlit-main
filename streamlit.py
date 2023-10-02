@@ -184,7 +184,7 @@ prompt = OpenAIFunctionsAgent.create_prompt(
         system_message=system_message,
         extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
     )
-args_schema_instance = PythonInputs(query="i want to test drive jeep")
+args_schema_instance = PythonInputs(query="")
 repl = PythonAstREPLTool(
     locals={"df": df},
     name="python_repl",
@@ -225,7 +225,8 @@ def save_chat_to_airtable(user_name, user_input, output):
 chat_history=[]
 
 def conversational_chat(user_input):
-    result = agent_executor({"input": user_input})
+    args_schema_instance = PythonInputs(query=user_input)  # Create instance with user's input
+    result = agent_executor({"input": user_input, "args_schema": args_schema_instance})  # Pass it as args_schema
     st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
 
