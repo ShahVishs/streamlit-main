@@ -238,12 +238,12 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-       input_data = {
-	"python_inputs": {
-	    "query": user_input
-	}
-        }
-	output = conversational_chat(input_data)
+	    input_data = {
+	        "python_inputs": {
+	            "query": user_input
+	        }
+	    }
+	    output = conversational_chat(input_data)
 	
        with response_container:
            for i, (query, answer) in enumerate(st.session_state.chat_history):
