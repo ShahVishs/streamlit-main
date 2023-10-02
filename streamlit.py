@@ -61,8 +61,8 @@ day_of_the_week = current_day
 
 business_details_text = [
     "working days: all Days except sunday",
-    "working hours: 9 am to 7 pm"
-    "Phone: (555) 123-4567"
+    "working hours: 9 am to 7 pm", 
+    "Phone: (555) 123-4567",
     "Address: 567 Oak Avenue, Anytown, CA 98765, Email: jessica.smith@example.com",
     "dealer ship location: https://www.google.com/maps/place/Pine+Belt+Mazda/@40.0835762,-74.1764688,15.63z/data=!4m6!3m5!1s0x89c18327cdc07665:0x23c38c7d1f0c2940!8m2!3d40.0835242!4d-74.1742558!16s%2Fg%2F11hkd1hhhb?entry=ttu"
 ]
@@ -186,9 +186,12 @@ if __name__ == "__main__":
         system_message=system_message,
         extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
     )
-    repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",
-                             description="...",
-                             args_schema=PythonInputs)  # Ensure you pass PythonInputs here
+    repl = PythonAstREPLTool(
+        name="python_repl",
+        description="...",
+        locals={"df": df},
+        args_schema=PythonInputs
+    )
     tools = [tool1, repl, tool3]
     agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
     
