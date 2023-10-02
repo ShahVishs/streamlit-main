@@ -173,8 +173,8 @@ if __name__ == "__main__":
             extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
         )
 
-    # Create an instance of the PythonAstREPLToolArgs
-    args_schema = PythonAstREPLToolArgs()
+    # Create an instance of the PythonAstREPLToolArgs with the user's input as the query
+    args_schema = PythonAstREPLToolArgs(query=user_input)
 
     # Create the PythonAstREPLTool with the args_schema
     repl = PythonAstREPLTool(
