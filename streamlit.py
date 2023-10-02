@@ -184,7 +184,7 @@ prompt = OpenAIFunctionsAgent.create_prompt(
         system_message=system_message,
         extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
     )
-args_schema_instance = PythonInputs()
+args_schema_instance = PythonInputs(query="i want to test drive jeep")
 repl = PythonAstREPLTool(
     locals={"df": df},
     name="python_repl",
