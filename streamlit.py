@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from pydantic import BaseModel, Field
 import os
 import streamlit as st
@@ -220,8 +219,8 @@ def save_chat_to_airtable(user_name, user_input, output):
 chat_history = []
 
 def conversational_chat(user_input):
-    user_input = user_input["query"]  # Extract the query from the input_data dictionary
-    print("User input:", user_input)  # Add this line to check the user input
+    user_input = user_input["query"]  
+    print("User input:", user_input)  t
     result = agent_executor({"input": user_input})
     st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
