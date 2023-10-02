@@ -190,7 +190,7 @@ repl = PythonAstREPLTool(
     locals={"df": df},
     name="python_repl",
     description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24hour time, for example: 15:00 and 3pm are the same",
-    args_schema=PythonInputs  # Provide the PythonInputs class here
+    args_schema=PythonInputs()  # Provide the PythonInputs class here
 )
 tools = [tool1,repl,tool3]
 
