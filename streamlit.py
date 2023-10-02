@@ -175,87 +175,75 @@ strictly answer only from the "System: " message provided to you.""")
 details= "Today's current date is "+ todays_date +" today's weekday is "+day_of_the_week+"."
 
 class PythonInputs(BaseModel):
-    query: str = Field(description="code snippet to run", default="")
+    query: str = Field(description="code snippet to run")
 
 if __name__ == "__main__":
+    # Load your data, create the objects, and define the agent as you did in your original code
     df = pd.read_csv("appointment_new.csv")
-    input_template = template.format(dhead=df.head().to_markdown(),details=details)
-
-system_message = SystemMessage(
-        content=input_template)
-
-prompt = OpenAIFunctionsAgent.create_prompt(
+    input_template = template.format(dhead=df.head().to_markdown(), details=details)
+    system_message = SystemMessage(content=input_template)
+    prompt = OpenAIFunctionsAgent.create_prompt(
         system_message=system_message,
         extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
     )
+    repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",
+                             description="...",
+                             args_schema=PythonInputs)  # Ensure you pass PythonInputs here
+    tools = [tool1, repl, tool3]
+    agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
+    chat_history = []
 
-args_schema_instance = PythonInputs()  # Create an empty instance
+    if 'agent_executor' not in st.session_state:
+        agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True,
+                                       return_intermediate_steps=True)
+        st.session_state.agent_executor = agent_executor
+    else:
+        agent_executor = st.session_state.agent_executor
 
-repl = PythonAstREPLTool(
-    locals={"df": df},
-    name="python_repl",
-    description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same.",
-    args_schema=args_schema_instance
-)
+    response_container = st.container()
+    container = st.container()
 
-tools = [tool1, repl, tool3]
+    airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
 
-agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
-print("this code block running every time")
+    def save_chat_to_airtable(user_name, user_input, output):
+        try:
+            timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+            airtable.insert(
+                {
+                    "username": user_name,
+                    "question": user_input,
+                    "answer": output,
+                    "timestamp": timestamp,
+                }
+            )
+        except Exception as e:
+            st.error(f"An error occurred while saving data to Airtable: {e}")
 
-if 'agent_executor' not in st.session_state:
-	agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
-	st.session_state.agent_executor = agent_executor
-else:
-	agent_executor = st.session_state.agent_executor
+    def conversational_chat(user_input):
+        result = agent_executor({"input": user_input})
+        st.session_state.chat_history.append((user_input, result["output"]))
+        return result["output"]
 
-response_container = st.container()
-container = st.container()
+    with container:
+        if st.session_state.user_name is None:
+            user_name = st.text_input("Your name:")
+            if user_name:
+                st.session_state.user_name = user_name
 
-airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
+        with st.form(key='my_form', clear_on_submit=True):
+            user_input = st.text_input("Query:", placeholder="Type your question here (:", key='input')
+            submit_button = st.form_submit_button(label='Send')
 
-def save_chat_to_airtable(user_name, user_input, output):
-    try:
-        timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-        airtable.insert(
-            {
-                "username": user_name,
-                "question": user_input,
-                "answer": output,
-                "timestamp": timestamp,
-            }
-        )
-    except Exception as e:
-        st.error(f"An error occurred while saving data to Airtable: {e}")
+        if submit_button and user_input:
+            output = conversational_chat(user_input)
 
-chat_history=[]
+        with response_container:
+            for i, (query, answer) in enumerate(st.session_state.chat_history):
+                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+                message(answer, key=f"{i}_answer", avatar_style="thumbs")
 
-def conversational_chat(user_input):
-    args_schema_instance = PythonInputs(query=user_input)  # Provide user input as query
-    result = agent_executor({"input": user_input, "args_schema": args_schema_instance})  # Pass it as args_schema
-    st.session_state.chat_history.append((user_input, result["output"]))
-    return result["output"]
-
-with container:
-    if st.session_state.user_name is None:
-        user_name = st.text_input("Your name:")
-        if user_name:
-            st.session_state.user_name = user_name
-            
-    with st.form(key='my_form', clear_on_submit=True):
-        user_input = st.text_input("Query:", placeholder="Type your question here (:", key='input')
-        submit_button = st.form_submit_button(label='Send')
-    
-    if submit_button and user_input:
-	    output = conversational_chat(user_input)
-	
-	    with response_container:
-	        for i, (query, answer) in enumerate(st.session_state.chat_history):
-	            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-	            message(answer, key=f"{i}_answer", avatar_style="thumbs")
-	
-	    if st.session_state.user_name:
-	        try:
-	            save_chat_to_airtable(st.session_state.user_name, user_input, output)
-	        except Exception as e:
-	            st.error(f"An error occurred: {e}")
+            if st.session_state.user_name:
+                try:
+                    save_chat_to_airtable(st.session_state.user_name, user_input, output)
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
