@@ -176,10 +176,11 @@ if __name__ == "__main__":
 
     # Create a PythonAstREPLTool without args_schema
     repl = PythonAstREPLTool(
-        locals={"df": df},
-        name="python_repl",
-        description="Use to check available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same",
-    )
+	    locals={"df": df},
+	    name="python_repl",
+	    description="Use to check available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same",
+	    args_schema=MyArgsSchema,  # Use the Pydantic schema here
+	)
 
     tools = [tool1, repl, tool3]
 
@@ -234,7 +235,8 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-       input_data = {"query": user_input}  
+       # input_data = {"query": user_input}  
+       input_data = MyArgsSchema(python_inputs=PythonInputs(query=user_input))
        output = conversational_chat(input_data)
 	
        with response_container:
