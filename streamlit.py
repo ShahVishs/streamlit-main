@@ -216,10 +216,12 @@ def save_chat_to_airtable(user_name, user_input, output):
 chat_history = []
 
 def conversational_chat(user_input):
-    print("User input:", user_input)  
-    result = agent_executor({"input": user_input})
-    st.session_state.chat_history.append((user_input, result["output"]))
-    return result["output"]
+    print("User input:", user_input)
+    try:
+        result = agent_executor({"input": user_input})
+        st.session_state.chat_history.append((user_input, result["output"]))
+    except Exception as e:
+        st.error(f"An error occurred in conversational_chat: {e}")
 
 # Streamlit UI setup
 with container:
