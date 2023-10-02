@@ -177,9 +177,14 @@ if __name__ == "__main__":
         )
 
    
-    # Define the args_schema using the PythonInputs class
-    args_schema = PythonInputs()
-
+    # Define the args_schema as a dictionary
+    args_schema = {
+        "query": {
+            "default": None,
+            "description": "code snippet to run",
+        }
+    }
+	
     # Create the PythonAstREPLTool with the args_schema
     repl = PythonAstREPLTool(
         locals={"df": df},
