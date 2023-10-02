@@ -175,33 +175,29 @@ strictly answer only from the "System: " message provided to you.""")
 
 details= "Today's current date is "+ todays_date +" today's weekday is "+day_of_the_week+"."
 
-# Define the PythonInputs model
 class PythonInputs(BaseModel):
     query: str = Field(description="code snippet to run")
 
-# Load your data, create the objects, and define the agent as you did in your original code
 df = pd.read_csv("appointment_new.csv")
-input_template = template.format(dhead=df.head().to_markdown(), details=details)
+input_template = template.format(dhead=df.head().to_markdown(),details=details)
+
 system_message = SystemMessage(content=input_template)
+
 prompt = OpenAIFunctionsAgent.create_prompt(
     system_message=system_message,
     extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
 )
-repl = PythonAstREPLTool(
-    name="python_repl",
-    description="...",
-    locals={"df": df},
-    args_schema=PythonInputs  # Add this line
-)
+
+repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",
+    description="Use to check on available appointment times for a given date and time...")
+
 tools = [tool1, repl, tool3]
 agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
 
-if 'agent_executor' not in st.session_state:
-    agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True,
-                                   return_intermediate_steps=True)
-    st.session_state.agent_executor = agent_executor
-else:
-    agent_executor = st.session_state.agent_executor
+agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_source_documents=True,
+    return_generated_question=True, return_intermediate_steps=True)
+
+chat_history=[]
 
 response_container = st.container()
 container = st.container()
