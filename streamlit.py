@@ -96,7 +96,7 @@ if 'past' not in st.session_state:
     st.session_state.past = []
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
-
+user_input = None 
 # Initialize LLM and memory
 llm = ChatOpenAI(model="gpt-4", temperature=0)
 langchain.debug = True
