@@ -191,8 +191,7 @@ if __name__ == "__main__":
                              args_schema=PythonInputs)  # Ensure you pass PythonInputs here
     tools = [tool1, repl, tool3]
     agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
-    chat_history = []
-
+    
     if 'agent_executor' not in st.session_state:
         agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True,
                                        return_intermediate_steps=True)
@@ -218,12 +217,13 @@ if __name__ == "__main__":
             )
         except Exception as e:
             st.error(f"An error occurred while saving data to Airtable: {e}")
+    chat_history = []
 
     def conversational_chat(user_input):
         result = agent_executor({"input": user_input})
         st.session_state.chat_history.append((user_input, result["output"]))
         return result["output"]
-
+    
     with container:
         if st.session_state.user_name is None:
             user_name = st.text_input("Your name:")
