@@ -166,20 +166,19 @@ if __name__ == "__main__":
     df = pd.read_csv("appointment_new.csv")
     input_template = template.format(dhead=df.head().to_markdown(), details=details)
 
+    
     system_message = SystemMessage(content=input_template)  # Corrected variable name here
 
     prompt = OpenAIFunctionsAgent.create_prompt(
-        system_message=system_message,
-        extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
-    )
+            system_message=system_message,
+            extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
+        )
 
-    # Create a PythonAstREPLTool with args_schema correctly defined
-    repl_args_schema = MyArgsSchema()  # Instantiate the args_schema without initial input data
+    # Create a PythonAstREPLTool without args_schema
     repl = PythonAstREPLTool(
         locals={"df": df},
         name="python_repl",
         description="Use to check available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same",
-        args_schema=repl_args_schema,  # Use the defined args_schema
     )
 
     tools = [tool1, repl, tool3]
@@ -189,6 +188,8 @@ if __name__ == "__main__":
     if 'agent_executor' not in st.session_state:
         agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
         st.session_state.agent_executor = agent_executor
+    else:
+        agent_executor = st.session_state.agent_executor
 
 # Container for chat response
 response_container = st.container()
@@ -215,11 +216,12 @@ def save_chat_to_airtable(user_name, user_input, output):
 chat_history = []
 
 def conversational_chat(user_input):
+    user_input = user_input["query"]  # Extract the query from the input_data dictionary
     print("User input:", user_input)  # Add this line to check the user input
     result = agent_executor({"input": user_input})
     st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
-    
+
 # Streamlit UI setup
 with container:
     if st.session_state.user_name is None:
@@ -232,15 +234,16 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-        output = conversational_chat(user_input)
-
-            with response_container:
-                for i, (query, answer) in enumerate(st.session_state.chat_history):
-                    message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-                    message(answer, key=f"{i}_answer", avatar_style="thumbs")
-
-                if st.session_state.user_name:
-                    try:
-                        save_chat_to_airtable(st.session_state.user_name, user_input, output)
-                    except Exception as e:
-                        st.error(f"An error occurred: {e}")
+       input_data = {"query": user_input}  
+       output = conversational_chat(input_data)
+	
+       with response_container:
+           for i, (query, answer) in enumerate(st.session_state.chat_history):
+               message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+               message(answer, key=f"{i}_answer", avatar_style="thumbs")
+   
+           if st.session_state.user_name:
+               try:
+                   save_chat_to_airtable(st.session_state.user_name, user_input, output)
+               except Exception as e:
+                   st.error(f"An error occurred: {e}")
