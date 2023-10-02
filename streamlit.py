@@ -83,7 +83,12 @@ tool1 = create_retriever_tool(
      "search_car_dealership_inventory",
      "This tool is used when answering questions related to car inventory.\
       Searches and returns documents regarding the car inventory. Input to this can be multi string.\
-      The primary input for this function consists of either the car's make and model, whether it's new or used."
+      The primary input for this function consists of either the car's make and model, whether it's new or used car, and trade-in.\
+      You should know the make of the car, the model of the car, and whether the customer is looking for a new or used car to answer inventory-related queries.\
+      When responding to inquiries about any car, restrict the information shared with the customer to the car's make, year, model, and trim.\
+      The selling price should only be disclosed upon the customer's request, without any prior provision of MRP.\
+      If the customer inquires about a car that is not available, please refrain from suggesting other cars.\
+      Provide a link for more details after every car information given."
 )
 
 
@@ -143,15 +148,14 @@ truncation while using pandas.
 {dhead}
 </df>
 You are not meant to use only these rows to answer questions - they are meant as a way of telling you
-about the shape and schema of the dataframe.
-you can run intermediate queries to do exporatory data analysis to give you more information as needed.
+about the shape and schema of the dataframe. You can run intermediate queries to do exploratory data analysis to give you more information as needed.
 
 If the appointment schedule time is not available for the specified 
-date and time you can provide alternative available times near to costumers preferred time from the information given to you.
-In answer use AM, PM time format strictly dont use 24 hrs format.
+date and time you can provide alternative available times near to costumer's preferred time from the information given to you.
+In answer use AM, PM time format strictly don't use 24 hrs format.
 Additionally provide this link: https://app.funnelai.com/shorten/JiXfGCEElA to schedule appointment by the user himself.
 Prior to scheduling an appointment, please commence a conversation by soliciting the following customer information:
-their name, contact number and email address.
+their name, contact number, and email address.
 
 Business details: Enquiry regarding google maps location of the store, address of the store, working days and working hours 
 and contact details use search_business_details tool to get information.
@@ -165,37 +169,39 @@ Please maintain a courteous and respectful tone in your American English respons
 If you're unsure of an answer, respond with 'I am sorry.'/
 Make every effort to assist the customer promptly while keeping responses concise, not exceeding two sentences."
 
-Very Very Important Instruction: when ever you are using tools to answer the question. 
-strictly answer only from "System:  " message provided to you.""")
-details= "Today's current date is "+ todays_date +" todays week day is "+day_of_the_week+"."
+Very Very Important Instruction: whenever you are using tools to answer the question. 
+strictly answer only from the "System: " message provided to you.""")
+
+details= "Today's current date is "+ todays_date +" today's weekday is "+day_of_the_week+"."
 
 class PythonInputs(BaseModel):
-    query: str = Field(description="code snippet to run")
+    query: str = Field(description="code snippet to run", default="")
 
 if __name__ == "__main__":
     df = pd.read_csv("appointment_new.csv")
-    input_templete = template.format(dhead=df.head().to_markdown(),details=details)
-
+    input_template = template.format(dhead=df.head().to_markdown(),details=details)
 
 system_message = SystemMessage(
-        content=input_templete)
+        content=input_template)
 
 prompt = OpenAIFunctionsAgent.create_prompt(
         system_message=system_message,
         extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
     )
+
 args_schema_instance = PythonInputs()  # Create an empty instance
+
 repl = PythonAstREPLTool(
     locals={"df": df},
     name="python_repl",
-    description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24hour time, for example: 15:00 and 3pm are the same.",
+    description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same.",
     args_schema=args_schema_instance
 )
-tools = [tool1,repl,tool3]
+
+tools = [tool1, repl, tool3]
 
 agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
 print("this code block running every time")
-
 
 if 'agent_executor' not in st.session_state:
 	agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
@@ -225,7 +231,7 @@ def save_chat_to_airtable(user_name, user_input, output):
 chat_history=[]
 
 def conversational_chat(user_input):
-    args_schema_instance = PythonInputs(query=user_input)  # Create instance with user's input
+    args_schema_instance = PythonInputs(query=user_input)  # Provide user input as query
     result = agent_executor({"input": user_input, "args_schema": args_schema_instance})  # Pass it as args_schema
     st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
@@ -241,7 +247,6 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-	    args_schema_instance = PythonInputs(query=user_input)  # Provide user input as query
 	    output = conversational_chat(user_input)
 	
 	    with response_container:
