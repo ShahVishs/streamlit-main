@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from pydantic import BaseModel, Field
 import os
 import streamlit as st
