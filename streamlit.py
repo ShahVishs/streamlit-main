@@ -159,7 +159,8 @@ template = template.format(dhead="", details=details)
 
 # Define classes for args schema
 class PythonInputs(BaseModel):
-    query: str = Field(description="code snippet to run")
+    class PythonInputs(BaseModel):
+    query: str
 
 # class MyArgsSchema(BaseModel):
 #     python_inputs: PythonInputs
