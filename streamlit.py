@@ -220,6 +220,7 @@ def conversational_chat(user_input):
     try:
         result = agent_executor({"input": user_input})
         if isinstance(result["output"], str):
+            # Append the user input and the output message to the chat history
             st.session_state.chat_history.append((user_input, result["output"]))
         else:
             st.error("Invalid response format. Expected a string.")
