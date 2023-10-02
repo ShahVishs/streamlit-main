@@ -1,3 +1,4 @@
+from pydantic import BaseModel, Field
 import os
 import streamlit as st
 from airtable import Airtable
@@ -31,7 +32,7 @@ from langchain.schema.messages import SystemMessage
 from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 from langchain.smith import RunEvalConfig, run_on_dataset
-from pydantic import BaseModel, Field
+
 import pandas as pd
 from langchain.tools import PythonAstREPLTool
 
@@ -159,8 +160,8 @@ template = template.format(dhead="", details=details)
 class PythonInputs(BaseModel):
     query: str = Field(description="code snippet to run")
 
-class MyArgsSchema(BaseModel):
-    python_inputs: PythonInputs
+# class MyArgsSchema(BaseModel):
+#     python_inputs: PythonInputs
 
 if __name__ == "__main__":
     df = pd.read_csv("appointment_new.csv")
@@ -174,12 +175,13 @@ if __name__ == "__main__":
             extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
         )
 
-    # Create a PythonAstREPLTool without args_schema
-    repl = PythonAstREPLTool(
-        locals={"df": df},
-        name="python_repl",
-        description="Use to check available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same",
-    )
+   
+	repl = PythonAstREPLTool(
+	    locals={"df": df},
+	    name="python_repl",
+	    description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same.",
+	    args_schema=PythonInputs
+	)
 
     tools = [tool1, repl, tool3]
 
