@@ -178,7 +178,7 @@ if __name__ == "__main__":
 
    
     # Define the args_schema as a dictionary
-    args_schema = PythonInputs()
+    args_schema = PythonInputs(query="your_initial_query_here")
        
 	
     # Create the PythonAstREPLTool with the args_schema
