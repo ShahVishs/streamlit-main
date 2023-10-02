@@ -174,7 +174,7 @@ if __name__ == "__main__":
         )
 
     # Create an instance of the PythonAstREPLToolArgs with the user's input as the query
-    # args_schema = PythonAstREPLToolArgs(query=user_input)
+    args_schema = PythonAstREPLToolArgs(query="")
 
     # Create the PythonAstREPLTool with the args_schema
     repl = PythonAstREPLTool(
