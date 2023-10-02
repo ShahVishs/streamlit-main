@@ -219,22 +219,12 @@ def save_chat_to_airtable(user_name, user_input, output):
 chat_history = []
 
 def conversational_chat(user_input):
-    print("User input:", user_input)
-    try:
-        if isinstance(user_input, str):
-            input_data = {
-                "query": user_input
-            }
-            result = agent_executor(input_data)
-            if isinstance(result["output"], str):
-                # Append the user input and the output message to the chat history
-                st.session_state.chat_history.append((user_input, result["output"]))
-            else:
-                st.error(f"Invalid response format: {result['output']}")
-        else:
-            st.error("Invalid input format. Please provide a code snippet as a string.")
-    except Exception as e:
-        st.error(f"An error occurred in conversational_chat: {e}")
+    user_input = user_input["query"]  # Extract the query from the input_data dictionary
+    print("User input:", user_input)  # Add this line to check the user input
+    result = agent_executor({"input": user_input})
+    st.session_state.chat_history.append((user_input, result["output"]))
+    return result["output"]
+
 # Streamlit UI setup
 with container:
     if st.session_state.user_name is None:
