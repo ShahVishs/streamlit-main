@@ -215,12 +215,11 @@ def save_chat_to_airtable(user_name, user_input, output):
 chat_history = []
 
 def conversational_chat(user_input):
-    user_input = user_input["query"]  # Extract the query from the input_data dictionary
     print("User input:", user_input)  # Add this line to check the user input
     result = agent_executor({"input": user_input})
     st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
-
+    
 # Streamlit UI setup
 with container:
     if st.session_state.user_name is None:
@@ -233,14 +232,7 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-            # Create the input data for the args schema with the user input
-            input_data = {
-                "python_inputs": {
-                    "query": user_input
-                }
-            }
-            repl_args_schema = MyArgsSchema(**input_data)  # Update the args_schema with user input
-            output = conversational_chat(repl_args_schema.dict())  # Pass the args schema as a dictionary
+        output = conversational_chat(user_input)
 
             with response_container:
                 for i, (query, answer) in enumerate(st.session_state.chat_history):
