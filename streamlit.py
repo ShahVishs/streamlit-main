@@ -193,18 +193,22 @@ repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",
 
 tools = [tool1, repl, tool3]
 agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
-
-agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_source_documents=True,
-    return_generated_question=True, return_intermediate_steps=True)
+if 'agent_executor' not in st.session_state:
+    agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_source_documents=True,
+        return_generated_question=True, return_intermediate_steps=True)
+    st.session_state.agent_executor = agent_executor
+else:
+    agent_executor = st.session_state.agent_executor
 
 chat_history=[]
 
 response_container = st.container()
 container = st.container()
 
-# Set up Airtable
-airtable_api_key = 'YOUR_AIRTABLE_API_KEY'
-AIRTABLE_BASE_ID = "appAVFD4iKFkBm49q"
+# airtable
+airtable_api_key = st.secrets["AIRTABLE"]["AIRTABLE_API_KEY"]
+os.environ["AIRTABLE_API_KEY"] = airtable_api_key
+AIRTABLE_BASE_ID = "appAVFD4iKFkBm49q"  
 AIRTABLE_TABLE_NAME = "Question_Answer_Data"
 airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
 
@@ -235,9 +239,6 @@ def conversational_chat(user_input):
     result = agent_executor({"input": user_input})
     st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
-
-# Streamlit UI setup
-st.info("Introducing Otto, your cutting-edge partner in streamlining dealership and customer-related operations. ...")
 
 with container:
     if st.session_state.user_name is None:
