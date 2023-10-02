@@ -169,12 +169,12 @@ if __name__ == "__main__":
     system_message = SystemMessage(content=input_template)  # Corrected variable name here
 
     prompt = OpenAIFunctionsAgent.create_prompt(
-            system_message=system_message,
-            extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
-        )
+        system_message=system_message,
+        extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
+    )
 
     # Create a PythonAstREPLTool with args_schema correctly defined
-    repl_args_schema = MyArgsSchema()  # Instantiate the args_schema
+    repl_args_schema = MyArgsSchema()  # Instantiate the args_schema without initial input data
     repl = PythonAstREPLTool(
         locals={"df": df},
         name="python_repl",
@@ -189,8 +189,6 @@ if __name__ == "__main__":
     if 'agent_executor' not in st.session_state:
         agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
         st.session_state.agent_executor = agent_executor
-    else:
-        agent_executor = st.session_state.agent_executor
 
 # Container for chat response
 response_container = st.container()
@@ -235,17 +233,22 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-       # input_data = {"query": user_input}  
-       input_data = MyArgsSchema(python_inputs=PythonInputs(query=user_input))
-       output = conversational_chat(input_data)
-	
-       with response_container:
-           for i, (query, answer) in enumerate(st.session_state.chat_history):
-               message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-               message(answer, key=f"{i}_answer", avatar_style="thumbs")
-   
-           if st.session_state.user_name:
-               try:
-                   save_chat_to_airtable(st.session_state.user_name, user_input, output)
-               except Exception as e:
-                   st.error(f"An error occurred: {e}")
+            # Create the input data for the args schema with the user input
+            input_data = {
+                "python_inputs": {
+                    "query": user_input
+                }
+            }
+            repl_args_schema = MyArgsSchema(**input_data)  # Update the args_schema with user input
+            output = conversational_chat(repl_args_schema.dict())  # Pass the args schema as a dictionary
+
+            with response_container:
+                for i, (query, answer) in enumerate(st.session_state.chat_history):
+                    message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+                    message(answer, key=f"{i}_answer", avatar_style="thumbs")
+
+                if st.session_state.user_name:
+                    try:
+                        save_chat_to_airtable(st.session_state.user_name, user_input, output)
+                    except Exception as e:
+                        st.error(f"An error occurred: {e}")
