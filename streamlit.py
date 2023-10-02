@@ -39,32 +39,43 @@ pd.set_option('display.max_rows', 20)
 pd.set_option('display.max_columns', 20)
 
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
-# Load image
 st.image("socialai.jpg")
 
-# Get current date and day of the week
+datetime.datetime.now()
+# datetime.now()
+# Get the current date in "%m/%d/%y" format
 current_date = datetime.date.today().strftime("%m/%d/%y")
+# current_date = datetime.today().strftime("%m/%d/%y")
+# Get the day of the week (0: Monday, 1: Tuesday, ..., 6: Sunday)
 day_of_week = datetime.date.today().weekday()
+# day_of_week = datetime.today().weekday()
+
+# Convert the day of the week to a string representation
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 current_day = days[day_of_week]
 
-# Business details text
+# print("Current date:", current_date)
+# print("Current day:", current_day)
+todays_date = current_date
+day_of_the_week = current_day
+
 business_details_text = [
     "working days: all Days except sunday",
-    "working hours: 9 am to 7 pm",
-    "Phone: (555) 123-4567",
+    "working hours: 9 am to 7 pm"
+    "Phone: (555) 123-4567"
     "Address: 567 Oak Avenue, Anytown, CA 98765, Email: jessica.smith@example.com",
     "dealer ship location: https://www.google.com/maps/place/Pine+Belt+Mazda/@40.0835762,-74.1764688,15.63z/data=!4m6!3m5!1s0x89c18327cdc07665:0x23c38c7d1f0c2940!8m2!3d40.0835242!4d-74.1742558!16s%2Fg%2F11hkd1hhhb?entry=ttu"
 ]
 retriever_3 = FAISS.from_texts(business_details_text, OpenAIEmbeddings()).as_retriever()
 
-# Load inventory data
 file_1 = r'dealer_1_inventry.csv'
+
 loader = CSVLoader(file_path=file_1)
 docs_1 = loader.load()
 embeddings = OpenAIEmbeddings()
 vectorstore_1 = FAISS.from_documents(docs_1, embeddings)
-retriever_1 = vectorstore_1.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+retriever_1 = vectorstore_1.as_retriever(search_type="similarity", search_kwargs={"k": 3})#check without similarity search and k=8
+# retriever_1 = vectorstore_1.as_retriever(search_type="similarity_score_threshold", search_kwargs={"score_threshold": 0.65,"k": 3})
 
 # Create the first tool
 tool1 = create_retriever_tool(
@@ -75,17 +86,25 @@ tool1 = create_retriever_tool(
       The primary input for this function consists of either the car's make and model, whether it's new or used."
 )
 
+
 # Create the third tool
 tool3 = create_retriever_tool(
     retriever_3, 
     "search_business_details",
     "Searches and returns documents related to business working days and hours, location and address details."
 )
+
+# Append all tools to the tools list
+
 # airtable
 airtable_api_key = st.secrets["AIRTABLE"]["AIRTABLE_API_KEY"]
 os.environ["AIRTABLE_API_KEY"] = airtable_api_key
-AIRTABLE_BASE_ID = "appAVFD4iKFkBm49q"  
-AIRTABLE_TABLE_NAME = "Question_Answer_Data"
+AIRTABLE_BASE_ID = "appN324U6FsVFVmx2"  
+AIRTABLE_TABLE_NAME = "python_tool_Q&A"
+
+# Streamlit UI setup
+st.info(" Introducing **Otto**, your cutting-edge partner in streamlining dealership and customer-related operations. At EngagedAi, we specialize in harnessing the power of automation to revolutionize the way dealerships and customers interact. Our advanced solutions seamlessly handle tasks, from managing inventory and customer inquiries to optimizing sales processes, all while enhancing customer satisfaction. Discover a new era of efficiency and convenience with us as your trusted automation ally. [engagedai.io](https://funnelai.com/). For this demo application, we will use the Inventory Dataset. Please explore it [here](https://github.com/ShahVishs/workflow/blob/main/2013_Inventory.csv) to get a sense for what questions you can ask.")
+# st.info(" We're developing cutting-edge conversational AI solutions tailored for automotive retail, aiming to provide advanced products and support. As part of our progress, we're establishing a environment to check offerings and also check Our website [engane.ai](https://funnelai.com/). This test application answers about Inventory, Business details, Financing and Discounts and Offers related questions. [here](https://github.com/buravelliprasad/streamlit_python_tool/blob/main/dealer_1_inventry.csv) is a inventry dataset to explore. Appointment dataset [here](https://github.com/buravelliprasad/streamlit_python_tool/blob/main/appointment_new.csv)")
 # Initialize session state
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
@@ -93,18 +112,16 @@ if 'generated' not in st.session_state:
     st.session_state.generated = []
 if 'past' not in st.session_state:
     st.session_state.past = []
+# Initialize user name in session state
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 
-# Initialize LLM and memory
-llm = ChatOpenAI(model="gpt-4", temperature=0)
-langchain.debug = True
+llm = ChatOpenAI(model="gpt-4", temperature = 0)
+langchain.debug=True
 memory_key = "history"
 memory = AgentTokenBufferMemory(memory_key=memory_key, llm=llm)
-
-# Define template and details
-details = "Today's current date is " + current_date + " todays week day is " + current_day + "."
-template = """You're the Business Development Manager at a car dealership.
+template=(
+"""You're the Business Development Manager at a car dealership.
 You get text enquries regarding car inventory, Business details and scheduling appointments when responding to inquiries,
 strictly adhere to the following guidelines:
 
@@ -152,52 +169,42 @@ If you're unsure of an answer, respond with 'I am sorry.'/
 Make every effort to assist the customer promptly while keeping responses concise, not exceeding two sentences."
 
 Very Very Important Instruction: when ever you are using tools to answer the question. 
-strictly answer only from "System:  " message provided to you."""
-template = template.format(dhead="", details=details)
-
-# Define classes for args schema
+strictly answer only from "System:  " message provided to you.""")
+details= "Today's current date is "+ todays_date +" todays week day is "+day_of_the_week+"."
 class PythonInputs(BaseModel):
     query: str = Field(description="code snippet to run")
-
-class MyArgsSchema(BaseModel):
-    python_inputs: PythonInputs
-
 if __name__ == "__main__":
     df = pd.read_csv("appointment_new.csv")
-    input_template = template.format(dhead=df.head().to_markdown(), details=details)
+    input_templete = template.format(dhead=df.head().to_markdown(),details=details)
 
-    
-    system_message = SystemMessage(content=input_template)  # Corrected variable name here
 
-    prompt = OpenAIFunctionsAgent.create_prompt(
-            system_message=system_message,
-            extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
-        )
+system_message = SystemMessage(
+        content=input_templete)
 
-    # Create a PythonAstREPLTool without args_schema
-    repl = PythonAstREPLTool(
-        locals={"df": df},
-        name="python_repl",
-        description="Use to check available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24-hour time, for example: 15:00 and 3 pm are the same",
+prompt = OpenAIFunctionsAgent.create_prompt(
+        system_message=system_message,
+        extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
     )
 
-    tools = [tool1, repl, tool3]
+repl = PythonAstREPLTool(locals={"df": df}, name="python_repl",
+        description="Use to check on available appointment times for a given date and time. The input to this tool should be a string in this format mm/dd/yy. This is the only way for you to answer questions about available appointments. This tool will reply with available times for the specified date in 24hour time, for example: 15:00 and 3pm are the same.",args_schema=PythonInputs)
+tools = [tool1,repl,tool3]
 
-    agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
+agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
+print("this code block running every time")
 
-    if 'agent_executor' not in st.session_state:
-        agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
-        st.session_state.agent_executor = agent_executor
-    else:
-        agent_executor = st.session_state.agent_executor
 
-# Container for chat response
+if 'agent_executor' not in st.session_state:
+	agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, return_intermediate_steps=True)
+	st.session_state.agent_executor = agent_executor
+else:
+	agent_executor = st.session_state.agent_executor
+
 response_container = st.container()
 container = st.container()
 
 airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
 
-# Function to save chat history to Airtable
 def save_chat_to_airtable(user_name, user_input, output):
     try:
         timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
@@ -212,17 +219,13 @@ def save_chat_to_airtable(user_name, user_input, output):
     except Exception as e:
         st.error(f"An error occurred while saving data to Airtable: {e}")
 
-# List to store chat history
-chat_history = []
+chat_history=[]
 
 def conversational_chat(user_input):
-    user_input = user_input["query"]  # Extract the query from the input_data dictionary
-    print("User input:", user_input)  # Add this line to check the user input
     result = agent_executor({"input": user_input})
     st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
 
-# Streamlit UI setup
 with container:
     if st.session_state.user_name is None:
         user_name = st.text_input("Your name:")
@@ -234,9 +237,8 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-       input_data = {"query": user_input}  
-       output = conversational_chat(input_data)
-	
+       output = conversational_chat(user_input)
+       
        with response_container:
            for i, (query, answer) in enumerate(st.session_state.chat_history):
                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
