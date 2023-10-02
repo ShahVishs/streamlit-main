@@ -157,9 +157,8 @@ Very Very Important Instruction: when ever you are using tools to answer the que
 strictly answer only from "System:  " message provided to you."""
 template = template.format(dhead="", details=details)
 
-class PythonInputs(BaseModel):
+class PythonAstREPLToolArgs(BaseModel):
     query: str = Field(description="Code snippet to run")
-
 
 # class MyArgsSchema(BaseModel):
 #     python_inputs: PythonInputs
@@ -175,8 +174,10 @@ if __name__ == "__main__":
             extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)]
         )
 
-    # Create an instance of PythonInputs and pass it as args_schema
-    args_schema = PythonInputs(query="")
+    # Create an instance of the PythonAstREPLToolArgs
+    args_schema = PythonAstREPLToolArgs()
+
+    # Create the PythonAstREPLTool with the args_schema
     repl = PythonAstREPLTool(
         locals={"df": df},
         name="python_repl",
