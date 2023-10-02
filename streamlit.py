@@ -190,7 +190,7 @@ repl = PythonAstREPLTool(
     name="python_repl",
     description="...",
     locals={"df": df},
-    args_schema=PythonInputs
+    args_schema=PythonInputs  # Add this line
 )
 tools = [tool1, repl, tool3]
 agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
