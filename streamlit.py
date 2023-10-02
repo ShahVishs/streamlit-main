@@ -174,7 +174,7 @@ if __name__ == "__main__":
         )
 
     # Create an instance of the PythonAstREPLToolArgs with the user's input as the query
-    args_schema = PythonAstREPLToolArgs(query=user_input)
+    # args_schema = PythonAstREPLToolArgs(query=user_input)
 
     # Create the PythonAstREPLTool with the args_schema
     repl = PythonAstREPLTool(
@@ -237,16 +237,19 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-       input_data = {"query": user_input}
-       output = conversational_chat(user_input)
+	    input_data = {"query": user_input}
+	    output = conversational_chat(user_input)
 	
-       with response_container:
-           for i, (query, answer) in enumerate(st.session_state.chat_history):
-               message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-               message(answer, key=f"{i}_answer", avatar_style="thumbs")
-   
-           if st.session_state.user_name:
-               try:
-                   save_chat_to_airtable(st.session_state.user_name, user_input, output)
-               except Exception as e:
-                   st.error(f"An error occurred: {e}")
+	    # Move the creation of args_schema here
+	    args_schema = PythonAstREPLToolArgs(query=user_input)
+	
+	    with response_container:
+	        for i, (query, answer) in enumerate(st.session_state.chat_history):
+	            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+	            message(answer, key=f"{i}_answer", avatar_style="thumbs")
+	
+	        if st.session_state.user_name:
+	            try:
+	                save_chat_to_airtable(st.session_state.user_name, user_input, output)
+	            except Exception as e:
+	                st.error(f"An error occurred: {e}")
