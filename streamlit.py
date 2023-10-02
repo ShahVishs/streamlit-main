@@ -220,7 +220,7 @@ chat_history = []
 
 def conversational_chat(user_input):
     user_input = user_input["query"]  
-    print("User input:", user_input)  t
+    print("User input:", user_input)  
     result = agent_executor({"input": user_input})
     st.session_state.chat_history.append((user_input, result["output"]))
     return result["output"]
