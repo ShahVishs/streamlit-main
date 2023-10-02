@@ -218,20 +218,18 @@ chat_history = []
 def conversational_chat(user_input):
     print("User input:", user_input)
     try:
-        if 'query' in user_input:
+        if isinstance(user_input, str):
             input_data = {
-                "python_inputs": {
-                    "query": user_input['query']
-                }
+                "query": user_input
             }
             result = agent_executor(input_data)
             if isinstance(result["output"], str):
                 # Append the user input and the output message to the chat history
-                st.session_state.chat_history.append((user_input['query'], result["output"]))
+                st.session_state.chat_history.append((user_input, result["output"]))
             else:
                 st.error(f"Invalid response format: {result['output']}")
         else:
-            st.error("Invalid input format. Please provide a code snippet.")
+            st.error("Invalid input format. Please provide a code snippet as a string.")
     except Exception as e:
         st.error(f"An error occurred in conversational_chat: {e}")
 # Streamlit UI setup
@@ -246,7 +244,7 @@ with container:
         submit_button = st.form_submit_button(label='Send')
     
     if submit_button and user_input:
-       input_data = {"query": user_input}
+       # input_data = {"query": user_input}
        output = conversational_chat(input_data)
 	
        with response_container:
