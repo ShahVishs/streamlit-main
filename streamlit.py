@@ -341,6 +341,7 @@ else:
                     "feedback": feedback if feedback is not None else ""  # Store an empty string if feedback is None
                 }
             )
+            print(f"Data saved to Airtable - User: {user_name}, Question: {user_input}, Answer: {output}, Feedback: {feedback}")
         except Exception as e:
             st.error(f"An error occurred while saving data to Airtable: {e}")
     # Initialize session state
@@ -383,7 +384,7 @@ else:
     if submit_button and user_input:
         output, feedback = conversational_chat(user_input)
         st.session_state.chat_history.append((user_input, output, feedback))  # Store feedback along with response
-    
+        print(f"Data to be saved - User: {st.session_state.user_name}, Question: {user_input}, Answer: {output}, Feedback: {feedback}")
     # Display chat history with feedback
     with response_container:
         for i, (query, answer, feedback) in enumerate(st.session_state.chat_history):
