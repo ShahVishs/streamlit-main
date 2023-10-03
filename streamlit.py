@@ -351,24 +351,26 @@ else:
     # Function to perform conversational chat
     def conversational_chat(user_input):
         feedback = None  # Initialize feedback to None
-        for query, answer in reversed(st.session_state.chat_history):
+        for entry in reversed(st.session_state.chat_history):
+            query, answer, feedback = entry + [None, None]  # Provide default values for feedback and answer
             if query.lower() == user_input.lower():  
                 return answer
+    
         result = agent_executor({"input": user_input})
         response = result["output"]
-        
+    
         # Add thumbs up and thumbs down buttons
         thumbs_up = st.button("👍", key=f"thumbs_up_{len(st.session_state.chat_history)}")
         thumbs_down = st.button("👎", key=f"thumbs_down_{len(st.session_state.chat_history)}")
-        
+    
         if thumbs_up:
             feedback = "👍"
         elif thumbs_down:
             feedback = "👎"
-        
+    
         # Store the conversation in chat history along with feedback
         st.session_state.chat_history.append((user_input, response, feedback))
-        
+    
         return response
     if st.session_state.user_name is None:
         user_name = st.text_input("Your name:")
