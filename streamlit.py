@@ -348,6 +348,7 @@ else:
         st.session_state.chat_history = []
     # Function to perform conversational chat
     # Function to perform conversational chat
+    # Function to perform conversational chat
     def conversational_chat(user_input):
         for query, answer in reversed(st.session_state.chat_history):
             if query.lower() == user_input.lower():  
@@ -372,13 +373,6 @@ else:
         # Store the conversation in chat history
         st.session_state.chat_history.append((user_input, response))
     
-        # Save the chat to Airtable with feedback
-        if st.session_state.user_name:
-            try:
-                save_chat_to_airtable(st.session_state.user_name, user_input, response, feedback)
-            except Exception as e:
-                st.error(f"An error occurred: {e}")
-        
         return response
     if st.session_state.user_name is None:
         user_name = st.text_input("Your name:")
