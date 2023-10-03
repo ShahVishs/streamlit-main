@@ -124,7 +124,7 @@ if st.button("Refresh Session"):
         'user_name': st.session_state.user_name,
         'chat_history': st.session_state.chat_history
     }
-    session_id = datetime.now().strftime("%Y%m%d%H%M%S")
+    session_id = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
     save_chat_session(current_session, session_id)
 
