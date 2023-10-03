@@ -409,7 +409,7 @@ else:
     with response_container:
         for i, chat_entry in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-            query, answer, feedback = chat_entry + (None,)  # Add a default value for feedback if it's missing
+            query, answer, feedback = list(chat_entry) + [None]
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
             col1, col2 = st.columns([0.7, 10]) 
             with col1:
