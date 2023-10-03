@@ -329,7 +329,7 @@ else:
     airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
 
     # Function to save chat history to Airtable
-    def save_chat_to_airtable(user_name, user_input, output):
+    def save_chat_to_airtable(user_name, user_input, output, feedback):
         try:
             timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
             airtable.insert(
@@ -337,8 +337,8 @@ else:
                     "username": user_name,
                     "question": user_input,
                     "answer": output,
-                    "timestamp": timestamp,
                     "feedback": feedback,
+                    "timestamp": timestamp,
                 }
             )
         except Exception as e:
@@ -347,14 +347,38 @@ else:
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
     # Function to perform conversational chat
+    # Function to perform conversational chat
     def conversational_chat(user_input):
         for query, answer in reversed(st.session_state.chat_history):
             if query.lower() == user_input.lower():  
                 return answer
         result = agent_executor({"input": user_input})
-        # st.session_state.chat_history.append((user_input, result["output"]))
-        # return result["output"]
         response = result["output"]
+        
+        # Add thumbs up and thumbs down buttons
+        thumbs_up = st.button("👍", key=f"thumbs_up_{len(st.session_state.chat_history)}")
+        thumbs_down = st.button("👎", key=f"thumbs_down_{len(st.session_state.chat_history)}")
+        
+        feedback = None
+        if thumbs_up:
+            feedback = "👍"
+        elif thumbs_down:
+            feedback = "👎"
+        
+        # Store the feedback
+        if feedback:
+            st.session_state.thumbs_feedback.append(feedback)
+        
+        # Store the conversation in chat history
+        st.session_state.chat_history.append((user_input, response))
+    
+        # Save the chat to Airtable with feedback
+        if st.session_state.user_name:
+            try:
+                save_chat_to_airtable(st.session_state.user_name, user_input, response, feedback)
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+        
         return response
     if st.session_state.user_name is None:
         user_name = st.text_input("Your name:")
@@ -408,14 +432,9 @@ else:
                 f'</div>',
                 unsafe_allow_html=True
                 )
-            feedback_container = st.container()
-            with feedback_container:
-                feedback = st.selectbox("Feedback:", ["Thumbs Up", "Thumbs Down"])
-                if st.button("Submit Feedback"):
-                    save_chat_to_airtable(user_name, query, answer, feedback)
-                    
+            
         if st.session_state.user_name and st.session_state.chat_history:
             try:
-                save_chat_to_airtable(st.session_state.user_name, user_input, output)
+                save_chat_to_airtable(st.session_state.user_name, user_input, output, feedback)
             except Exception as e:
                 st.error(f"An error occurred: {e}")
