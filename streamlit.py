@@ -95,24 +95,18 @@ def save_chat_session(session_data, session_id):
 def load_previous_sessions():
     previous_sessions = {}
 
-    session_directory = "chat_sessions"
+    if not os.path.exists("chat_sessions"):
+        os.makedirs("chat_sessions")
 
-    if not os.path.exists(session_directory):
-        os.makedirs(session_directory)
-
-    session_files = os.listdir(session_directory)
+    session_files = os.listdir("chat_sessions")
 
     for session_file in session_files:
-        session_filename = os.path.join(session_directory, session_file)
+        session_filename = os.path.join("chat_sessions", session_file)
         session_id = session_file.split("_")[-1].split(".json")[0]
 
-        try:
-            with open(session_filename, "r") as session_file:
-                session_data = json.load(session_file)
-                previous_sessions[session_id] = session_data
-        except Exception as e:
-            # Handle any errors while loading sessions
-            st.warning(f"Error loading session {session_id}: {e}")
+        with open(session_filename, "r") as session_file:
+            session_data = json.load(session_file)
+            previous_sessions[session_id] = session_data
 
     return previous_sessions
     
