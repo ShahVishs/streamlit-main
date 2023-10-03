@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from langchain.tools import PythonAstREPLTool
-from datetime import datetime
+import datetime
 import os
 import streamlit as st
 from airtable import Airtable
