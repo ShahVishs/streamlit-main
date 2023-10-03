@@ -385,6 +385,7 @@ else:
         output, feedback = conversational_chat(user_input)
         st.session_state.chat_history.append((user_input, output, feedback))  # Store feedback along with response
         print(f"Data to be saved - User: {st.session_state.user_name}, Question: {user_input}, Answer: {output}, Feedback: {feedback}")
+        save_chat_to_airtable(st.session_state.user_name, user_input, output, feedback)
     # Display chat history with feedback
     with response_container:
         for i, (query, answer, feedback) in enumerate(st.session_state.chat_history):
