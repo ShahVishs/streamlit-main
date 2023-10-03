@@ -328,7 +328,7 @@ else:
 
     airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
 
-    # Function to save chat history to Airtable
+    # Function to save chat history with feedback to Airtable
     def save_chat_to_airtable(user_name, user_input, output, feedback):
         try:
             timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
@@ -337,8 +337,8 @@ else:
                     "username": user_name,
                     "question": user_input,
                     "answer": output,
-                    "feedback": feedback,
                     "timestamp": timestamp,
+                    "feedback": feedback  # Add a new column for feedback
                 }
             )
         except Exception as e:
@@ -348,30 +348,14 @@ else:
         st.session_state.chat_history = []
     # Function to perform conversational chat
     # Function to perform conversational chat
-    # Function to perform conversational chat
     def conversational_chat(user_input):
-        feedback = None  # Initialize feedback to None
-        for entry in reversed(st.session_state.chat_history):
-            query, answer, feedback = entry + [None, None]  # Provide default values for feedback and answer
+        for query, answer, feedback in reversed(st.session_state.chat_history):
             if query.lower() == user_input.lower():  
-                return answer
-    
+                return answer, feedback  # Return both answer and feedback
         result = agent_executor({"input": user_input})
         response = result["output"]
-    
-        # Add thumbs up and thumbs down buttons
-        thumbs_up = st.button("👍", key=f"thumbs_up_{len(st.session_state.chat_history)}")
-        thumbs_down = st.button("👎", key=f"thumbs_down_{len(st.session_state.chat_history)}")
-    
-        if thumbs_up:
-            feedback = "👍"
-        elif thumbs_down:
-            feedback = "👎"
-    
-        # Store the conversation in chat history along with feedback
-        st.session_state.chat_history.append((user_input, response, feedback))
-    
-        return response
+        feedback = None  # Initialize feedback as None
+        return response, feedback
     if st.session_state.user_name is None:
         user_name = st.text_input("Your name:")
         if user_name:
@@ -384,63 +368,48 @@ else:
             st.session_state.new_session = False  # Prevent clearing chat history
             st.session_state.sessions = load_previous_sessions()
             
-    user_input = ""   
-    output = ""
     
-    # if st.session_state.user_name is None:
-        
-    #     user_name = st.text_input("Your name:")
-    #     if user_name:
-    #         st.session_state.user_name = user_name
-    #     if user_name == "vishakha":
-    #         is_admin = True
-    #         st.session_state.user_role = "admin"
-    #         st.session_state.user_name = user_name
-    #         st.session_state.new_session = False 
-    #         st.session_state.sessions = load_previous_sessions()
-
+    # User input and chat history display
+    user_input = ""
+    output = ""
+    feedback = None  # Initialize feedback as None
+    
     with st.form(key='my_form', clear_on_submit=True):
         if st.session_state.user_name != "vishakha":
             user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
         submit_button = st.form_submit_button(label='Send')
-
+    
     if submit_button and user_input:
-        output = conversational_chat(user_input)
-        feedback = None 
-        st.session_state.chat_history.append((user_input, output, feedback))
-
+        output, feedback = conversational_chat(user_input)
+        st.session_state.chat_history.append((user_input, output, feedback))  # Store feedback along with response
+    
+    # Display chat history with feedback
     with response_container:
-        for i, chat_entry in enumerate(st.session_state.chat_history):
+        for i, (query, answer, feedback) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-            if len(chat_entry) >= 2:
-                query, answer = chat_entry[:2]  # Get the first two values
-                feedback = None if len(chat_entry) == 2 else chat_entry[2]
-            else:
-                # Handle unexpected chat entry length
-                query, answer, feedback = "Error", "Error", None
-            
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-            col1, col2 = st.columns([0.7, 10]) 
+            col1, col2 = st.columns([0.7, 10])
             with col1:
                 st.image("icon-1024.png", width=50)
             with col2:
                 st.markdown(
-                f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
-                f' border-top-right-radius: 10px; border-bottom-right-radius: 10px;'
-                f' border-top-left-radius: 0; border-bottom-left-radius: 0; box-shadow: 2px 2px 5px #888888;">'
-                f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
-                f'</div>',
-                unsafe_allow_html=True
+                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
+                    f' border-top-right-radius: 10px; border-bottom-right-radius: 10px;'
+                    f' border-top-left-radius: 0; border-bottom-left-radius: 0; box-shadow: 2px 2px 5px #888888;">'
+                    f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
+                    f'</div>',
+                    unsafe_allow_html=True
                 )
-
-    if st.session_state.user_name and st.session_state.chat_history:
-        try:
-            save_chat_to_airtable(st.session_state.user_name, user_input, output, feedback)
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
-            
-        if st.session_state.user_name and st.session_state.chat_history:
-            try:
-                save_chat_to_airtable(st.session_state.user_name, user_input, output, feedback)
-            except Exception as e:
-                st.error(f"An error occurred: {e}")
+    
+            if feedback is None and st.session_state.user_name != "vishakha":
+                # Display thumbs-up and thumbs-down buttons if feedback is not provided yet
+                thumbs_up = st.button("👍", key=f"thumbs_up_{i}")
+                thumbs_down = st.button("👎", key=f"thumbs_down_{i}")
+                if thumbs_up:
+                    feedback = "👍"  # Store thumbs-up feedback
+                elif thumbs_down:
+                    feedback = "👎"  # Store thumbs-down feedback
+                if feedback is not None:
+                    # Update the feedback in the chat history and save it to Airtable
+                    st.session_state.chat_history[i] = (query, answer, feedback)
+                    save_chat_to_airtable(st.session_state.user_name, user_input, output, feedback)
