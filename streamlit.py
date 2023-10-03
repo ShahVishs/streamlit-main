@@ -407,7 +407,7 @@ else:
         st.session_state.chat_history.append((user_input, output))
 
     with response_container:
-        for i, (query, answer) in enumerate(st.session_state.chat_history):
+        for i, (query, answer, feedback) in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
             col1, col2 = st.columns([0.7, 10]) 
