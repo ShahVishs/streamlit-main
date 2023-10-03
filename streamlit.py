@@ -370,21 +370,21 @@ else:
     user_input = ""   
     output = ""
     
-    if st.session_state.user_name is None:
+    # if st.session_state.user_name is None:
         
-        user_name = st.text_input("Your name:")
-        if user_name:
-            st.session_state.user_name = user_name
-        if user_name == "vishakha":
-            is_admin = True
-            st.session_state.user_role = "admin"
-            st.session_state.user_name = user_name
-            st.session_state.new_session = False 
-            st.session_state.sessions = load_previous_sessions()
+    #     user_name = st.text_input("Your name:")
+    #     if user_name:
+    #         st.session_state.user_name = user_name
+    #     if user_name == "vishakha":
+    #         is_admin = True
+    #         st.session_state.user_role = "admin"
+    #         st.session_state.user_name = user_name
+    #         st.session_state.new_session = False 
+    #         st.session_state.sessions = load_previous_sessions()
 
     with st.form(key='my_form', clear_on_submit=True):
         if st.session_state.user_name != "vishakha":
-            user_input = st.text_input("Query:", placeholder="Type your question here :)", key='user_name_input')
+            user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
         submit_button = st.form_submit_button(label='Send')
 
     if submit_button and user_input:
