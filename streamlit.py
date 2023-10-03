@@ -34,7 +34,7 @@ from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 from langchain.smith import RunEvalConfig, run_on_dataset
 import pandas as pd
-
+import json
 pd.set_option('display.max_rows', 20)
 pd.set_option('display.max_columns', 20)
 
