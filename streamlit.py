@@ -338,7 +338,7 @@ else:
                     "question": user_input,
                     "answer": output,
                     "timestamp": timestamp,
-                    "feedback": feedback  # Add a new column for feedback
+                    "feedback": feedback if feedback is not None else ""  # Store an empty string if feedback is None
                 }
             )
         except Exception as e:
@@ -350,8 +350,8 @@ else:
     # Function to perform conversational chat
     def conversational_chat(user_input):
         for query, answer, feedback in reversed(st.session_state.chat_history):
-            if query.lower() == user_input.lower():  
-                return answer, feedback  # Return both answer and feedback
+            if query.lower() == user_input.lower():
+                return answer, feedback if feedback else None  # Return None if feedback is not available
         result = agent_executor({"input": user_input})
         response = result["output"]
         feedback = None  # Initialize feedback as None
@@ -369,6 +369,7 @@ else:
             st.session_state.sessions = load_previous_sessions()
             
     
+    # User input and chat history display
     # User input and chat history display
     user_input = ""
     output = ""
