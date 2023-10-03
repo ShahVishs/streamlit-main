@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from langchain.tools import PythonAstREPLTool
+from datetime import datetime
 import os
 import streamlit as st
 from airtable import Airtable
@@ -33,7 +34,7 @@ from langchain.prompts import MessagesPlaceholder
 from langchain.agents import AgentExecutor
 from langchain.smith import RunEvalConfig, run_on_dataset
 import pandas as pd
-from datetime import datetime
+
 pd.set_option('display.max_rows', 20)
 pd.set_option('display.max_columns', 20)
 
@@ -131,7 +132,7 @@ if st.button("Refresh Session"):
     st.session_state.user_name = None
     st.session_state.user_name_input = None
     st.session_state.new_session = True
-    st.session_state.refreshing_session = False  
+    st.session_state.refreshing_session = False   
 
 # Initialize chat history in session state
 if 'chat_history' not in st.session_state:
