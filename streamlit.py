@@ -338,6 +338,7 @@ else:
                     "question": user_input,
                     "answer": output,
                     "timestamp": timestamp,
+                    "feedback": feedback,
                 }
             )
         except Exception as e:
@@ -407,7 +408,12 @@ else:
                 f'</div>',
                 unsafe_allow_html=True
                 )
-
+            feedback_container = st.container()
+            with feedback_container:
+                feedback = st.selectbox("Feedback:", ["Thumbs Up", "Thumbs Down"])
+                if st.button("Submit Feedback"):
+                    save_chat_to_airtable(user_name, query, answer, feedback)
+                    
         if st.session_state.user_name and st.session_state.chat_history:
             try:
                 save_chat_to_airtable(st.session_state.user_name, user_input, output)
