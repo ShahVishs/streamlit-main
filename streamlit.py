@@ -412,7 +412,13 @@ else:
     with response_container:
         for i, chat_entry in enumerate(st.session_state.chat_history):
             user_name = st.session_state.user_name
-            query, answer, feedback = list(chat_entry) + [None]
+            if len(chat_entry) >= 2:
+                query, answer = chat_entry[:2]  # Get the first two values
+                feedback = None if len(chat_entry) == 2 else chat_entry[2]
+            else:
+                # Handle unexpected chat entry length
+                query, answer, feedback = "Error", "Error", None
+            
             message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
             col1, col2 = st.columns([0.7, 10]) 
             with col1:
@@ -426,6 +432,12 @@ else:
                 f'</div>',
                 unsafe_allow_html=True
                 )
+
+    if st.session_state.user_name and st.session_state.chat_history:
+        try:
+            save_chat_to_airtable(st.session_state.user_name, user_input, output, feedback)
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
             
         if st.session_state.user_name and st.session_state.chat_history:
             try:
