@@ -350,6 +350,7 @@ else:
     # Function to perform conversational chat
     # Function to perform conversational chat
     def conversational_chat(user_input):
+        feedback = None  # Initialize feedback to None
         for query, answer in reversed(st.session_state.chat_history):
             if query.lower() == user_input.lower():  
                 return answer
@@ -360,19 +361,14 @@ else:
         thumbs_up = st.button("👍", key=f"thumbs_up_{len(st.session_state.chat_history)}")
         thumbs_down = st.button("👎", key=f"thumbs_down_{len(st.session_state.chat_history)}")
         
-        feedback = None
         if thumbs_up:
             feedback = "👍"
         elif thumbs_down:
             feedback = "👎"
         
-        # Store the feedback
-        if feedback:
-            st.session_state.thumbs_feedback.append(feedback)
+        # Store the conversation in chat history along with feedback
+        st.session_state.chat_history.append((user_input, response, feedback))
         
-        # Store the conversation in chat history
-        st.session_state.chat_history.append((user_input, response))
-    
         return response
     if st.session_state.user_name is None:
         user_name = st.text_input("Your name:")
