@@ -404,6 +404,7 @@ else:
 
     if submit_button and user_input:
         output = conversational_chat(user_input)
+        feedback = None 
         st.session_state.chat_history.append((user_input, output, feedback))
 
     with response_container:
