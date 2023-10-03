@@ -221,9 +221,7 @@ AIRTABLE_TABLE_NAME = "Question_Answer_Data"
 
 # Streamlit UI setup
 st.info("Introducing **Otto**, your cutting-edge partner in streamlining dealership and customer-related operations. At EngagedAi, we specialize in harnessing the power of automation to revolutionize the way dealerships and customers interact. Our advanced solutions seamlessly handle tasks, from managing inventory and customer inquiries to optimizing sales processes, all while enhancing customer satisfaction. Discover a new era of efficiency and convenience with us as your trusted automation ally. [engagedai.io](https://funnelai.com/). For this demo application, we will use the Inventory Dataset. Please explore it [here](https://github.com/ShahVishs/workflow/blob/main/2013_Inventory.csv) to get a sense for what questions you can ask.")
-# Initialize session state
-if 'chat_history' not in st.session_state:
-    st.session_state.chat_history = []
+
 if 'generated' not in st.session_state:
     st.session_state.generated = []
 if 'past' not in st.session_state:
@@ -330,13 +328,6 @@ else:
 
     airtable = Airtable(AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME, api_key=airtable_api_key)
 
-    # Initialize session state
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
-
-    if 'user_name' not in st.session_state:
-        st.session_state.user_name = None
-
     # Function to save chat history to Airtable
     def save_chat_to_airtable(user_name, user_input, output):
         try:
@@ -351,59 +342,73 @@ else:
             )
         except Exception as e:
             st.error(f"An error occurred while saving data to Airtable: {e}")
-
+    # Initialize session state
+    if 'chat_history' not in st.session_state:
+        st.session_state.chat_history = []
     # Function to perform conversational chat
     def conversational_chat(user_input):
         for query, answer in reversed(st.session_state.chat_history):
             if query.lower() == user_input.lower():  
-                
                 return answer
         result = agent_executor({"input": user_input})
-        st.session_state.chat_history.append((user_input, result["output"]))
-        return result["output"]
-    
+        # st.session_state.chat_history.append((user_input, result["output"]))
+        # return result["output"]
+        response = result["output"]
+        return response
+    if st.session_state.user_name is None:
+        user_name = st.text_input("Your name:")
+        if user_name:
+            st.session_state.user_name = user_name
+        if user_name == "vishakha":
+            # Load chat history for "vishakha" without asking for a query
+            is_admin = True
+            st.session_state.user_role = "admin"
+            st.session_state.user_name = user_name
+            st.session_state.new_session = False  # Prevent clearing chat history
+            st.session_state.sessions = load_previous_sessions()
+            
     user_input = ""   
     output = ""
-    with container:
-        if st.session_state.user_name is None:
-            user_name = st.text_input("Your name:")
-            if user_name:
-                st.session_state.user_name = user_name
-            if user_name == "vishakha":
-                is_admin = True
-                st.session_state.user_role = "admin"
-                st.session_state.user_name = user_name
-                st.session_state.new_session = False 
-                st.session_state.sessions = load_previous_sessions()
+    
+    if st.session_state.user_name is None:
+        user_name = st.text_input("Your name:")
+        if user_name:
+            st.session_state.user_name = user_name
+        if user_name == "vishakha":
+            is_admin = True
+            st.session_state.user_role = "admin"
+            st.session_state.user_name = user_name
+            st.session_state.new_session = False 
+            st.session_state.sessions = load_previous_sessions()
 
-        with st.form(key='my_form', clear_on_submit=True):
-            if st.session_state.user_name != "vishakha":
-                user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
-            submit_button = st.form_submit_button(label='Send')
+    with st.form(key='my_form', clear_on_submit=True):
+        if st.session_state.user_name != "vishakha":
+            user_input = st.text_input("Query:", placeholder="Type your question here :)", key='input')
+        submit_button = st.form_submit_button(label='Send')
 
-        if submit_button and user_input:
-            output = conversational_chat(user_input)
-            st.session_state.chat_history.append((user_input, output))
+    if submit_button and user_input:
+        output = conversational_chat(user_input)
+        st.session_state.chat_history.append((user_input, output))
 
-        with response_container:
-            for i, (query, answer) in enumerate(st.session_state.chat_history):
-                user_name = st.session_state.user_name
-                message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
-                col1, col2 = st.columns([0.7, 10]) 
-                with col1:
-                    st.image("icon-1024.png", width=50)
-                with col2:
-                    st.markdown(
-                    f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
-                    f' border-top-right-radius: 10px; border-bottom-right-radius: 10px;'
-                    f' border-top-left-radius: 0; border-bottom-left-radius: 0; box-shadow: 2px 2px 5px #888888;">'
-                    f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
-                    f'</div>',
-                    unsafe_allow_html=True
-                    )
+    with response_container:
+        for i, (query, answer) in enumerate(st.session_state.chat_history):
+            user_name = st.session_state.user_name
+            message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
+            col1, col2 = st.columns([0.7, 10]) 
+            with col1:
+                st.image("icon-1024.png", width=50)
+            with col2:
+                st.markdown(
+                f'<div style="background-color: #F5F5F5; border-radius: 10px; padding: 10px; width: 50%;'
+                f' border-top-right-radius: 10px; border-bottom-right-radius: 10px;'
+                f' border-top-left-radius: 0; border-bottom-left-radius: 0; box-shadow: 2px 2px 5px #888888;">'
+                f'<span style="font-family: Arial, sans-serif; font-size: 16px; white-space: pre-wrap;">{answer}</span>'
+                f'</div>',
+                unsafe_allow_html=True
+                )
 
-            if st.session_state.user_name and st.session_state.chat_history:
-                try:
-                    save_chat_to_airtable(st.session_state.user_name, user_input, output)
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
+        if st.session_state.user_name and st.session_state.chat_history:
+            try:
+                save_chat_to_airtable(st.session_state.user_name, user_input, output)
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
