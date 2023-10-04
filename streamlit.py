@@ -75,26 +75,22 @@ st.markdown(hide_star_and_github_style, unsafe_allow_html=True)
 st.markdown(hide_mainmenu_style, unsafe_allow_html=True)
 st.markdown(hide_fork_app_button_style, unsafe_allow_html=True)
 
-hide_animation_demo_style = """
+st.markdown(
+    """
     <style>
-    title:contains('Animation Demo') {
+    /* Remove the title with "Animation Demo" */
+    title:contains("Animation Demo") {
+        display: none;
+    }
+
+    /* Remove the title with "Plotting Demo" */
+    title:contains("Plotting Demo") {
         display: none;
     }
     </style>
-"""
-
-hide_plotting_demo_style = """
-    <style>
-    title:contains('Plotting Demo') {
-        display: none;
-    }
-    </style>
-"""
-
-# Apply the CSS styles
-st.markdown(hide_animation_demo_style, unsafe_allow_html=True)
-st.markdown(hide_plotting_demo_style, unsafe_allow_html=True)
-
+    """,
+    unsafe_allow_html=True,
+)
 pd.set_option('display.max_rows', 20)
 pd.set_option('display.max_columns', 20)
 
