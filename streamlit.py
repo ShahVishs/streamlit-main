@@ -47,8 +47,8 @@ hide_share_button_style = """
 
 hide_star_and_github_style = """
     <style>
-    .st-emotion-cache-1lb4qcp.e3g6aar0,
-    .st-emotion-cache-30do4w.e3g6aar0 {
+    .st-emotion-cache-1lb4qcp.e3g6aar1,
+    .st-emotion-cache-30do4w.e3g6aar1 {
         display: none !important;
     }
     </style>
